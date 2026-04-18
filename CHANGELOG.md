@@ -4,6 +4,18 @@ All notable changes to the Media OS plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-04-17
+
+### Added
+
+- **Single-skill install support.** Every one of the 96 skills is now independently installable as its own standalone plugin from the same marketplace. Users can install the full bundle (`/plugin install media-os@media-os`) OR cherry-pick individual skills (`/plugin install ffmpeg-hdr-color@media-os`, `/plugin install obs-websocket@media-os`, etc.).
+- **`.claude-plugin/marketplace.json`** expanded from 1 entry to 97 entries: the bundle + 96 individual single-skill plugins. Each individual entry uses `strict: false` with `"source": "./skills/<name>"` and `"skills": ["./"]`, so skill folders stay sealed and require no per-skill `plugin.json`.
+- **README documentation** for both install modes with a comparison table.
+
+### Changed
+
+- Marketplace metadata + plugin manifest bumped to v1.1.0.
+
 ## [1.0.0] — 2026-04-17
 
 ### Added — initial release

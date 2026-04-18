@@ -5,8 +5,8 @@
     "name": "Media OS"
   },
   "metadata": {
-    "description": "The Media OS for Claude Code. One plugin, 96 production-grade skills spanning FFmpeg, companion CLI tools, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/OTIO/HDR dynamic/DeckLink/gphoto2), control protocols (MIDI/OSC/DMX/PTZ), system audio routing (PipeWire/JACK/CoreAudio/WASAPI), VFX (USD/EXR/OIIO), CV (OpenCV/MediaPipe), WebRTC (W3C + Pion/mediasoup/LiveKit), and 2026 open-source AI (upscale/interpolate/matte/depth/TTS/image-gen/video-gen/music-gen/lipsync/OCR/denoise/tagging). Strict OSI-open + commercial-safe license filter on every AI model; NC / research-only models explicitly documented-and-dropped.",
-    "version": "1.0.0",
+    "description": "The Media OS for Claude Code. Install the complete 96-skill bundle or cherry-pick individual skills. One plugin covers FFmpeg (transcode, streaming, filters, HDR, codecs, protocols, broadcast MXF/IMF, DRM, 360, VapourSynth), professional companion tools (yt-dlp, MKVToolNix, Shaka, GPAC, MediaInfo, ImageMagick, ExifTool, SoX, HandBrake, whisper.cpp, Demucs, PySceneDetect, ffmpeg-normalize, MoviePy, subtitle-sync, cloud upload, batch), OBS Studio (websocket, config, plugins, scripting), frameworks (GStreamer, MediaMTX), broadcast IP (NDI, OTIO, HDR dynamic metadata via dovi_tool + hdr10plus_tool, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing (PipeWire, JACK, CoreAudio, WASAPI), VFX (USD, OpenEXR, OpenImageIO), CV (OpenCV, MediaPipe), WebRTC (spec, Pion, mediasoup, LiveKit), and 2026 open-source AI media (upscale, interpolate, matte, depth, TTS, image gen, video gen, music gen, lipsync, OCR, denoise, tagging). Or install just one.",
+    "version": "1.1.0",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
     "license": "MIT"
@@ -15,8 +15,8 @@
     {
       "name": "media-os",
       "source": "./",
-      "description": "The complete Media OS — 96 skills across 9 layers. Covers every major media workflow from content acquisition through broadcast delivery, with live production, VFX, and full AI media generation built in.",
-      "version": "1.0.0",
+      "description": "The complete Media OS bundle \u2014 96 skills across 9 layers. FFmpeg complete, professional companion tools, OBS Studio, streaming frameworks, broadcast IP, control protocols, system audio routing, VFX stack, computer vision, WebRTC, and 2026 open-source AI media. Install this if you want everything in one.",
+      "version": "1.1.0",
       "author": {
         "name": "Media OS"
       },
@@ -53,7 +53,6 @@
       "keywords": [
         "media-os",
         "media-operating-system",
-        "media-pipeline",
         "ffmpeg",
         "video-editing",
         "audio-editing",
@@ -65,24 +64,14 @@
         "gstreamer",
         "hdr10-plus",
         "dolby-vision",
-        "hdr-dynamic-metadata",
+        "opentimelineio",
         "broadcast-ip",
         "ndi",
-        "opentimelineio",
-        "editorial-interchange",
         "decklink-sdi",
-        "dslr-tether",
-        "gphoto2",
         "midi-2",
-        "ump",
         "osc",
         "dmx512",
-        "art-net",
-        "sacn",
-        "ola",
-        "ptz-control",
-        "visca",
-        "onvif",
+        "ptz",
         "pipewire",
         "jack",
         "coreaudio",
@@ -99,37 +88,2161 @@
         "whisper",
         "demucs",
         "real-esrgan",
-        "swinir",
-        "rife",
-        "rembg",
-        "birefnet",
-        "robustvideomatting",
-        "depth-anything",
-        "midas",
         "kokoro-tts",
-        "openvoice",
-        "piper",
-        "riffusion",
-        "yue",
-        "comfyui",
-        "flux-schnell",
-        "ltx-video",
-        "cogvideox",
-        "liveportrait",
-        "latentsync",
-        "paddleocr",
-        "tesseract",
-        "trocr",
-        "deepfilternet",
-        "rnnoise",
-        "clip",
-        "siglip",
-        "blip-2",
-        "llava",
         "open-source-ai",
         "commercial-safe-ai",
         "claude-code",
         "agent-skills"
+      ]
+    },
+    {
+      "name": "audio-coreaudio",
+      "source": "./skills/audio-coreaudio",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Manipulate macOS audio at the Core Audio HAL layer: afinfo (audio file metadata), afplay (play), afconvert (convert format/rate/bit-depth/channel layout), say (TTS), SwitchAudioSource (change default input/output/system device \u2014 brew...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio-system",
+      "tags": [
+        "coreaudio",
+        "macos",
+        "audio-routing"
+      ]
+    },
+    {
+      "name": "audio-jack",
+      "source": "./skills/audio-jack",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Route professional low-latency audio with JACK Audio Connection Kit (jackaudio.org): jackd server (ALSA/CoreAudio/PortAudio/ASIO backends), jack_control (D-Bus JACK2 config), jack_lsp (list ports/connections),...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio-system",
+      "tags": [
+        "jack",
+        "audio-routing"
+      ]
+    },
+    {
+      "name": "audio-pipewire",
+      "source": "./skills/audio-pipewire",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Route and introspect Linux audio/video/MIDI graphs with PipeWire: pw-cli (interactive object/module control), pw-dump (full graph JSON with --monitor), pw-link (list/create/destroy port links), pw-cat / pw-play / pw-record...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio-system",
+      "tags": [
+        "pipewire",
+        "linux",
+        "audio-routing"
+      ]
+    },
+    {
+      "name": "audio-wasapi",
+      "source": "./skills/audio-wasapi",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Manipulate Windows audio via WASAPI (learn.microsoft.com/coreaudio): SoundVolumeView + svcl.exe (NirSoft \u2014 set default device, per-app volumes, save/load profiles), AudioDeviceCmdlets PowerShell module (Get-AudioDevice, Set-AudioDevice,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio-system",
+      "tags": [
+        "wasapi",
+        "windows",
+        "audio-routing"
+      ]
+    },
+    {
+      "name": "cv-mediapipe",
+      "source": "./skills/cv-mediapipe",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Google MediaPipe Tasks API (current supported, NOT legacy mediapipe.solutions): Vision Tasks (Face Detector, Face Landmarker, Face Stylizer, Hand Landmarker, Gesture Recognizer, Pose Landmarker, Holistic Landmarker, Object Detector,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-cv",
+      "tags": [
+        "mediapipe",
+        "face",
+        "pose"
+      ]
+    },
+    {
+      "name": "cv-opencv",
+      "source": "./skills/cv-opencv",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Computer vision on images + video with OpenCV (docs.opencv.org/4.x/): core (Mat / ndarray, linalg), imgproc (filtering, morphology, geometric transforms, color conv, histograms, contours), imgcodecs (imread/imwrite \u2014 PNG, JPEG, TIFF,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-cv",
+      "tags": [
+        "opencv",
+        "mat",
+        "dnn"
+      ]
+    },
+    {
+      "name": "decklink-tools",
+      "source": "./skills/decklink-tools",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Capture and play back SDI/HDMI video via Blackmagic DeckLink hardware: ffmpeg decklink indev/outdev (-f decklink -list_devices 1, -f decklink -list_formats 1, -f decklink -i 'DeckLink Mini Recorder 4K', -f decklink 'DeckLink Mini...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "decklink",
+        "blackmagic",
+        "sdi"
+      ]
+    },
+    {
+      "name": "ffmpeg-360-3d",
+      "source": "./skills/ffmpeg-360-3d",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "360\u00b0 / VR and stereoscopic 3D video with ffmpeg: v360 filter (equirectangular, cubemap 3x2/6x1/1x6, fisheye, flat, hequirect, dfisheye, cylindrical, perspective, barrel, sinusoidal, half_equirectangular, stereographic, mercator, ball,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-immersive",
+      "tags": [
+        "ffmpeg",
+        "360",
+        "vr",
+        "stereoscopic"
+      ]
+    },
+    {
+      "name": "ffmpeg-audio-filter",
+      "source": "./skills/ffmpeg-audio-filter",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Apply audio filters with ffmpeg -af / -filter_complex: loudnorm (EBU R128), volume, dynaudnorm, compand, equalizer, bass/treble, aresample (sample rate), atempo (speed), apad/atrim, amix, amerge, pan (channel layout), silenceremove,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "audio-filter",
+        "loudnorm",
+        "eq"
+      ]
+    },
+    {
+      "name": "ffmpeg-audio-fx",
+      "source": "./skills/ffmpeg-audio-fx",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Creative and restoration audio effects with ffmpeg: chorus, flanger, aphaser, tremolo, vibrato, aecho, crystalizer, adecorrelate, adeclick, adeclip, apsyclip, asoftclip, speechnorm, dialoguenhance, adynamicequalizer, adynamicsmooth,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio",
+      "tags": [
+        "ffmpeg",
+        "audio-fx",
+        "chorus",
+        "flanger"
+      ]
+    },
+    {
+      "name": "ffmpeg-audio-spatial",
+      "source": "./skills/ffmpeg-audio-spatial",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Spatial and binaural audio with ffmpeg: headphone (HRTF binaural from multichannel), sofalizer (custom HRTF via SOFA files), surround (mono/stereo \u2192 5.1/7.1 upmix), extrastereo, stereotools, stereowiden, earwax, crossfeed, channelsplit,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio",
+      "tags": [
+        "ffmpeg",
+        "binaural",
+        "hrtf",
+        "sofalizer"
+      ]
+    },
+    {
+      "name": "ffmpeg-bitstream",
+      "source": "./skills/ffmpeg-bitstream",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Apply bitstream filters (-bsf) with ffmpeg to rewrite packet metadata without re-encoding: h264_mp4toannexb, hevc_mp4toannexb, aac_adtstoasc, extract_extradata, dump_extra, setts, noise, remove_extra, filter_units, mjpeg2jpeg,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "bitstream",
+        "nal",
+        "bsf"
+      ]
+    },
+    {
+      "name": "ffmpeg-captions",
+      "source": "./skills/ffmpeg-captions",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Closed captions CEA-608/708 with ffmpeg: -a53cc 1 passthrough, readeia608 extraction, SCC and MCC and STL import/export, ccextractor handoff, 608 \u2192 SRT conversion, burning 608 to picture, preserving captions in MPEG-TS and MP4 and MOV.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-audio",
+      "tags": [
+        "ffmpeg",
+        "cea-608",
+        "cea-708",
+        "captions"
+      ]
+    },
+    {
+      "name": "ffmpeg-capture",
+      "source": "./skills/ffmpeg-capture",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Record from capture devices with ffmpeg: screen/desktop (avfoundation on macOS, gdigrab/dshow on Windows, x11grab/kmsgrab on Linux), webcam (avfoundation/dshow/v4l2), microphone, system audio, and list available devices.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "capture",
+        "screen",
+        "webcam"
+      ]
+    },
+    {
+      "name": "ffmpeg-chromakey",
+      "source": "./skills/ffmpeg-chromakey",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Chromakey, greenscreen, and compositing with ffmpeg: chromakey, colorkey, hsvkey, lumakey, chromakey_cuda, despill, backgroundkey, overlay with alpha.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "chromakey",
+        "greenscreen"
+      ]
+    },
+    {
+      "name": "ffmpeg-compose-mask",
+      "source": "./skills/ffmpeg-compose-mask",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Advanced compositing, masking, and channel operations with ffmpeg: maskedclamp, maskedmax, maskedmin, maskedmerge, maskedthreshold, maskfun, alphamerge, alphaextract, premultiply, unpremultiply, displace, hysteresis, floodfill, remap,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "compose",
+        "mask"
+      ]
+    },
+    {
+      "name": "ffmpeg-cut-concat",
+      "source": "./skills/ffmpeg-cut-concat",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Trim, cut, split, segment, and concatenate media with ffmpeg (stream copy when possible, re-encode across cut boundaries).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "trim",
+        "split",
+        "concat"
+      ]
+    },
+    {
+      "name": "ffmpeg-denoise-restore",
+      "source": "./skills/ffmpeg-denoise-restore",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Denoising and restoration with ffmpeg: nlmeans (non-local means), bm3d, hqdn3d, atadenoise, fftdnoiz, dctdnoiz, removegrain, nnedi, derain, dnn_processing with ESPCN/EDSR/SRCNN super-resolution, afftdn, anlmdn, arnndn (RNN audio denoise).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "nlmeans",
+        "bm3d",
+        "denoise"
+      ]
+    },
+    {
+      "name": "ffmpeg-detect",
+      "source": "./skills/ffmpeg-detect",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Detect-and-act workflows with ffmpeg analysis filters: cropdetect (autocrop black bars), silencedetect, blackdetect, freezedetect, blurdetect, blockdetect, scdet (scene-change detection), idet (interlace detection), signalstats...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "cropdetect",
+        "silencedetect",
+        "scdet"
+      ]
+    },
+    {
+      "name": "ffmpeg-drm",
+      "source": "./skills/ffmpeg-drm",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "DRM and media encryption with ffmpeg: HLS AES-128 (-hls_key_info_file, -hls_enc, key rotation), HLS SAMPLE-AES, MPEG-DASH Common Encryption (CENC) with cenc_mp4 / cbcs schemes, ClearKey, fmp4 encrypted segments, cryptor protocol for...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-immersive",
+      "tags": [
+        "ffmpeg",
+        "drm",
+        "aes-128",
+        "cenc"
+      ]
+    },
+    {
+      "name": "ffmpeg-frames-images",
+      "source": "./skills/ffmpeg-frames-images",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Extract frames, make thumbnails, build sprite/contact sheets, import/export image sequences, and create high-quality GIFs (palettegen+paletteuse) with ffmpeg.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "frames",
+        "thumbnails",
+        "gif"
+      ]
+    },
+    {
+      "name": "ffmpeg-geq-expr",
+      "source": "./skills/ffmpeg-geq-expr",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Procedural and expression-based ffmpeg filters: geq (per-pixel YUV/RGB expressions), aeval (audio sample expressions), lut2 (two-input LUT expression), drawgraph (real-time metrics graph), drawvg (SVG rendering over video), random,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "geq",
+        "expressions",
+        "lut2"
+      ]
+    },
+    {
+      "name": "ffmpeg-hdr-color",
+      "source": "./skills/ffmpeg-hdr-color",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "HDR tone-mapping and color-space conversion with ffmpeg: tonemap, zscale, libplacebo tone-mapping, colorspace filter, HDR10/HDR10+/HLG/Dolby Vision \u2192 SDR, BT.2020 \u2192 BT.709, PQ \u2192 gamma 2.4.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "hdr10",
+        "dolby-vision",
+        "tonemap"
+      ]
+    },
+    {
+      "name": "ffmpeg-hwaccel",
+      "source": "./skills/ffmpeg-hwaccel",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Use hardware acceleration with ffmpeg: NVIDIA NVENC/NVDEC/CUDA, Intel Quick Sync (QSV), VA-API (Linux Intel/AMD), VideoToolbox (macOS Apple Silicon/Intel), AMD AMF (Windows), Vulkan, plus hwupload/hwdownload filters for full-GPU pipelines.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "nvenc",
+        "qsv",
+        "videotoolbox",
+        "gpu"
+      ]
+    },
+    {
+      "name": "ffmpeg-ivtc",
+      "source": "./skills/ffmpeg-ivtc",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Inverse telecine, deinterlacing variants, and frame-rate conversion with ffmpeg: fieldmatch, decimate, pullup, detelecine, mpdecimate, dejudder, w3fdif, separatefields, weave, tinterlace, kerndeint, estdif, phase, repeatfields, vfrdet,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "ivtc",
+        "telecine",
+        "fieldmatch"
+      ]
+    },
+    {
+      "name": "ffmpeg-lens-perspective",
+      "source": "./skills/ffmpeg-lens-perspective",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Lens correction, perspective warp, and geometric transforms with ffmpeg: lenscorrection (barrel/pincushion), lensfun (post-processing lens DB), perspective (keystone fix), vignette (add/remove vignetting), shear, tiltandshift, rotate...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "lens",
+        "perspective"
+      ]
+    },
+    {
+      "name": "ffmpeg-lut-grade",
+      "source": "./skills/ffmpeg-lut-grade",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Color grading and LUT application with ffmpeg: lut3d (.cube/.3dl), lut1d, haldclut, colorbalance, selectivecolor, colormatrix, colorlevels, colorchannelmixer, hue.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "lut",
+        "cube",
+        "grade"
+      ]
+    },
+    {
+      "name": "ffmpeg-metadata",
+      "source": "./skills/ffmpeg-metadata",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Metadata, chapters, and cover art authoring with ffmpeg: -metadata, -metadata:s:a:0, -map_metadata, ffmetadata chapter files, -attach, -disposition attached_pic, MKV edition entries, stream titles, language tags, tag writing for...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "metadata",
+        "chapters",
+        "tags"
+      ]
+    },
+    {
+      "name": "ffmpeg-mxf-imf",
+      "source": "./skills/ffmpeg-mxf-imf",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Professional broadcast and film delivery with ffmpeg: MXF (SMPTE 377M OP1a/OP-Atom) mux/demux, IMF (Interoperable Master Format SMPTE 2067) for Netflix/studio delivery, GXF, broadcast timecode (drop-frame / non-drop-frame), SMPTE 2022 /...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-immersive",
+      "tags": [
+        "ffmpeg",
+        "mxf",
+        "imf",
+        "broadcast"
+      ]
+    },
+    {
+      "name": "ffmpeg-ocio-colorpro",
+      "source": "./skills/ffmpeg-ocio-colorpro",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Professional color management with ffmpeg + OpenColorIO: ocio filter (OCIO config / LUT / colorspace transforms), ACES workflows (ACEScc / ACEScg / ACES2065-1), Resolve-compatible LUTs, film-emulation via OCIO, iccdetect, iccgen, ICC...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "ocio",
+        "aces"
+      ]
+    },
+    {
+      "name": "ffmpeg-ocr-logo",
+      "source": "./skills/ffmpeg-ocr-logo",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "OCR, logo detection, and rectangle operations with ffmpeg: ocr (Tesseract inside ffmpeg), find_rect (find a reference rectangle), cover_rect (hide it), delogo and removelogo (station logo removal), qrencode (generate QR), quirc (decode...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "ocr",
+        "logo",
+        "qr"
+      ]
+    },
+    {
+      "name": "ffmpeg-playback",
+      "source": "./skills/ffmpeg-playback",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Preview and debug media with ffplay: quick A/V preview, filter-graph testing (-vf/-af), loudness meter (ebur128), AV-sync debug, seek/loop, show waveform/spectrum/vectorscope, pixel format overlay.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "ffplay",
+        "preview",
+        "scopes"
+      ]
+    },
+    {
+      "name": "ffmpeg-probe",
+      "source": "./skills/ffmpeg-probe",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Inspect media files with ffprobe: format, streams, codecs, duration, bitrate, resolution, fps, color space, channel layout, metadata, chapters, and per-frame/packet analysis, output as JSON/CSV/INI/XML.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "ffprobe",
+        "analysis"
+      ]
+    },
+    {
+      "name": "ffmpeg-quality",
+      "source": "./skills/ffmpeg-quality",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Measure encode quality with ffmpeg reference-vs-distorted filters: libvmaf (Netflix VMAF), psnr, ssim, vmafmotion, identity, msad, blockdetect, blurdetect.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "vmaf",
+        "psnr",
+        "ssim"
+      ]
+    },
+    {
+      "name": "ffmpeg-rist-zmq",
+      "source": "./skills/ffmpeg-rist-zmq",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Advanced streaming protocols with ffmpeg: RIST (rist://, Reliable Internet Streaming Transport for contribution), ZMQ (zmq:// for real-time filter-graph control via ZeroMQ), prompeg (SMPTE 2022-1 forward-error-correction), icecast...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-streaming",
+      "tags": [
+        "ffmpeg",
+        "rist",
+        "zmq"
+      ]
+    },
+    {
+      "name": "ffmpeg-speed-time",
+      "source": "./skills/ffmpeg-speed-time",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Speed ramps, time remapping, and temporal effects with ffmpeg: setpts (variable PTS expressions), asetpts, minterpolate for motion-compensated slow-motion, reverse and areverse, tblend for frame blending, freezeframe, loop, tpad...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "speed",
+        "slow-mo",
+        "reverse"
+      ]
+    },
+    {
+      "name": "ffmpeg-stabilize",
+      "source": "./skills/ffmpeg-stabilize",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Video stabilization with ffmpeg: 2-pass vidstabdetect + vidstabtransform (vid.stab library), single-pass deshake, deshake_opencl, and rolling-shutter correction.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-color",
+      "tags": [
+        "ffmpeg",
+        "vidstab",
+        "stabilization"
+      ]
+    },
+    {
+      "name": "ffmpeg-streaming",
+      "source": "./skills/ffmpeg-streaming",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Package and stream media with ffmpeg: HLS (hls muxer), MPEG-DASH (dash muxer), RTMP push (to YouTube/Twitch/custom ingest), SRT, RTSP, RTP, UDP, plus tee muxer for multi-output.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "hls",
+        "dash",
+        "rtmp",
+        "srt"
+      ]
+    },
+    {
+      "name": "ffmpeg-subtitles",
+      "source": "./skills/ffmpeg-subtitles",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Work with subtitles in ffmpeg: burn-in (hardcode via subtitles/ass filter), soft-mux (mov_text for MP4, ASS/SRT for MKV, WebVTT for WebM), extract embedded subs, convert formats (SRT, ASS/SSA, VTT, SUB).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "subtitles",
+        "srt",
+        "ass",
+        "burn-in"
+      ]
+    },
+    {
+      "name": "ffmpeg-synth",
+      "source": "./skills/ffmpeg-synth",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Generate synthetic test media with ffmpeg lavfi sources: testsrc, testsrc2, smptebars, smptehdbars, rgbtestsrc, yuvtestsrc, allyuv, allrgb, colorchecker, color (solid), mandelbrot, cellauto, life, gradients, zoneplate, sine tone,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-analysis",
+      "tags": [
+        "ffmpeg",
+        "synthetic",
+        "testsrc",
+        "smpte-bars"
+      ]
+    },
+    {
+      "name": "ffmpeg-transcode",
+      "source": "./skills/ffmpeg-transcode",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Transcode video/audio between codecs and containers with ffmpeg (H.264, HEVC, AV1, VP9, ProRes, AAC, Opus; MP4, MKV, WebM, MOV).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "transcode",
+        "codecs"
+      ]
+    },
+    {
+      "name": "ffmpeg-vapoursynth",
+      "source": "./skills/ffmpeg-vapoursynth",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "VapourSynth integration with ffmpeg: vapoursynth demuxer reads VapourSynth script (.vpy) output as a video source for ffmpeg, enabling Python-based frame-server filtering with plugins like QTGMC (deinterlace), KNLMeansCL (denoise),...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "vapoursynth",
+        "frame-server"
+      ]
+    },
+    {
+      "name": "ffmpeg-video-filter",
+      "source": "./skills/ffmpeg-video-filter",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Apply video filters with ffmpeg -vf / -filter_complex: scale, crop, pad, rotate/transpose, fps, setsar, deinterlace (yadif/bwdif), overlay, hstack/vstack, drawtext, drawbox, color (curves, eq, colorchannelmixer), denoise, sharpen, blur,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ffmpeg",
+      "tags": [
+        "ffmpeg",
+        "video-filter",
+        "scale",
+        "overlay"
+      ]
+    },
+    {
+      "name": "ffmpeg-whip",
+      "source": "./skills/ffmpeg-whip",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "WebRTC egress with ffmpeg whip muxer (FFmpeg 7.0+): publish live AV to a WHIP (WebRTC-HTTP Ingestion Protocol) endpoint, low-latency sub-second delivery, encoder constraints (H.264 baseline/main, Opus audio), ICE/STUN handling.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-streaming",
+      "tags": [
+        "ffmpeg",
+        "whip",
+        "webrtc"
+      ]
+    },
+    {
+      "name": "gphoto2-tether",
+      "source": "./skills/gphoto2-tether",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Tether DSLR / mirrorless cameras via USB or PTP/IP using gphoto2 (gphoto.org) + libgphoto2: --auto-detect, --list-cameras, --capture-image, --capture-image-and-download, --capture-preview (live-view JPEG), --capture-movie,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "gphoto2",
+        "dslr",
+        "tether"
+      ]
+    },
+    {
+      "name": "gstreamer-pipeline",
+      "source": "./skills/gstreamer-pipeline",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Build and run GStreamer pipelines with gst-launch-1.0, introspect elements with gst-inspect-1.0, discover media with gst-discoverer-1.0, enumerate devices with gst-device-monitor-1.0, play files with gst-play-1.0, detect type with...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-frameworks",
+      "tags": [
+        "gstreamer",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "hdr-dovi-tool",
+      "source": "./skills/hdr-dovi-tool",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Author Dolby Vision RPU dynamic metadata with dovi_tool: info (parse RPU + per-frame JSON), generate (RPU from XML/JSON/HDR10+/madVR), editor (JSON-driven edits), export (RPU to JSON / scene markers / L5), plot (level graphs), convert...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "dolby-vision",
+        "dovi-tool",
+        "rpu"
+      ]
+    },
+    {
+      "name": "hdr-hdr10plus-tool",
+      "source": "./skills/hdr-hdr10plus-tool",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Author HDR10+ dynamic metadata with hdr10plus_tool: extract (HDR10+ metadata out of HEVC/MKV to Samsung-compatible JSON with scene info), inject (HDR10+ SEI NAL units into HEVC Annex-B before slice data), remove (strip HDR10+ NAL...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "hdr10-plus",
+        "hdr10plus-tool"
+      ]
+    },
+    {
+      "name": "media-batch",
+      "source": "./skills/media-batch",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Batch ffmpeg and media processing at scale with GNU parallel, xargs, and shell patterns: parallel transcode fleets, shard jobs across cores, log aggregation, retry logic, idempotent pipelines, find + parallel recipes, progress reporting.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "gnu-parallel",
+        "batch"
+      ]
+    },
+    {
+      "name": "media-cloud-upload",
+      "source": "./skills/media-cloud-upload",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Upload processed media to cloud platforms: Cloudflare Stream, Mux Video, Bunny Stream, YouTube Data API, AWS S3 + CloudFront, Vimeo API, rclone to any cloud.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "cloud-upload",
+        "cloudflare",
+        "mux",
+        "bunny",
+        "s3"
+      ]
+    },
+    {
+      "name": "media-demucs",
+      "source": "./skills/media-demucs",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI audio source separation with Demucs and Spleeter: isolate vocals / drums / bass / other stems from mixed audio, karaoke track extraction, music remixing prep, Hybrid Transformer Demucs (htdemucs), 2-stem and 4-stem and 6-stem models,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "demucs",
+        "stem-separation",
+        "vocals"
+      ]
+    },
+    {
+      "name": "media-denoise-ai",
+      "source": "./skills/media-denoise-ai",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI audio noise reduction with open-source + commercial-safe models that go beyond ffmpeg's built-in afftdn/arnndn: DeepFilterNet (MIT, Rikorose, real-time full-band 48 kHz speech denoise, ships as a prebuilt Rust binary), RNNoise...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "deepfilternet",
+        "rnnoise",
+        "resemble"
+      ]
+    },
+    {
+      "name": "media-depth",
+      "source": "./skills/media-depth",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Monocular depth estimation with open-source + commercial-safe models: Depth-Anything v2 (Apache 2.0, TikTok/ByteDance 2024, current SOTA small/base/large) via HuggingFace transformers, MiDaS v3.1 (MIT, Intel ISL classic with...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "depth-anything",
+        "midas",
+        "depth"
+      ]
+    },
+    {
+      "name": "media-dmx",
+      "source": "./skills/media-dmx",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Stage lighting protocols: DMX512-A (ANSI E1.11 serial, 250 kbps RS-485, 512 slots per universe, RDM E1.20 bidirectional config), Art-Net 4 (UDP port 6454, ASCII Art-Net header + 15-bit universe addressing from Artistic Licence), sACN /...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-control",
+      "tags": [
+        "dmx512",
+        "art-net",
+        "sacn",
+        "ola"
+      ]
+    },
+    {
+      "name": "media-exiftool",
+      "source": "./skills/media-exiftool",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Read and write EXIF, IPTC, XMP, GPS, and maker-note metadata for photos and videos with ExifTool (exiftool -g -json -P -overwrite_original).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "exiftool",
+        "exif",
+        "iptc",
+        "xmp"
+      ]
+    },
+    {
+      "name": "media-ffmpeg-normalize",
+      "source": "./skills/media-ffmpeg-normalize",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Higher-level EBU R128 loudness normalization with ffmpeg-normalize: 2-pass loudnorm batch wrapper, target loudness/TP/LRA, preserves streams, works across directories, output format selection, dry-run plan.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "loudnorm",
+        "ebu-r128",
+        "loudness"
+      ]
+    },
+    {
+      "name": "media-gpac",
+      "source": "./skills/media-gpac",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Advanced MP4 / ISOBMFF authoring and diagnostics with GPAC (MP4Box, gpac): fragmented MP4, DASH+CMAF packaging, MP4 surgery (extract, dump, edit boxes), CENC encryption, sidx injection, sub-track management, raw track export,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "gpac",
+        "mp4box",
+        "cmaf"
+      ]
+    },
+    {
+      "name": "media-handbrake",
+      "source": "./skills/media-handbrake",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Video transcoding with HandBrake CLI (HandBrakeCLI): smart presets (Fast / HQ / Super HQ / Apple iPhone / iPad / Apple TV / Discord / YouTube), 2-pass encoding, automatic black-bar auto-crop, built-in denoise/deinterlace, queue batch,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "handbrake",
+        "transcode",
+        "presets"
+      ]
+    },
+    {
+      "name": "media-imagemagick",
+      "source": "./skills/media-imagemagick",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Image manipulation with ImageMagick (magick / convert / mogrify / composite / identify / montage): resize, crop, rotate, convert between 200+ formats, compose layers with alpha, add text, apply effects, batch process folders, color...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "imagemagick",
+        "images",
+        "convert"
+      ]
+    },
+    {
+      "name": "media-interpolate",
+      "source": "./skills/media-interpolate",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI frame interpolation with open-source + commercial-safe models: RIFE (MIT, current best real-time open-source interpolator; ECCV 2022; available as rife-ncnn-vulkan prebuilt CLI on macOS/Linux/Windows), FILM (Apache 2.0, Google 2022,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "rife",
+        "film",
+        "frame-interpolation"
+      ]
+    },
+    {
+      "name": "media-lipsync",
+      "source": "./skills/media-lipsync",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Open-source AI lip-sync and talking-head animation with STRICTLY permissive-license models: LivePortrait (MIT, Kuaishou 2024, drives FACIAL motion \u2014 head pose, expression, lip-region \u2014 of a single still image from a driving audio OR a...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "liveportrait",
+        "latentsync",
+        "lipsync"
+      ]
+    },
+    {
+      "name": "media-matte",
+      "source": "./skills/media-matte",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI background removal and matting for stills + video with open-source + commercial-safe models: rembg (MIT, bundles u2net / isnet / sam backends), BiRefNet (MIT, 2024 SOTA bilateral reference segmentation), RMBG-2.0 (Apache 2.0,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "rembg",
+        "birefnet",
+        "rmbg",
+        "matting"
+      ]
+    },
+    {
+      "name": "media-mediainfo",
+      "source": "./skills/media-mediainfo",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Deep container and stream analysis with MediaInfo (mediainfo --Output=JSON --Full --Inform): codec profiles and levels, bitrate ladders, GOP structure, HDR10 + HDR10+ + Dolby Vision metadata, audio stream channel descriptions, container...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "mediainfo",
+        "diagnostics"
+      ]
+    },
+    {
+      "name": "media-midi",
+      "source": "./skills/media-midi",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "MIDI 1.0 and 2.0 wire protocol, control surfaces, and SMF file authoring: sendmidi/receivemidi (macOS/Linux/Windows), ALSA amidi/aconnect/aplaymidi/arecordmidi/aseqdump (Linux), mido and python-rtmidi (cross-platform Python), SMF chunks...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-control",
+      "tags": [
+        "midi",
+        "midi-2",
+        "ump"
+      ]
+    },
+    {
+      "name": "media-mkvtoolnix",
+      "source": "./skills/media-mkvtoolnix",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Matroska (MKV) authoring with MKVToolNix (mkvmerge, mkvextract, mkvpropedit, mkvinfo): split or merge MKV without re-encode, extract tracks, edit chapter titles, add attachments, change track metadata in-place, fix header compression,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "mkvtoolnix",
+        "mkv",
+        "mkvmerge"
+      ]
+    },
+    {
+      "name": "media-moviepy",
+      "source": "./skills/media-moviepy",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Programmatic video editing in Python with MoviePy: build videos from clips, text overlays, transitions, compositing, audio manipulation, frame-by-frame custom effects via numpy, concatenate / subclip / fx / resize / rotate.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "moviepy",
+        "python",
+        "programmatic"
+      ]
+    },
+    {
+      "name": "media-musicgen",
+      "source": "./skills/media-musicgen",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Open-source AI music generation with permissive-license models: Riffusion (MIT, spectrogram-to-audio music from text), YuE (Apache 2.0, Chinese Academy 2025 full-song generation with vocals), Stable Audio Open (Stability community...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "riffusion",
+        "yue",
+        "music-gen"
+      ]
+    },
+    {
+      "name": "media-ocr-ai",
+      "source": "./skills/media-ocr-ai",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Modern AI OCR with open-source + commercial-safe models: PaddleOCR (Apache 2.0, Baidu, 80+ languages, layout analysis, tables), EasyOCR (Apache 2.0, JaidedAI, 80+ languages, easiest install), Tesseract 5 (Apache 2.0, mature LSTM...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "paddleocr",
+        "easyocr",
+        "tesseract",
+        "trocr"
+      ]
+    },
+    {
+      "name": "media-osc",
+      "source": "./skills/media-osc",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Open Sound Control (OSC) wire protocol: OSC 1.0 and 1.1 spec, packet layout (address pattern + comma-prefixed type tag + 4-byte-aligned args), OSC bundles with NTP timetags, address-pattern matching (?/*/[]/{}), OSC over UDP/TCP/SLIP,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-control",
+      "tags": [
+        "osc",
+        "open-sound-control"
+      ]
+    },
+    {
+      "name": "media-scenedetect",
+      "source": "./skills/media-scenedetect",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Reliable scene-change detection with PySceneDetect (scenedetect CLI): content-aware detection (ContentDetector), threshold detection (ThresholdDetector), adaptive detection (AdaptiveDetector), scene list to CSV/JSON, split videos at...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "scenedetect",
+        "pyscenedetect"
+      ]
+    },
+    {
+      "name": "media-sd",
+      "source": "./skills/media-sd",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Open-source AI image generation via ComfyUI (GPL-3.0, node-based runner) with STRICTLY permissive-license models: FLUX.1 [schnell] (Apache 2.0, Black Forest Labs fastest high-quality 4-step distilled model), Kolors (Apache 2.0, Kuaishou...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "flux-schnell",
+        "kolors",
+        "sana",
+        "comfyui"
+      ]
+    },
+    {
+      "name": "media-shaka",
+      "source": "./skills/media-shaka",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Commercial DRM packaging with Shaka Packager (packager): Widevine (Common Encryption for DASH+HLS), PlayReady, FairPlay, multi-DRM, ClearKey, key rotation, CMAF packaging, EMSG markers, SCTE-35 ad signaling.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "shaka",
+        "widevine",
+        "playready",
+        "fairplay"
+      ]
+    },
+    {
+      "name": "media-sox",
+      "source": "./skills/media-sox",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Audio processing with SoX (Swiss Army Knife of audio): format conversion, trim/cut, pad, reverse, speed/pitch change, fade, silence detection and removal, noise profile + reduction, synth tones, channel ops, dither.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "sox",
+        "audio"
+      ]
+    },
+    {
+      "name": "media-subtitle-sync",
+      "source": "./skills/media-subtitle-sync",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Automatic subtitle synchronization with alass and ffsubsync: align SRT/ASS/VTT timings to video audio, fix out-of-sync captions, shift by fixed offset, handle variable drift, framerate mismatch correction.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "alass",
+        "ffsubsync",
+        "subtitle-sync"
+      ]
+    },
+    {
+      "name": "media-svd",
+      "source": "./skills/media-svd",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Open-source AI video generation with STRICTLY permissive-license models: LTX-Video (Apache 2.0, Lightricks realtime-ish text-to-video), CogVideoX-2B / -5B (Apache 2.0, Tsinghua + Zhipu, 2024), Mochi-1 (Apache 2.0, Genmo), AnimateDiff...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "ltx-video",
+        "cogvideox",
+        "mochi",
+        "wan"
+      ]
+    },
+    {
+      "name": "media-tag",
+      "source": "./skills/media-tag",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI image and video tagging, captioning, zero-shot classification, and semantic search with open-source + commercial-safe vision-language models: CLIP (MIT, OpenAI, zero-shot classification + text-image similarity, ViT-B/32 to ViT-L/14),...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "clip",
+        "siglip",
+        "blip-2",
+        "llava"
+      ]
+    },
+    {
+      "name": "media-tts-ai",
+      "source": "./skills/media-tts-ai",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Modern AI text-to-speech + voice cloning with open-source + commercial-safe models: Kokoro (Apache 2.0, 82M params, realtime on CPU, top TTS Arena ranking, 8+ languages), OpenVoice v2 (MIT, voice cloning), CosyVoice 2 (Apache 2.0, 2025...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "kokoro",
+        "openvoice",
+        "piper",
+        "tts"
+      ]
+    },
+    {
+      "name": "media-upscale",
+      "source": "./skills/media-upscale",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "AI super-resolution for images and video beyond ffmpeg's outdated built-in DNN models (SRCNN 2014 / ESPCN 2016 / EDSR 2017).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-ai",
+      "tags": [
+        "real-esrgan",
+        "swinir",
+        "hat",
+        "upscale"
+      ]
+    },
+    {
+      "name": "media-whisper",
+      "source": "./skills/media-whisper",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Speech-to-text transcription and subtitle generation with whisper.cpp and faster-whisper: extract spoken text from audio/video, generate SRT/VTT subtitles, translate speech to English, word-level timestamps, multilingual support,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "whisper",
+        "speech-to-text",
+        "asr"
+      ]
+    },
+    {
+      "name": "media-ytdlp",
+      "source": "./skills/media-ytdlp",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Download videos, audio, playlists, and channels from YouTube, Twitch, Twitter/X, TikTok, Instagram, Vimeo, Facebook, and 1000+ other sites using yt-dlp.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-companions",
+      "tags": [
+        "yt-dlp",
+        "download",
+        "youtube"
+      ]
+    },
+    {
+      "name": "mediamtx-server",
+      "source": "./skills/mediamtx-server",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Host an all-protocol media server with MediaMTX (bluenviron/mediamtx, formerly rtsp-simple-server): single binary speaks RTSP + RTSPS + RTMP + RTMPS + HLS + LL-HLS + WebRTC (WHIP/WHEP) + SRT + MPEG-TS + RTP, auto-transmuxes between them...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-frameworks",
+      "tags": [
+        "mediamtx",
+        "hls",
+        "rtsp",
+        "srt",
+        "webrtc"
+      ]
+    },
+    {
+      "name": "ndi-tools",
+      "source": "./skills/ndi-tools",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Use NDI SDK tools and CLIs (Vizrt/NewTek NDI): NDI Send, NDI Find, NDI Recorder, NDI Studio Monitor, NDI Bridge, NDI Discovery Service, NDI Benchmark, DistroAV (OBS plugin formerly obs-ndi).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "ndi",
+        "vizrt",
+        "network"
+      ]
+    },
+    {
+      "name": "obs-config",
+      "source": "./skills/obs-config",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Install and configure OBS Studio programmatically: install via brew cask / winget / Flatpak / apt, author profiles (basic.ini, streamEncoder.json, recordEncoder.json), author scene collections (scenes JSON), manage global.ini, set...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-obs",
+      "tags": [
+        "obs",
+        "config",
+        "scene-collection"
+      ]
+    },
+    {
+      "name": "obs-plugins",
+      "source": "./skills/obs-plugins",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "OBS plugin authoring and ecosystem: scaffold a new C++ plugin from obs-plugintemplate (CMake, cross-platform GitHub Actions CI), register obs_source_info / obs_output_info / obs_encoder_info / obs_service_info, implement obs_module_load...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-obs",
+      "tags": [
+        "obs",
+        "plugins",
+        "c++",
+        "sdk"
+      ]
+    },
+    {
+      "name": "obs-scripting",
+      "source": "./skills/obs-scripting",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Write Python / Lua scripts that run inside OBS Studio: script lifecycle (script_load, script_unload, script_description, script_properties, script_defaults, script_update, script_save, script_tick), registering frontend event callbacks,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-obs",
+      "tags": [
+        "obs",
+        "scripting",
+        "python",
+        "lua"
+      ]
+    },
+    {
+      "name": "obs-websocket",
+      "source": "./skills/obs-websocket",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Remote-control a running OBS Studio instance via obs-websocket (WebSocket API, default port 4455): authenticate with SHA-256 challenge+salt, Identify handshake, start/stop streaming and recording, switch scenes, toggle sources and...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-obs",
+      "tags": [
+        "obs",
+        "obs-websocket",
+        "remote-control"
+      ]
+    },
+    {
+      "name": "otio-convert",
+      "source": "./skills/otio-convert",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Convert and manipulate editorial timelines with OpenTimelineIO (OTIO) CLIs: otioconvert (format-to-format: EDL/FCP7-XML/FCPXML/AAF/OTIO-JSON), otiocat (concatenate/print), otiostat (timeline statistics), otiotool (filter/edit/rebuild...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-broadcast",
+      "tags": [
+        "opentimelineio",
+        "otio",
+        "fcp",
+        "premiere"
+      ]
+    },
+    {
+      "name": "ptz-onvif",
+      "source": "./skills/ptz-onvif",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Discover and control ONVIF IP cameras via SOAP/XML with WS-Security UsernameToken digest: onvif-util (libonvif github.com/sr99622/libonvif), onvif-cli (github.com/gardere/onvif-cli), python-onvif-zeep (PyPI onvif-zeep), onvif_control...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-control",
+      "tags": [
+        "ptz",
+        "onvif",
+        "ws-discovery"
+      ]
+    },
+    {
+      "name": "ptz-visca",
+      "source": "./skills/ptz-visca",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Control PTZ cameras with Sony VISCA protocol (RS-232/485 serial 9600/38400 8N1, or UDP:52381 with 8-byte payload header): pan/tilt/zoom/focus/exposure/WB commands, libvisca + libvisca-ip, python-visca, pyvisca, pysca, visca-over-ip.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-control",
+      "tags": [
+        "ptz",
+        "visca",
+        "visca-over-ip"
+      ]
+    },
+    {
+      "name": "vfx-oiio",
+      "source": "./skills/vfx-oiio",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "VFX-grade image processing with OpenImageIO: oiiotool (stack-based Swiss Army knife - load/save, resize/crop/rotate/blur, metadata, compositing, color management via OCIO, deep images), iconvert (format conversion), iinfo (metadata...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-vfx",
+      "tags": [
+        "openimageio",
+        "oiio"
+      ]
+    },
+    {
+      "name": "vfx-openexr",
+      "source": "./skills/vfx-openexr",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Work with OpenEXR VFX image format: exrheader (dump header attributes), exrinfo (concise info), exrmaketiled (scanline to tiled for MIP-map access), exrenvmap (latlong / cube environment-map conversion), exrmakepreview (embed...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-vfx",
+      "tags": [
+        "openexr",
+        "deep-exr",
+        "multi-part"
+      ]
+    },
+    {
+      "name": "vfx-usd",
+      "source": "./skills/vfx-usd",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Author and inspect Pixar Universal Scene Description (USD) files: usdcat (print/convert between .usda ASCII / .usdc crate binary / .usdz package), usdview (interactive Qt viewer), usdedit (round-trip edit via ASCII), usdzip...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-vfx",
+      "tags": [
+        "usd",
+        "pixar",
+        "openusd"
+      ]
+    },
+    {
+      "name": "webrtc-livekit",
+      "source": "./skills/webrtc-livekit",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Deploy LiveKit WebRTC SFU (docs.livekit.io \u2014 Apache-2.0 Go binary): livekit-server (SFU binary, YAML + env config), livekit-cli (admin + load-testing \u2014 create-token, load-test, room list, room join), livekit-egress (record/stream-out to...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-webrtc",
+      "tags": [
+        "livekit",
+        "go",
+        "sfu"
+      ]
+    },
+    {
+      "name": "webrtc-mediasoup",
+      "source": "./skills/webrtc-mediasoup",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Host a WebRTC SFU with mediasoup (mediasoup.org/documentation/v3/): Worker (C++ subprocess, one per CPU core) to Router (per-room routing surface) to Transport (WebRtcTransport for ICE/DTLS/SRTP, PlainTransport for plain RTP +...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-webrtc",
+      "tags": [
+        "mediasoup",
+        "node",
+        "sfu"
+      ]
+    },
+    {
+      "name": "webrtc-pion",
+      "source": "./skills/webrtc-pion",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Build Go WebRTC applications with Pion (pion/webrtc/v4 \u2014 pkg.go.dev): primitives including PeerConnection, MediaEngine, SettingEngine, RTPSender, RTPReceiver, RTPTransceiver, DataChannel, TrackLocalStaticRTP, TrackLocalStaticSample,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-webrtc",
+      "tags": [
+        "pion",
+        "go",
+        "sfu"
+      ]
+    },
+    {
+      "name": "webrtc-spec",
+      "source": "./skills/webrtc-spec",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "description": "Search and fetch WebRTC specs from W3C and IETF: W3C WebRTC 1.0 (RTCPeerConnection, RTCRtpSender/Receiver/Transceiver, RTCDataChannel, RTCDtlsTransport, RTCIceTransport, RTCSctpTransport, RTCStatsReport), WebRTC-Extensions (simulcast,...",
+      "version": "1.1.0",
+      "author": {
+        "name": "Media OS"
+      },
+      "homepage": "https://github.com/damionrashford/media-os",
+      "repository": "https://github.com/damionrashford/media-os",
+      "license": "MIT",
+      "category": "media-webrtc",
+      "tags": [
+        "webrtc",
+        "rfc-8866",
+        "rfc-9725"
       ]
     }
   ]
