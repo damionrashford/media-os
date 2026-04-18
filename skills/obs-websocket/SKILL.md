@@ -16,7 +16,7 @@ Remote-control a running OBS Studio instance via the bundled `obs-websocket` plu
 Before you claim a Request, Event, or OpCode exists, confirm it against the live protocol docs:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/obs-docs/scripts/obsdocs.py \
+# If you have the obs-docs skill installed separately, use its search command \
   search --query "<RequestOrEvent>" --page obs-websocket-protocol --limit 3
 ```
 

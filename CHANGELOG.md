@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added — initial release
 
-106 production skills across 9 layers, distributed as a Claude Code plugin + self-hosted marketplace.
+96 production skills across 9 layers, distributed as a Claude Code plugin + self-hosted marketplace.
 
 **Layer 1 — FFmpeg complete (38 skills)**
 - Core editing + conversion: `ffmpeg-transcode`, `ffmpeg-cut-concat`, `ffmpeg-video-filter`, `ffmpeg-audio-filter`, `ffmpeg-subtitles`, `ffmpeg-frames-images`, `ffmpeg-streaming`, `ffmpeg-capture`, `ffmpeg-hwaccel`, `ffmpeg-probe`, `ffmpeg-bitstream`, `ffmpeg-playback`

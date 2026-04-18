@@ -1,6 +1,6 @@
 # Media OS — Claude Code Plugin + Marketplace
 
-**The most complete media-workflow skill suite ever built for an AI agent, distributed as a Claude Code plugin.** 106 self-contained [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) inside one [Claude Code plugin](https://docs.claude.com/en/docs/claude-code/plugins), shipped via a self-hosted [Claude Code marketplace](https://docs.claude.com/en/docs/claude-code/plugin-marketplaces). Install with `/plugin marketplace add damionrashford/media-os` → `/plugin install media-os@media-os`.
+**The most complete media-workflow skill suite ever built for an AI agent, distributed as a Claude Code plugin.** 96 self-contained [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) inside one [Claude Code plugin](https://docs.claude.com/en/docs/claude-code/plugins), shipped via a self-hosted [Claude Code marketplace](https://docs.claude.com/en/docs/claude-code/plugin-marketplaces). Install with `/plugin marketplace add damionrashford/media-os` → `/plugin install media-os@media-os`.
 
 **Layer 1 — FFmpeg complete (38 skills):** every major FFmpeg capability, 293 filters, all container + codec + protocol surfaces.
 
@@ -22,7 +22,7 @@
 
 Transcoding, streaming (HLS / DASH / RTMP / SRT / WHIP / RIST), video + audio filters (all 293 filters in `ffmpeg-filters`), HDR tone-mapping, LUT color grading, inverse telecine, chromakey / greenscreen, video stabilization, AI denoise + super-resolution, scene detection, metadata + chapters + cover art, closed captions (CEA-608/708), DRM (AES-128, CENC, Widevine, PlayReady, FairPlay), 360° VR + stereoscopic 3D, VMAF / PSNR / SSIM quality metrics, broadcast MXF + IMF delivery, OpenColorIO ACES workflows, OCR + logo removal, binaural audio, speech-to-text transcription, stem separation, synthetic test sources, frame extraction, GPU acceleration (NVENC / QSV / VAAPI / VideoToolbox / AMF / Vulkan), bitstream repair, ffprobe + MediaInfo deep analysis, ffplay debugging — every doc section on ffmpeg.org mapped to an owning skill, every major complementary CLI tool wrapped with production-grade recipes.
 
-> **Scope:** 106 workflow skills (plus `skill-creator` dev harness in `.claude/skills/`). **Dependencies:** `ffmpeg`, `ffprobe`, `ffplay` required for the FFmpeg layer; other tools per-skill and optional for their respective layers. **Zero** Python package requirements for helper scripts (stdlib only). **Zero** cross-folder imports — each skill is a sealed directory. Every AI skill in Layer 9 passes a strict OSI-open + commercial-safe license filter; NC / research-only / ambiguously-licensed models are explicitly documented-and-dropped in each skill's `references/LICENSES.md`.
+> **Scope:** 96 workflow skills (plus `skill-creator` dev harness in `.claude/skills/`). **Dependencies:** `ffmpeg`, `ffprobe`, `ffplay` required for the FFmpeg layer; other tools per-skill and optional for their respective layers. **Zero** Python package requirements for helper scripts (stdlib only). **Zero** cross-folder imports — each skill is a sealed directory. Every AI skill in Layer 9 passes a strict OSI-open + commercial-safe license filter; NC / research-only / ambiguously-licensed models are explicitly documented-and-dropped in each skill's `references/LICENSES.md`.
 
 ---
 
@@ -31,7 +31,7 @@ Transcoding, streaming (HLS / DASH / RTMP / SRT / WHIP / RIST), video + audio fi
 - [Why this exists](#why-this-exists)
 - [Install](#install)
 - [Workflow documentation](#workflow-documentation)
-- [The 106 skills](#the-106-skills)
+- [The 96 skills](#the-96-skills)
 - [Coverage matrix](#coverage-matrix)
 - [How triggering works](#how-triggering-works)
 - [Example workflows](#example-workflows)
@@ -62,7 +62,7 @@ Built for [Anthropic Claude Code](https://docs.claude.com/en/docs/claude-code/ov
 
 ## Install
 
-This repo ships as a Claude Code **plugin + marketplace**. One plugin, 106 skills, one install command.
+This repo ships as a Claude Code **plugin + marketplace**. One plugin, 96 skills, one install command.
 
 ### Option 1 — As a Claude Code plugin (recommended)
 
@@ -73,7 +73,7 @@ Inside any Claude Code session:
 /plugin install media-os@media-os
 ```
 
-That's it. Claude Code fetches the marketplace catalog from this repo (via `.claude-plugin/marketplace.json`), installs the `media-os` plugin (`.claude-plugin/plugin.json`), and all 106 skills become available project-wide.
+That's it. Claude Code fetches the marketplace catalog from this repo (via `.claude-plugin/marketplace.json`), installs the `media-os` plugin (`.claude-plugin/plugin.json`), and all 96 skills become available project-wide.
 
 To scope to a single project:
 
@@ -117,7 +117,7 @@ cp -r FFMPEG/skills/* /path/to/your/project/skills/
 
 ### Verify
 
-After install, type `/` in Claude Code. You should see 106 entries across every prefix (`ffmpeg-`, `media-`, `obs-`, `gstreamer-`, `mediamtx-`, `ndi-`, `otio-`, `hdr-`, `decklink-`, `gphoto2-`, `ptz-`, `audio-`, `vfx-`, `cv-`, `webrtc-`). Or ask Claude: *"Which media skills are available?"*
+After install, type `/` in Claude Code. You should see 96 entries across every prefix (`ffmpeg-`, `media-`, `obs-`, `gstreamer-`, `mediamtx-`, `ndi-`, `otio-`, `hdr-`, `decklink-`, `gphoto2-`, `ptz-`, `audio-`, `vfx-`, `cv-`, `webrtc-`). Or ask Claude: *"Which media skills are available?"*
 
 ### Marketplace + plugin manifests
 
@@ -150,7 +150,7 @@ Each doc has the same structure: skills involved, step-by-step pipeline with rea
 
 ---
 
-## The 106 skills
+## The 96 skills
 
 > 9 layers. Each layer is self-contained — use the ones you need. The FFmpeg + companions core (Layers 1-2) is the historical suite; Layers 3-9 extend it into OBS, other media frameworks, broadcast IP, control protocols, VFX, CV, WebRTC, and the 2026 open-source AI era.
 
@@ -467,7 +467,7 @@ Every section of the official FFmpeg documentation maps to one or more owning sk
 
 Three-tier progressive disclosure:
 
-1. **Tier 1 (always loaded):** Each skill's `name` + `description` (~100 tokens). Claude reads all 106 at session start.
+1. **Tier 1 (always loaded):** Each skill's `name` + `description` (~100 tokens). Claude reads all 96 at session start.
 2. **Tier 2 (on activation):** Full `SKILL.md` body with workflow instructions, gotchas, examples, troubleshooting (< 5,000 tokens each).
 3. **Tier 3 (on demand):** `references/*.md` — deep option catalogs loaded only when the SKILL.md explicitly says *"Read `references/X.md` when [condition]"*.
 
@@ -667,7 +667,7 @@ winget install Gyan.FFmpeg               # Windows (full build)
 
 ### One skill per workflow
 
-Each skill is a single workflow — not a catch-all tool. Basketball-player analogy: Claude is the player, skills are shooting / dribbling / passing. We didn't build one giant `ffmpeg` skill — we built 106 focused ones across 9 layers of the media stack.
+Each skill is a single workflow — not a catch-all tool. Basketball-player analogy: Claude is the player, skills are shooting / dribbling / passing. We didn't build one giant `ffmpeg` skill — we built 96 focused ones across 9 layers of the media stack.
 
 ### Sealed folders
 
@@ -704,7 +704,7 @@ for s in skills/*/; do
 done
 ```
 
-Current: **0 errors, 0 non-cosmetic warnings across all 106 skills**. Only remaining warning is cosmetic `description-display-truncation` (descriptions >250 chars for trigger-phrase breadth; Claude reads the full text, only the `/` menu preview is shorter).
+Current: **0 errors, 0 non-cosmetic warnings across all 96 skills**. Only remaining warning is cosmetic `description-display-truncation` (descriptions >250 chars for trigger-phrase breadth; Claude reads the full text, only the `/` menu preview is shorter).
 
 ---
 

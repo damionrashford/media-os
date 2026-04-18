@@ -5,7 +5,7 @@
     "name": "Media OS"
   },
   "metadata": {
-    "description": "The Media OS for Claude Code. One plugin, 106 production-grade skills spanning FFmpeg, companion CLI tools, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/OTIO/HDR dynamic/DeckLink/gphoto2), control protocols (MIDI/OSC/DMX/PTZ), system audio routing (PipeWire/JACK/CoreAudio/WASAPI), VFX (USD/EXR/OIIO), CV (OpenCV/MediaPipe), WebRTC (W3C + Pion/mediasoup/LiveKit), and 2026 open-source AI (upscale/interpolate/matte/depth/TTS/image-gen/video-gen/music-gen/lipsync/OCR/denoise/tagging). Strict OSI-open + commercial-safe license filter on every AI model; NC / research-only models explicitly documented-and-dropped.",
+    "description": "The Media OS for Claude Code. One plugin, 96 production-grade skills spanning FFmpeg, companion CLI tools, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/OTIO/HDR dynamic/DeckLink/gphoto2), control protocols (MIDI/OSC/DMX/PTZ), system audio routing (PipeWire/JACK/CoreAudio/WASAPI), VFX (USD/EXR/OIIO), CV (OpenCV/MediaPipe), WebRTC (W3C + Pion/mediasoup/LiveKit), and 2026 open-source AI (upscale/interpolate/matte/depth/TTS/image-gen/video-gen/music-gen/lipsync/OCR/denoise/tagging). Strict OSI-open + commercial-safe license filter on every AI model; NC / research-only models explicitly documented-and-dropped.",
     "version": "1.0.0",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
@@ -15,7 +15,7 @@
     {
       "name": "media-os",
       "source": "./",
-      "description": "The complete Media OS — 106 skills across 9 layers. Covers every major media workflow from content acquisition through broadcast delivery, with live production, VFX, and full AI media generation built in.",
+      "description": "The complete Media OS — 96 skills across 9 layers. Covers every major media workflow from content acquisition through broadcast delivery, with live production, VFX, and full AI media generation built in.",
       "version": "1.0.0",
       "author": {
         "name": "Media OS"

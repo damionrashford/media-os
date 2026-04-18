@@ -309,7 +309,7 @@ Solution: Help → Log Files → View Current Log. Look for the line that says w
 ### "module 'obspython' has no attribute 'X'"
 
 Cause: The binding wasn't exposed to scripting (C API only), or a typo.
-Solution: `uv run ${CLAUDE_SKILL_DIR}/../obs-docs/scripts/obsdocs.py search --query X --page scripting --limit 5`. If zero hits on `scripting`, retry without `--page` — if it only exists in reference-core, you need a compiled plugin.
+Solution: check the obs-docs skill (if installed separately) or consult docs.obsproject.com directly. If zero hits on `scripting`, retry without `--page` — if it only exists in reference-core, you need a compiled plugin.
 
 ### OBS freezes when I click my button
 

@@ -6,7 +6,7 @@ This is NOT documentation for end users of the plugin. End users install via `/p
 
 ## Repository role
 
-This repo IS a Claude Code plugin + marketplace. Users install the `media-os` plugin from the `media-os` marketplace. The plugin surface is the `skills/` directory at repo root (106 skills). The `.claude-plugin/` directory holds the plugin manifest and marketplace catalog.
+This repo IS a Claude Code plugin + marketplace. Users install the `media-os` plugin from the `media-os` marketplace. The plugin surface is the `skills/` directory at repo root (96 skills). The `.claude-plugin/` directory holds the plugin manifest and marketplace catalog.
 
 There is no service, no app, no build step. The deliverable is the directory tree itself.
 
@@ -20,7 +20,7 @@ There is no service, no app, no build step. The deliverable is the directory tre
   skills/
     skill-creator/       # authoring harness — NOT distributed, dev-only
   settings.json          # contributor-friendly permission defaults
-skills/                  # 106 production skills — THIS is what the plugin ships
+skills/                  # 96 production skills — THIS is what the plugin ships
 workflows/
   index.md               # master workflow catalog
   *.md                   # 13 domain workflow guides
@@ -131,7 +131,7 @@ Helper scripts use argparse subcommands (not mode flags) when there are 3+ disti
 
 Reference docs are option catalogs (tables of encoder flags, protocol options, channel layouts, NAL unit types, expression grammars), not tutorials.
 
-## Skill categories (106 total)
+## Skill categories (96 in plugin + 11 dev-only in `.claude/skills/`)
 
 Layer 1 — FFmpeg core editing + conversion (12): `ffmpeg-transcode`, `ffmpeg-cut-concat`, `ffmpeg-video-filter`, `ffmpeg-audio-filter`, `ffmpeg-subtitles`, `ffmpeg-frames-images`, `ffmpeg-streaming`, `ffmpeg-capture`, `ffmpeg-hwaccel`, `ffmpeg-probe`, `ffmpeg-bitstream`, `ffmpeg-playback`.
 

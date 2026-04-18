@@ -5,7 +5,7 @@ All tables and enum values were verified against the official protocol document
 via `obs-docs` at authoring time. If a field name looks unfamiliar, re-verify:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/obs-docs/scripts/obsdocs.py \
+# If you have the obs-docs skill installed separately, use its search command \
     search --query "<RequestOrEvent>" --page obs-websocket-protocol --limit 3
 ```
 

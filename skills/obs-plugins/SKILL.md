@@ -31,7 +31,7 @@ argument-hint: "[action]"
 Before claiming any function signature, struct field, or macro exists, run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/obs-docs/scripts/obsdocs.py search --query "<name>" --limit 5
+# If you have the obs-docs skill installed separately, use its search command search --query "<name>" --limit 5
 ```
 
 ## Step 1 — Scaffold from obs-plugintemplate
