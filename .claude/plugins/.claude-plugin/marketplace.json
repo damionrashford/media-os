@@ -1,0 +1,19 @@
+{
+  "name": "media-os-local",
+  "owner": {
+    "name": "Media OS dev"
+  },
+  "metadata": {
+    "description": "Local dev-time marketplace for this repo. Hosts vendored upstream plugins (like Anthropic's plugin-dev toolkit) so contributors can /plugin install them without pulling from a remote marketplace.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "plugin-dev",
+      "source": "./plugin-dev",
+      "description": "Anthropic's plugin development toolkit — skills for hooks/MCP/plugin-structure/commands/agents, the plugin-validator and skill-reviewer agents, and the /plugin-dev:create-plugin guided workflow. Vendored from github.com/anthropics/claude-plugins-official.",
+      "version": "1.0.0",
+      "category": "development"
+    }
+  ]
+}

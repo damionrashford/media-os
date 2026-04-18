@@ -20,7 +20,7 @@ There is no service, no app, no build step. The deliverable is the directory tre
   skills/                # dev-only skills (docs + skill-creator) — NOT distributed
   agents/                # dev-only agents (repo maintenance) — NOT distributed
   settings.json          # contributor-friendly permission defaults
-skills/                  # 96 production skills — distributed
+skills/                  # 96 tool-and-technique skills + 13 workflow-* orchestration skills — distributed
 agents/                  # 7 orchestrator agents (architect/probe/qc/hdr/encoder/live/delivery)
 hooks/
   hooks.json             # 4 lifecycle hooks (SessionStart, UserPromptSubmit, Pre/PostToolUse)
@@ -29,7 +29,6 @@ bin/                     # PATH-level CLIs auto-installed on plugin activation (
 monitors/
   monitors.json          # background monitors (incoming-watch)
   scripts/
-workflows/               # 13 domain workflow guides + index
 CLAUDE.md                # this file (dev instructions)
 README.md                # user-facing overview + install flow
 LICENSE                  # MIT

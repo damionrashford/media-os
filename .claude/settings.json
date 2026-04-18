@@ -3,7 +3,7 @@
   "permissions": {
     "defaultMode": "acceptEdits",
     "allow": [
-      "Read(**)",
+      "Read",
       "Edit(./skills/**)",
       "Edit(./.claude/skills/**)",
       "Edit(./.claude-plugin/**)",

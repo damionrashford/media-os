@@ -1,6 +1,6 @@
 # Media OS — Claude Code Plugin
 
-**The Media OS for Claude Code.** 96 production skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs + an incoming-media watcher. Covers FFmpeg end-to-end, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, the full Claude Code feature surface. Or copy a single skill folder on its own.
+**The Media OS for Claude Code.** 96 production skills + 13 workflow skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs + an incoming-media watcher. Covers FFmpeg end-to-end, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, the full Claude Code feature surface. Or copy a single skill folder on its own.
 
 ## Install
 
@@ -30,7 +30,7 @@ Skill folders are sealed by design: no cross-skill imports, every script is stdl
 
 ## What's in it
 
-96 skills across 9 layers:
+96 tool-and-technique skills across 9 layers, plus 13 workflow skills that orchestrate across them:
 
 | # | Layer | Count | Focus |
 |---|---|---|---|
@@ -108,27 +108,27 @@ Set `INCOMING_MEDIA_DIR` in the plugin's userConfig and the `incoming-watch` mon
 | `INCOMING_MEDIA_DIR` | Directory the watcher polls |
 | `SAFETY_REQUIRE_CONFIRM_OVERWRITE` | Toggle the pre-ffmpeg overwrite guard |
 
-## Workflows
+## Workflow skills
 
-13 end-to-end production guides in [`workflows/`](workflows/):
+13 end-to-end production workflows are first-class skills you invoke by name. Both you AND Claude can trigger them — say "I need to deliver to broadcast" and Claude auto-loads `workflow-broadcast-delivery`, or type `/media-os:workflow-broadcast-delivery` directly.
 
-| Domain | Guide |
+| Domain | Skill |
 |---|---|
-| 🔴 Live production | [`live-production.md`](workflows/live-production.md) |
-| 📡 Streaming distribution | [`streaming-distribution.md`](workflows/streaming-distribution.md) |
-| 📺 Broadcast delivery | [`broadcast-delivery.md`](workflows/broadcast-delivery.md) |
-| 🎬 Editorial interchange | [`editorial-interchange.md`](workflows/editorial-interchange.md) |
-| 🤖 AI enhancement | [`ai-enhancement.md`](workflows/ai-enhancement.md) |
-| 🎨 AI generation | [`ai-generation.md`](workflows/ai-generation.md) |
-| 🎙️ Podcast pipeline | [`podcast-pipeline.md`](workflows/podcast-pipeline.md) |
-| 🎭 VFX pipeline | [`vfx-pipeline.md`](workflows/vfx-pipeline.md) |
-| 🌈 HDR workflows | [`hdr-workflows.md`](workflows/hdr-workflows.md) |
-| 🎞️ VOD post-production | [`vod-post-production.md`](workflows/vod-post-production.md) |
-| 🔍 Analysis + QC | [`analysis-quality.md`](workflows/analysis-quality.md) |
-| 🔊 Audio production | [`audio-production.md`](workflows/audio-production.md) |
-| 📥 Acquisition + archive | [`acquisition-archive.md`](workflows/acquisition-archive.md) |
+| 🔴 Live production | `/media-os:workflow-live-production` |
+| 📡 Streaming distribution | `/media-os:workflow-streaming-distribution` |
+| 📺 Broadcast delivery | `/media-os:workflow-broadcast-delivery` |
+| 🎬 Editorial interchange | `/media-os:workflow-editorial-interchange` |
+| 🤖 AI enhancement | `/media-os:workflow-ai-enhancement` |
+| 🎨 AI generation | `/media-os:workflow-ai-generation` |
+| 🎙️ Podcast pipeline | `/media-os:workflow-podcast-pipeline` |
+| 🎭 VFX pipeline | `/media-os:workflow-vfx-pipeline` |
+| 🌈 HDR | `/media-os:workflow-hdr` |
+| 🎞️ VOD post-production | `/media-os:workflow-vod-post-production` |
+| 🔍 Analysis + QC | `/media-os:workflow-analysis-quality` |
+| 🔊 Audio production | `/media-os:workflow-audio-production` |
+| 📥 Acquisition + archive | `/media-os:workflow-acquisition-archive` |
 
-Master index: [`workflows/index.md`](workflows/index.md).
+Each workflow skill lists the skill chain, step-by-step pipeline, variants, and the production gotchas that break real pipelines.
 
 ## Requirements
 

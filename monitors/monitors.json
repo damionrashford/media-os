@@ -1,8 +1,38 @@
-{
-  "monitors": {
-    "incoming-watch": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/incoming-watch.py",
-      "description": "Poll INCOMING_MEDIA_DIR for new media files, emit one RemoteTrigger per file so Claude can auto-probe + QC."
-    }
+[
+  {
+    "name": "incoming-watch",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/incoming-watch.py",
+    "description": "Poll INCOMING_MEDIA_DIR for new stable media files; notify Claude with a probe suggestion.",
+    "when": "always"
+  },
+  {
+    "name": "work-dir-space",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/work-dir-space.py",
+    "description": "Watch MEDIA_WORK_DIR free space; warn before encodes run out of room.",
+    "when": "always"
+  },
+  {
+    "name": "gpu-thermal",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/gpu-thermal.py",
+    "description": "Poll nvidia-smi for temperature + sustained-load warnings so Claude knows before the GPU throttles.",
+    "when": "always"
+  },
+  {
+    "name": "stream-health",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/stream-health.py",
+    "description": "ffprobe LIVE_STREAM_URL every STREAM_POLL_SEC; notify on down/up/bitrate-drop transitions.",
+    "when": "always"
+  },
+  {
+    "name": "render-queue",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/render-queue.py",
+    "description": "Poll RENDER_QUEUE_URL (HTTP JSON) or RENDER_QUEUE_DIR (status sidecars); notify on job state transitions.",
+    "when": "always"
+  },
+  {
+    "name": "drm-license-health",
+    "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/drm-license-health.py",
+    "description": "Probe SHAKA_KEY_SERVER_URL; warn on auth failures or extended downtime.",
+    "when": "always"
   }
-}
+]

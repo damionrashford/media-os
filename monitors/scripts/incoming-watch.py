@@ -30,20 +30,18 @@ MEDIA_EXTS = {
 }
 
 
-def emit(event: str, **fields) -> None:
-    payload = {"event": event, "timestamp": int(time.time()), **fields}
-    sys.stdout.write(json.dumps(payload) + "\n")
+def emit(msg: str) -> None:
+    sys.stdout.write(msg.rstrip() + "\n")
     sys.stdout.flush()
 
 
 def main() -> int:
     watch_dir = os.environ.get("INCOMING_MEDIA_DIR", "").strip()
     if not watch_dir:
-        emit("disabled", reason="INCOMING_MEDIA_DIR not set")
         return 0
     root = Path(os.path.expanduser(watch_dir))
     if not root.exists() or not root.is_dir():
-        emit("disabled", reason=f"not a directory: {root}")
+        emit(f"incoming-watch: configured directory not found: {root}")
         return 0
 
     poll = int(os.environ.get("POLL_INTERVAL_SEC", "30"))
@@ -57,7 +55,12 @@ def main() -> int:
     except Exception:
         seen = set()
 
-    emit("watching", dir=str(root), poll_sec=poll, stability_sec=stability)
+    def fmt_size(n: int) -> str:
+        for unit in ("B", "KB", "MB", "GB", "TB"):
+            if n < 1024:
+                return f"{n:.1f} {unit}"
+            n /= 1024
+        return f"{n:.1f} PB"
 
     while True:
         try:
@@ -81,18 +84,11 @@ def main() -> int:
                 seen.add(key)
                 new.append((p, mtime, size))
             if new:
-                for p, mtime, size in new:
+                for p, _, size in new:
                     emit(
-                        "new-media",
-                        path=str(p),
-                        size=size,
-                        mtime=int(mtime),
-                        suggested_prompt=(
-                            f"A new media file landed at {p} ({size} B). "
-                            "Probe it with moprobe, report a one-line summary, "
-                            "and flag any QC issues (zero duration, missing audio, "
-                            "mismatched color tags). Do not transcode unless asked."
-                        ),
+                        f"New media: {p} ({fmt_size(size)}). "
+                        f"Run `moprobe {p}` for a summary; flag zero-duration, missing audio, "
+                        f"or mismatched color tags."
                     )
                 try:
                     state.write_text(json.dumps(sorted(seen)))
@@ -100,10 +96,9 @@ def main() -> int:
                     pass
             time.sleep(poll)
         except KeyboardInterrupt:
-            emit("stopping")
             return 0
         except Exception as e:
-            emit("error", message=str(e))
+            emit(f"incoming-watch error: {e}")
             time.sleep(poll)
 
 

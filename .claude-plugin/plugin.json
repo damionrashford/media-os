@@ -69,6 +69,21 @@
       "type": "string",
       "default": ""
     },
+    "LIVE_STREAM_URL": {
+      "description": "Live stream contribution URL (RTMP/SRT/RTSP/HLS) for the stream-health monitor to probe. Empty disables.",
+      "type": "string",
+      "default": ""
+    },
+    "RENDER_QUEUE_URL": {
+      "description": "Render-farm status endpoint (JSON list of {id,status,name}) polled by the render-queue monitor. Empty disables.",
+      "type": "string",
+      "default": ""
+    },
+    "RENDER_QUEUE_DIR": {
+      "description": "Render-queue status-sidecar directory (*.status files) as an alternative to RENDER_QUEUE_URL. Empty disables.",
+      "type": "string",
+      "default": ""
+    },
     "SAFETY_REQUIRE_CONFIRM_OVERWRITE": {
       "description": "When true, the pre-ffmpeg-validate hook blocks ffmpeg commands that would overwrite an existing output path without -n or explicit confirmation. Turn off for batch automation.",
       "type": "string",
