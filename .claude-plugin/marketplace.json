@@ -8,7 +8,8 @@
     "version": "1.1.0",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
-    "license": "MIT"
+    "license": "MIT",
+    "pluginRoot": "./skills"
   },
   "plugins": [
     {
@@ -96,7 +97,7 @@
     },
     {
       "name": "audio-coreaudio",
-      "source": "./skills/audio-coreaudio",
+      "source": "audio-coreaudio",
       "strict": false,
       "skills": [
         "./"
@@ -118,7 +119,7 @@
     },
     {
       "name": "audio-jack",
-      "source": "./skills/audio-jack",
+      "source": "audio-jack",
       "strict": false,
       "skills": [
         "./"
@@ -139,7 +140,7 @@
     },
     {
       "name": "audio-pipewire",
-      "source": "./skills/audio-pipewire",
+      "source": "audio-pipewire",
       "strict": false,
       "skills": [
         "./"
@@ -161,7 +162,7 @@
     },
     {
       "name": "audio-wasapi",
-      "source": "./skills/audio-wasapi",
+      "source": "audio-wasapi",
       "strict": false,
       "skills": [
         "./"
@@ -183,7 +184,7 @@
     },
     {
       "name": "cv-mediapipe",
-      "source": "./skills/cv-mediapipe",
+      "source": "cv-mediapipe",
       "strict": false,
       "skills": [
         "./"
@@ -205,7 +206,7 @@
     },
     {
       "name": "cv-opencv",
-      "source": "./skills/cv-opencv",
+      "source": "cv-opencv",
       "strict": false,
       "skills": [
         "./"
@@ -227,7 +228,7 @@
     },
     {
       "name": "decklink-tools",
-      "source": "./skills/decklink-tools",
+      "source": "decklink-tools",
       "strict": false,
       "skills": [
         "./"
@@ -249,7 +250,7 @@
     },
     {
       "name": "ffmpeg-360-3d",
-      "source": "./skills/ffmpeg-360-3d",
+      "source": "ffmpeg-360-3d",
       "strict": false,
       "skills": [
         "./"
@@ -272,7 +273,7 @@
     },
     {
       "name": "ffmpeg-audio-filter",
-      "source": "./skills/ffmpeg-audio-filter",
+      "source": "ffmpeg-audio-filter",
       "strict": false,
       "skills": [
         "./"
@@ -295,7 +296,7 @@
     },
     {
       "name": "ffmpeg-audio-fx",
-      "source": "./skills/ffmpeg-audio-fx",
+      "source": "ffmpeg-audio-fx",
       "strict": false,
       "skills": [
         "./"
@@ -318,7 +319,7 @@
     },
     {
       "name": "ffmpeg-audio-spatial",
-      "source": "./skills/ffmpeg-audio-spatial",
+      "source": "ffmpeg-audio-spatial",
       "strict": false,
       "skills": [
         "./"
@@ -341,7 +342,7 @@
     },
     {
       "name": "ffmpeg-bitstream",
-      "source": "./skills/ffmpeg-bitstream",
+      "source": "ffmpeg-bitstream",
       "strict": false,
       "skills": [
         "./"
@@ -364,7 +365,7 @@
     },
     {
       "name": "ffmpeg-captions",
-      "source": "./skills/ffmpeg-captions",
+      "source": "ffmpeg-captions",
       "strict": false,
       "skills": [
         "./"
@@ -387,7 +388,7 @@
     },
     {
       "name": "ffmpeg-capture",
-      "source": "./skills/ffmpeg-capture",
+      "source": "ffmpeg-capture",
       "strict": false,
       "skills": [
         "./"
@@ -410,7 +411,7 @@
     },
     {
       "name": "ffmpeg-chromakey",
-      "source": "./skills/ffmpeg-chromakey",
+      "source": "ffmpeg-chromakey",
       "strict": false,
       "skills": [
         "./"
@@ -432,7 +433,7 @@
     },
     {
       "name": "ffmpeg-compose-mask",
-      "source": "./skills/ffmpeg-compose-mask",
+      "source": "ffmpeg-compose-mask",
       "strict": false,
       "skills": [
         "./"
@@ -454,7 +455,7 @@
     },
     {
       "name": "ffmpeg-cut-concat",
-      "source": "./skills/ffmpeg-cut-concat",
+      "source": "ffmpeg-cut-concat",
       "strict": false,
       "skills": [
         "./"
@@ -477,7 +478,7 @@
     },
     {
       "name": "ffmpeg-denoise-restore",
-      "source": "./skills/ffmpeg-denoise-restore",
+      "source": "ffmpeg-denoise-restore",
       "strict": false,
       "skills": [
         "./"
@@ -500,7 +501,7 @@
     },
     {
       "name": "ffmpeg-detect",
-      "source": "./skills/ffmpeg-detect",
+      "source": "ffmpeg-detect",
       "strict": false,
       "skills": [
         "./"
@@ -523,7 +524,7 @@
     },
     {
       "name": "ffmpeg-drm",
-      "source": "./skills/ffmpeg-drm",
+      "source": "ffmpeg-drm",
       "strict": false,
       "skills": [
         "./"
@@ -546,7 +547,7 @@
     },
     {
       "name": "ffmpeg-frames-images",
-      "source": "./skills/ffmpeg-frames-images",
+      "source": "ffmpeg-frames-images",
       "strict": false,
       "skills": [
         "./"
@@ -569,7 +570,7 @@
     },
     {
       "name": "ffmpeg-geq-expr",
-      "source": "./skills/ffmpeg-geq-expr",
+      "source": "ffmpeg-geq-expr",
       "strict": false,
       "skills": [
         "./"
@@ -592,7 +593,7 @@
     },
     {
       "name": "ffmpeg-hdr-color",
-      "source": "./skills/ffmpeg-hdr-color",
+      "source": "ffmpeg-hdr-color",
       "strict": false,
       "skills": [
         "./"
@@ -615,7 +616,7 @@
     },
     {
       "name": "ffmpeg-hwaccel",
-      "source": "./skills/ffmpeg-hwaccel",
+      "source": "ffmpeg-hwaccel",
       "strict": false,
       "skills": [
         "./"
@@ -639,7 +640,7 @@
     },
     {
       "name": "ffmpeg-ivtc",
-      "source": "./skills/ffmpeg-ivtc",
+      "source": "ffmpeg-ivtc",
       "strict": false,
       "skills": [
         "./"
@@ -662,7 +663,7 @@
     },
     {
       "name": "ffmpeg-lens-perspective",
-      "source": "./skills/ffmpeg-lens-perspective",
+      "source": "ffmpeg-lens-perspective",
       "strict": false,
       "skills": [
         "./"
@@ -684,7 +685,7 @@
     },
     {
       "name": "ffmpeg-lut-grade",
-      "source": "./skills/ffmpeg-lut-grade",
+      "source": "ffmpeg-lut-grade",
       "strict": false,
       "skills": [
         "./"
@@ -707,7 +708,7 @@
     },
     {
       "name": "ffmpeg-metadata",
-      "source": "./skills/ffmpeg-metadata",
+      "source": "ffmpeg-metadata",
       "strict": false,
       "skills": [
         "./"
@@ -730,7 +731,7 @@
     },
     {
       "name": "ffmpeg-mxf-imf",
-      "source": "./skills/ffmpeg-mxf-imf",
+      "source": "ffmpeg-mxf-imf",
       "strict": false,
       "skills": [
         "./"
@@ -753,7 +754,7 @@
     },
     {
       "name": "ffmpeg-ocio-colorpro",
-      "source": "./skills/ffmpeg-ocio-colorpro",
+      "source": "ffmpeg-ocio-colorpro",
       "strict": false,
       "skills": [
         "./"
@@ -775,7 +776,7 @@
     },
     {
       "name": "ffmpeg-ocr-logo",
-      "source": "./skills/ffmpeg-ocr-logo",
+      "source": "ffmpeg-ocr-logo",
       "strict": false,
       "skills": [
         "./"
@@ -798,7 +799,7 @@
     },
     {
       "name": "ffmpeg-playback",
-      "source": "./skills/ffmpeg-playback",
+      "source": "ffmpeg-playback",
       "strict": false,
       "skills": [
         "./"
@@ -821,7 +822,7 @@
     },
     {
       "name": "ffmpeg-probe",
-      "source": "./skills/ffmpeg-probe",
+      "source": "ffmpeg-probe",
       "strict": false,
       "skills": [
         "./"
@@ -843,7 +844,7 @@
     },
     {
       "name": "ffmpeg-quality",
-      "source": "./skills/ffmpeg-quality",
+      "source": "ffmpeg-quality",
       "strict": false,
       "skills": [
         "./"
@@ -866,7 +867,7 @@
     },
     {
       "name": "ffmpeg-rist-zmq",
-      "source": "./skills/ffmpeg-rist-zmq",
+      "source": "ffmpeg-rist-zmq",
       "strict": false,
       "skills": [
         "./"
@@ -888,7 +889,7 @@
     },
     {
       "name": "ffmpeg-speed-time",
-      "source": "./skills/ffmpeg-speed-time",
+      "source": "ffmpeg-speed-time",
       "strict": false,
       "skills": [
         "./"
@@ -911,7 +912,7 @@
     },
     {
       "name": "ffmpeg-stabilize",
-      "source": "./skills/ffmpeg-stabilize",
+      "source": "ffmpeg-stabilize",
       "strict": false,
       "skills": [
         "./"
@@ -933,7 +934,7 @@
     },
     {
       "name": "ffmpeg-streaming",
-      "source": "./skills/ffmpeg-streaming",
+      "source": "ffmpeg-streaming",
       "strict": false,
       "skills": [
         "./"
@@ -957,7 +958,7 @@
     },
     {
       "name": "ffmpeg-subtitles",
-      "source": "./skills/ffmpeg-subtitles",
+      "source": "ffmpeg-subtitles",
       "strict": false,
       "skills": [
         "./"
@@ -981,7 +982,7 @@
     },
     {
       "name": "ffmpeg-synth",
-      "source": "./skills/ffmpeg-synth",
+      "source": "ffmpeg-synth",
       "strict": false,
       "skills": [
         "./"
@@ -1004,7 +1005,7 @@
     },
     {
       "name": "ffmpeg-transcode",
-      "source": "./skills/ffmpeg-transcode",
+      "source": "ffmpeg-transcode",
       "strict": false,
       "skills": [
         "./"
@@ -1026,7 +1027,7 @@
     },
     {
       "name": "ffmpeg-vapoursynth",
-      "source": "./skills/ffmpeg-vapoursynth",
+      "source": "ffmpeg-vapoursynth",
       "strict": false,
       "skills": [
         "./"
@@ -1048,7 +1049,7 @@
     },
     {
       "name": "ffmpeg-video-filter",
-      "source": "./skills/ffmpeg-video-filter",
+      "source": "ffmpeg-video-filter",
       "strict": false,
       "skills": [
         "./"
@@ -1071,7 +1072,7 @@
     },
     {
       "name": "ffmpeg-whip",
-      "source": "./skills/ffmpeg-whip",
+      "source": "ffmpeg-whip",
       "strict": false,
       "skills": [
         "./"
@@ -1093,7 +1094,7 @@
     },
     {
       "name": "gphoto2-tether",
-      "source": "./skills/gphoto2-tether",
+      "source": "gphoto2-tether",
       "strict": false,
       "skills": [
         "./"
@@ -1115,7 +1116,7 @@
     },
     {
       "name": "gstreamer-pipeline",
-      "source": "./skills/gstreamer-pipeline",
+      "source": "gstreamer-pipeline",
       "strict": false,
       "skills": [
         "./"
@@ -1136,7 +1137,7 @@
     },
     {
       "name": "hdr-dovi-tool",
-      "source": "./skills/hdr-dovi-tool",
+      "source": "hdr-dovi-tool",
       "strict": false,
       "skills": [
         "./"
@@ -1158,7 +1159,7 @@
     },
     {
       "name": "hdr-hdr10plus-tool",
-      "source": "./skills/hdr-hdr10plus-tool",
+      "source": "hdr-hdr10plus-tool",
       "strict": false,
       "skills": [
         "./"
@@ -1179,7 +1180,7 @@
     },
     {
       "name": "media-batch",
-      "source": "./skills/media-batch",
+      "source": "media-batch",
       "strict": false,
       "skills": [
         "./"
@@ -1200,7 +1201,7 @@
     },
     {
       "name": "media-cloud-upload",
-      "source": "./skills/media-cloud-upload",
+      "source": "media-cloud-upload",
       "strict": false,
       "skills": [
         "./"
@@ -1224,7 +1225,7 @@
     },
     {
       "name": "media-demucs",
-      "source": "./skills/media-demucs",
+      "source": "media-demucs",
       "strict": false,
       "skills": [
         "./"
@@ -1246,7 +1247,7 @@
     },
     {
       "name": "media-denoise-ai",
-      "source": "./skills/media-denoise-ai",
+      "source": "media-denoise-ai",
       "strict": false,
       "skills": [
         "./"
@@ -1268,7 +1269,7 @@
     },
     {
       "name": "media-depth",
-      "source": "./skills/media-depth",
+      "source": "media-depth",
       "strict": false,
       "skills": [
         "./"
@@ -1290,7 +1291,7 @@
     },
     {
       "name": "media-dmx",
-      "source": "./skills/media-dmx",
+      "source": "media-dmx",
       "strict": false,
       "skills": [
         "./"
@@ -1313,7 +1314,7 @@
     },
     {
       "name": "media-exiftool",
-      "source": "./skills/media-exiftool",
+      "source": "media-exiftool",
       "strict": false,
       "skills": [
         "./"
@@ -1336,7 +1337,7 @@
     },
     {
       "name": "media-ffmpeg-normalize",
-      "source": "./skills/media-ffmpeg-normalize",
+      "source": "media-ffmpeg-normalize",
       "strict": false,
       "skills": [
         "./"
@@ -1358,7 +1359,7 @@
     },
     {
       "name": "media-gpac",
-      "source": "./skills/media-gpac",
+      "source": "media-gpac",
       "strict": false,
       "skills": [
         "./"
@@ -1380,7 +1381,7 @@
     },
     {
       "name": "media-handbrake",
-      "source": "./skills/media-handbrake",
+      "source": "media-handbrake",
       "strict": false,
       "skills": [
         "./"
@@ -1402,7 +1403,7 @@
     },
     {
       "name": "media-imagemagick",
-      "source": "./skills/media-imagemagick",
+      "source": "media-imagemagick",
       "strict": false,
       "skills": [
         "./"
@@ -1424,7 +1425,7 @@
     },
     {
       "name": "media-interpolate",
-      "source": "./skills/media-interpolate",
+      "source": "media-interpolate",
       "strict": false,
       "skills": [
         "./"
@@ -1446,7 +1447,7 @@
     },
     {
       "name": "media-lipsync",
-      "source": "./skills/media-lipsync",
+      "source": "media-lipsync",
       "strict": false,
       "skills": [
         "./"
@@ -1468,7 +1469,7 @@
     },
     {
       "name": "media-matte",
-      "source": "./skills/media-matte",
+      "source": "media-matte",
       "strict": false,
       "skills": [
         "./"
@@ -1491,7 +1492,7 @@
     },
     {
       "name": "media-mediainfo",
-      "source": "./skills/media-mediainfo",
+      "source": "media-mediainfo",
       "strict": false,
       "skills": [
         "./"
@@ -1512,7 +1513,7 @@
     },
     {
       "name": "media-midi",
-      "source": "./skills/media-midi",
+      "source": "media-midi",
       "strict": false,
       "skills": [
         "./"
@@ -1534,7 +1535,7 @@
     },
     {
       "name": "media-mkvtoolnix",
-      "source": "./skills/media-mkvtoolnix",
+      "source": "media-mkvtoolnix",
       "strict": false,
       "skills": [
         "./"
@@ -1556,7 +1557,7 @@
     },
     {
       "name": "media-moviepy",
-      "source": "./skills/media-moviepy",
+      "source": "media-moviepy",
       "strict": false,
       "skills": [
         "./"
@@ -1578,7 +1579,7 @@
     },
     {
       "name": "media-musicgen",
-      "source": "./skills/media-musicgen",
+      "source": "media-musicgen",
       "strict": false,
       "skills": [
         "./"
@@ -1600,7 +1601,7 @@
     },
     {
       "name": "media-ocr-ai",
-      "source": "./skills/media-ocr-ai",
+      "source": "media-ocr-ai",
       "strict": false,
       "skills": [
         "./"
@@ -1623,7 +1624,7 @@
     },
     {
       "name": "media-osc",
-      "source": "./skills/media-osc",
+      "source": "media-osc",
       "strict": false,
       "skills": [
         "./"
@@ -1644,7 +1645,7 @@
     },
     {
       "name": "media-scenedetect",
-      "source": "./skills/media-scenedetect",
+      "source": "media-scenedetect",
       "strict": false,
       "skills": [
         "./"
@@ -1665,7 +1666,7 @@
     },
     {
       "name": "media-sd",
-      "source": "./skills/media-sd",
+      "source": "media-sd",
       "strict": false,
       "skills": [
         "./"
@@ -1688,7 +1689,7 @@
     },
     {
       "name": "media-shaka",
-      "source": "./skills/media-shaka",
+      "source": "media-shaka",
       "strict": false,
       "skills": [
         "./"
@@ -1711,7 +1712,7 @@
     },
     {
       "name": "media-sox",
-      "source": "./skills/media-sox",
+      "source": "media-sox",
       "strict": false,
       "skills": [
         "./"
@@ -1732,7 +1733,7 @@
     },
     {
       "name": "media-subtitle-sync",
-      "source": "./skills/media-subtitle-sync",
+      "source": "media-subtitle-sync",
       "strict": false,
       "skills": [
         "./"
@@ -1754,7 +1755,7 @@
     },
     {
       "name": "media-svd",
-      "source": "./skills/media-svd",
+      "source": "media-svd",
       "strict": false,
       "skills": [
         "./"
@@ -1777,7 +1778,7 @@
     },
     {
       "name": "media-tag",
-      "source": "./skills/media-tag",
+      "source": "media-tag",
       "strict": false,
       "skills": [
         "./"
@@ -1800,7 +1801,7 @@
     },
     {
       "name": "media-tts-ai",
-      "source": "./skills/media-tts-ai",
+      "source": "media-tts-ai",
       "strict": false,
       "skills": [
         "./"
@@ -1823,7 +1824,7 @@
     },
     {
       "name": "media-upscale",
-      "source": "./skills/media-upscale",
+      "source": "media-upscale",
       "strict": false,
       "skills": [
         "./"
@@ -1846,7 +1847,7 @@
     },
     {
       "name": "media-whisper",
-      "source": "./skills/media-whisper",
+      "source": "media-whisper",
       "strict": false,
       "skills": [
         "./"
@@ -1868,7 +1869,7 @@
     },
     {
       "name": "media-ytdlp",
-      "source": "./skills/media-ytdlp",
+      "source": "media-ytdlp",
       "strict": false,
       "skills": [
         "./"
@@ -1890,7 +1891,7 @@
     },
     {
       "name": "mediamtx-server",
-      "source": "./skills/mediamtx-server",
+      "source": "mediamtx-server",
       "strict": false,
       "skills": [
         "./"
@@ -1914,7 +1915,7 @@
     },
     {
       "name": "ndi-tools",
-      "source": "./skills/ndi-tools",
+      "source": "ndi-tools",
       "strict": false,
       "skills": [
         "./"
@@ -1936,7 +1937,7 @@
     },
     {
       "name": "obs-config",
-      "source": "./skills/obs-config",
+      "source": "obs-config",
       "strict": false,
       "skills": [
         "./"
@@ -1958,7 +1959,7 @@
     },
     {
       "name": "obs-plugins",
-      "source": "./skills/obs-plugins",
+      "source": "obs-plugins",
       "strict": false,
       "skills": [
         "./"
@@ -1981,7 +1982,7 @@
     },
     {
       "name": "obs-scripting",
-      "source": "./skills/obs-scripting",
+      "source": "obs-scripting",
       "strict": false,
       "skills": [
         "./"
@@ -2004,7 +2005,7 @@
     },
     {
       "name": "obs-websocket",
-      "source": "./skills/obs-websocket",
+      "source": "obs-websocket",
       "strict": false,
       "skills": [
         "./"
@@ -2026,7 +2027,7 @@
     },
     {
       "name": "otio-convert",
-      "source": "./skills/otio-convert",
+      "source": "otio-convert",
       "strict": false,
       "skills": [
         "./"
@@ -2049,7 +2050,7 @@
     },
     {
       "name": "ptz-onvif",
-      "source": "./skills/ptz-onvif",
+      "source": "ptz-onvif",
       "strict": false,
       "skills": [
         "./"
@@ -2071,7 +2072,7 @@
     },
     {
       "name": "ptz-visca",
-      "source": "./skills/ptz-visca",
+      "source": "ptz-visca",
       "strict": false,
       "skills": [
         "./"
@@ -2093,7 +2094,7 @@
     },
     {
       "name": "vfx-oiio",
-      "source": "./skills/vfx-oiio",
+      "source": "vfx-oiio",
       "strict": false,
       "skills": [
         "./"
@@ -2114,7 +2115,7 @@
     },
     {
       "name": "vfx-openexr",
-      "source": "./skills/vfx-openexr",
+      "source": "vfx-openexr",
       "strict": false,
       "skills": [
         "./"
@@ -2136,7 +2137,7 @@
     },
     {
       "name": "vfx-usd",
-      "source": "./skills/vfx-usd",
+      "source": "vfx-usd",
       "strict": false,
       "skills": [
         "./"
@@ -2158,7 +2159,7 @@
     },
     {
       "name": "webrtc-livekit",
-      "source": "./skills/webrtc-livekit",
+      "source": "webrtc-livekit",
       "strict": false,
       "skills": [
         "./"
@@ -2180,7 +2181,7 @@
     },
     {
       "name": "webrtc-mediasoup",
-      "source": "./skills/webrtc-mediasoup",
+      "source": "webrtc-mediasoup",
       "strict": false,
       "skills": [
         "./"
@@ -2202,7 +2203,7 @@
     },
     {
       "name": "webrtc-pion",
-      "source": "./skills/webrtc-pion",
+      "source": "webrtc-pion",
       "strict": false,
       "skills": [
         "./"
@@ -2224,7 +2225,7 @@
     },
     {
       "name": "webrtc-spec",
-      "source": "./skills/webrtc-spec",
+      "source": "webrtc-spec",
       "strict": false,
       "skills": [
         "./"
