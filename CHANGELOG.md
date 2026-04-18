@@ -4,6 +4,22 @@ All notable changes to the Media OS plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — 2026-04-17
+
+### Changed
+
+- **Reverted to single-plugin architecture.** The 96 individual single-skill plugin entries added in v1.1.0 are removed. The marketplace now has ONE plugin (`media-os`) containing all 96 skills — the canonical Claude Code plugin pattern (1 plugin = 1 installable unit).
+- `.claude-plugin/marketplace.json` shrunk from 97 entries to 1 (48 lines total).
+- Removed `metadata.pluginRoot` (only relevant when individual entries existed).
+
+### Added
+
+- **Single-skill copy-install documented.** Every skill folder at `skills/<name>/` is self-contained (sealed, stdlib-only, no cross-skill imports). Users can grab individual skills without the plugin: `cp -r media-os/skills/ffmpeg-hdr-color ~/.claude/skills/`. This is the way to use "just one skill" — it's a skill-level operation, not a plugin-level one.
+
+### Rationale
+
+Claude Code plugins bundle skills; skills themselves are the installable unit within a plugin. Shipping 96 plugins each containing 1 skill created doubled invocations (`/ffmpeg-hdr-color:ffmpeg-hdr-color`) and bloated the marketplace. The standard pattern is: one plugin wraps all related skills, and anyone who wants to lift out a single skill copies the folder.
+
 ## [1.1.0] — 2026-04-17
 
 ### Added

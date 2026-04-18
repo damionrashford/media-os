@@ -1,50 +1,32 @@
 # Media OS — Claude Code Plugin
 
-**96 production media skills for Claude Code.** FFmpeg complete, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. Install the whole bundle OR cherry-pick individual skills.
+**96 production media skills for Claude Code.** FFmpeg complete, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, 96 skills. Or copy a single skill folder on its own.
 
 ## Install
 
-First, add the marketplace:
+### Option 1 — Install the plugin (recommended)
 
 ```
 /plugin marketplace add damionrashford/media-os
-```
-
-Then pick your install mode:
-
-### Install ALL 96 skills (the bundle)
-
-```
 /plugin install media-os@media-os
 ```
 
-All 96 skills load under the `/media-os:` namespace (e.g. `/media-os:ffmpeg-hdr-color`).
+All 96 skills load under the `/media-os:` namespace (e.g. `/media-os:ffmpeg-hdr-color`, `/media-os:obs-websocket`, `/media-os:media-tts-ai`). Claude auto-triggers the right skill when you describe a task.
 
-### Install ONE skill (standalone)
+### Option 2 — Use a single skill standalone
 
-Each skill is also its own plugin. Install just the ones you need:
+Every skill at `skills/<name>/` is a sealed, self-contained folder (`SKILL.md` + optional `scripts/` + `references/`). Copy just the one you want:
 
+```bash
+# Grab one skill — no plugin install needed
+git clone https://github.com/damionrashford/media-os.git /tmp/media-os
+cp -r /tmp/media-os/skills/ffmpeg-hdr-color ~/.claude/skills/
+cp -r /tmp/media-os/skills/obs-websocket ~/.claude/skills/
 ```
-/plugin install ffmpeg-hdr-color@media-os
-/plugin install obs-websocket@media-os
-/plugin install media-tts-ai@media-os
-```
 
-Individual plugins are named exactly after the skill (`ffmpeg-transcode`, `hdr-dovi-tool`, `webrtc-livekit`, etc.). Install only what your workflow actually needs.
+Those skills then load directly under `/ffmpeg-hdr-color`, `/obs-websocket`, etc. — no plugin namespace, no marketplace dependency, copy-and-go.
 
-### What's the difference?
-
-| | Bundle (`media-os`) | Single skill |
-|---|---|---|
-| Contents | All 96 skills | 1 skill + its scripts + references |
-| Invocation | `/media-os:skill-name` | `/skill-name:skill-name` |
-| When to use | You want the full media toolkit | You only need one specific capability |
-| Size | ~10 MB | ~100 KB per skill |
-| Updates | Bumping the bundle updates all 96 | Each single-skill plugin versioned independently |
-
-You can install the bundle AND individual plugins side-by-side; they'll coexist under different namespaces but show the skill twice in `/` menu. Pick one mode and stick with it unless you have a reason to mix.
-
-Type `/` to browse what's available, or ask Claude to do something media-related ("convert this HDR clip to SDR", "build a HLS ABR ladder", "restore this VHS rip with open-source AI") — Claude auto-triggers the right skill.
+Skill folders are sealed by design: no cross-skill imports, every script is stdlib-only Python 3 via `uv run`. Copy one folder, get a working skill.
 
 ## What's in it
 
