@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/settings.local.json
+.claude/agent-memory/
+.claude/agent-memory-local/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs + scratch
+*.log
+*.tmp
+scratch/
+tmp/
+
+# Media test artifacts
+*.mp4.part
+*.mkv.part
+test-output/
