@@ -4,6 +4,41 @@ All notable changes to the Media OS plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] — 2026-04-17
+
+### Added — orchestrator agents, safety hooks, CLI toolbelt, media watcher
+
+Major release. The plugin is no longer "just a bag of skills" — it's the full Claude Code plugin feature surface wired around the media stack.
+
+- **7 orchestrator agents** (`agents/`) that preload the right skills for a domain and arrive with tool restrictions:
+  - `architect` — designs end-to-end pipelines before any command runs
+  - `probe` — forensic file inspection (color, HDR side-data, GOP, captions, timecode)
+  - `qc` — VMAF + SSIM + PSNR + loudness + freeze/black/silence gating
+  - `hdr` — HDR10 / HDR10+ / Dolby Vision / PQ↔HLG / ACES/OCIO
+  - `encoder` — rate-control math, pixel format, container flags, hwaccel
+  - `live` — obs-websocket, RTMP/SRT/RIST/WHIP, NDI, DeckLink, PTZ
+  - `delivery` — HLS/DASH packaging, DRM (cbcs), CDN upload, IMF/MXF
+- **4 lifecycle hooks** (`hooks/`) that catch classic FFmpeg footguns:
+  - `SessionStart` — detects installed CLIs + ffmpeg build flags (libvmaf, libzimg, libvidstab, librist, etc.), caches for 24 h
+  - `UserPromptSubmit` — auto-probes media files named in the prompt
+  - `PreToolUse(Bash)` — blocks in-place overwrites, flags missing `-movflags +faststart`, missing `-sc_threshold 0` on HLS, missing `aac_adtstoasc` on TS→MP4, conflicting CRF + bitrate
+  - `PostToolUse(Bash)` — probes ffmpeg outputs and flags zero-duration / truncated files
+- **3 PATH-level CLI tools** (`bin/`) installed on plugin activation:
+  - `moprobe` — one-shot probe (compact / color / streams / JSON modes)
+  - `moqc` — automated QC gate (VMAF/SSIM/PSNR) with configurable thresholds and `--format json`
+  - `mosafe` — standalone version of the pre-ffmpeg validator, usable in any shell or CI
+- **1 background monitor** (`monitors/incoming-watch`) that polls `INCOMING_MEDIA_DIR` for new media files and surfaces them to Claude with an auto-probe suggestion.
+- **13 userConfig fields** in `plugin.json` covering encode defaults, VMAF target, OBS connection, Hugging Face/Shaka/Cloudflare/Mux/Bunny tokens, incoming-media directory, and safety toggles.
+
+### Changed
+
+- Marketplace + plugin manifest bumped to v2.0.0.
+- README rewritten to document agents, hooks, bin/, monitors, and userConfig alongside skills.
+
+### Rationale
+
+v1.x shipped 96 skills as passive capabilities Claude would auto-load. v2.0 makes the plugin active: it inspects the environment at session start, injects probe context on prompts, catches destructive ffmpeg commands before they run, verifies outputs after they write, and offers domain-specialized agents that preload the right skills instead of making Claude page them in mid-task. The CLI toolbelt (moprobe/moqc/mosafe) gives users a shell-callable surface that works OUTSIDE the agent too — usable in CI, Makefiles, cron jobs, or terminal one-liners.
+
 ## [1.2.0] — 2026-04-17
 
 ### Changed

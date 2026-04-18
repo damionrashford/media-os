@@ -1,0 +1,173 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
+"""moqc — automated QC gate for a rendered output against a reference.
+
+Runs VMAF + SSIM + PSNR, plus container/stream sanity, returns:
+  - pass/fail against configured thresholds
+  - exit code 0 pass, 1 fail, 2 cannot run
+
+  moqc --ref source.mov --out encoded.mp4
+  moqc --ref source.mov --out encoded.mp4 --vmaf-min 93 --format json
+
+Needs an ffmpeg build with --enable-libvmaf for VMAF.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+
+def run(cmd: list[str], timeout: int = 600) -> subprocess.CompletedProcess:
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+
+
+def has_libvmaf() -> bool:
+    r = run(["ffmpeg", "-hide_banner", "-filters"], timeout=10)
+    return "libvmaf" in (r.stdout or "")
+
+
+def probe_duration(p: Path) -> float:
+    r = run([
+        "ffprobe", "-hide_banner", "-v", "error",
+        "-show_entries", "format=duration",
+        "-of", "default=nw=1:nk=1", str(p),
+    ], timeout=30)
+    try:
+        return float(r.stdout.strip())
+    except Exception:
+        return 0.0
+
+
+def vmaf_score(ref: Path, out: Path) -> float | None:
+    if not has_libvmaf():
+        return None
+    cmd = [
+        "ffmpeg", "-hide_banner", "-nostats",
+        "-i", str(out), "-i", str(ref),
+        "-lavfi", "[0:v][1:v]libvmaf=log_fmt=json:log_path=-",
+        "-f", "null", "-",
+    ]
+    r = run(cmd, timeout=1800)
+    blob = (r.stdout or "") + (r.stderr or "")
+    idx = blob.find("{")
+    end = blob.rfind("}")
+    if idx < 0 or end <= idx:
+        return None
+    try:
+        data = json.loads(blob[idx : end + 1])
+    except Exception:
+        return None
+    pooled = data.get("pooled_metrics", {}).get("vmaf", {})
+    return pooled.get("mean")
+
+
+def psnr_ssim(ref: Path, out: Path) -> dict:
+    cmd = [
+        "ffmpeg", "-hide_banner",
+        "-i", str(out), "-i", str(ref),
+        "-lavfi", "[0:v][1:v]psnr;[0:v][1:v]ssim",
+        "-f", "null", "-",
+    ]
+    r = run(cmd, timeout=1800)
+    out_str = (r.stdout or "") + (r.stderr or "")
+    psnr = None
+    ssim = None
+    for line in out_str.splitlines():
+        if "PSNR" in line and "average:" in line:
+            for tok in line.split():
+                if tok.startswith("average:"):
+                    try:
+                        psnr = float(tok.split(":", 1)[1])
+                    except Exception:
+                        pass
+        if "SSIM" in line and "All:" in line:
+            for tok in line.split():
+                if tok.startswith("All:"):
+                    try:
+                        ssim = float(tok.split(":", 1)[1])
+                    except Exception:
+                        pass
+    return {"psnr": psnr, "ssim": ssim}
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(prog="moqc", description="Media OS QC")
+    ap.add_argument("--ref", type=Path, required=True)
+    ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument(
+        "--vmaf-min",
+        type=float,
+        default=float(os.environ.get("DEFAULT_VMAF_TARGET", "93")),
+        help="Minimum VMAF score (default from DEFAULT_VMAF_TARGET env, else 93)",
+    )
+    ap.add_argument("--psnr-min", type=float, default=38.0)
+    ap.add_argument("--ssim-min", type=float, default=0.97)
+    ap.add_argument("--format", choices=["human", "json"], default="human")
+    a = ap.parse_args()
+
+    if not a.ref.exists() or not a.out.exists():
+        sys.stderr.write("moqc: both --ref and --out must exist\n")
+        return 2
+    if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+        sys.stderr.write("moqc: ffmpeg/ffprobe not found\n")
+        return 2
+
+    results = {
+        "ref": str(a.ref),
+        "out": str(a.out),
+        "ref_duration": probe_duration(a.ref),
+        "out_duration": probe_duration(a.out),
+        "vmaf": vmaf_score(a.ref, a.out),
+        **psnr_ssim(a.ref, a.out),
+        "thresholds": {
+            "vmaf_min": a.vmaf_min,
+            "psnr_min": a.psnr_min,
+            "ssim_min": a.ssim_min,
+        },
+    }
+    checks: list[tuple[str, bool, str]] = []
+    dur_delta = abs(results["ref_duration"] - results["out_duration"])
+    checks.append(("duration_match", dur_delta < 0.5, f"\u0394{dur_delta:.3f}s"))
+    if results["vmaf"] is not None:
+        checks.append((
+            "vmaf",
+            results["vmaf"] >= a.vmaf_min,
+            f"{results['vmaf']:.2f} >= {a.vmaf_min}",
+        ))
+    if results["psnr"] is not None:
+        checks.append((
+            "psnr",
+            results["psnr"] >= a.psnr_min,
+            f"{results['psnr']:.2f} >= {a.psnr_min}",
+        ))
+    if results["ssim"] is not None:
+        checks.append((
+            "ssim",
+            results["ssim"] >= a.ssim_min,
+            f"{results['ssim']:.4f} >= {a.ssim_min}",
+        ))
+    passed = all(ok for _, ok, _ in checks)
+    results["checks"] = [{"name": n, "pass": ok, "detail": d} for n, ok, d in checks]
+    results["pass"] = passed
+
+    if a.format == "json":
+        print(json.dumps(results, indent=2))
+    else:
+        status = "PASS" if passed else "FAIL"
+        print(f"moqc: {status}")
+        for n, ok, d in checks:
+            mark = "\u2713" if ok else "\u2717"
+            print(f"  {mark} {n:18s} {d}")
+    return 0 if passed else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

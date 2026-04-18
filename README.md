@@ -1,6 +1,6 @@
 # Media OS — Claude Code Plugin
 
-**96 production media skills for Claude Code.** FFmpeg complete, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, 96 skills. Or copy a single skill folder on its own.
+**The Media OS for Claude Code.** 96 production skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs + an incoming-media watcher. Covers FFmpeg end-to-end, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, the full Claude Code feature surface. Or copy a single skill folder on its own.
 
 ## Install
 
@@ -47,6 +47,66 @@ Skill folders are sealed by design: no cross-skill imports, every script is stdl
 Full skill catalog: [`skills/`](skills/).
 
 **License filter on AI skills (Layer 9):** every model is Apache-2 / MIT / BSD / GPL. NC / research-only / commercial-restricted models (XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base) are explicitly documented-and-dropped in each AI skill's `references/LICENSES.md`.
+
+## Orchestrator agents
+
+7 domain specialists that preload the right skill set and arrive with tool restrictions. Spawn them from any Claude conversation:
+
+| Agent | Role |
+|---|---|
+| `architect` | Plans end-to-end pipelines before a command runs |
+| `probe` | Forensic file inspection (color, HDR side-data, GOP, captions, timecode) |
+| `qc` | Automated quality gate — VMAF + SSIM + PSNR + loudness + freeze/black/silence |
+| `hdr` | HDR10 / HDR10+ / Dolby Vision / PQ↔HLG / ACES/OCIO |
+| `encoder` | Rate control, pixel format, container flags, hwaccel |
+| `live` | OBS + RTMP/SRT/RIST/WHIP + NDI + DeckLink + PTZ |
+| `delivery` | HLS/DASH packaging + DRM (cbcs) + CDN upload + IMF/MXF |
+
+## Safety hooks
+
+4 lifecycle hooks wired on install, catching the ffmpeg mistakes that take a pipeline down:
+
+- **`SessionStart`** — detects installed CLIs + ffmpeg build flags (libvmaf, libzimg, libvidstab, librist, libplacebo, hwaccel backends) and surfaces gaps before the agent recommends anything.
+- **`UserPromptSubmit`** — if you name a media path in your prompt, it's auto-probed and the summary is dropped into context.
+- **`PreToolUse(Bash)`** — flags in-place overwrites, missing `-movflags +faststart`, missing `-sc_threshold 0` on HLS, missing `aac_adtstoasc` on TS→MP4, conflicting CRF + bitrate.
+- **`PostToolUse(Bash)`** — ffprobes the output after any ffmpeg command; catches zero-duration / truncated files before you ship them.
+
+## CLI toolbelt (on PATH after install)
+
+The plugin's `bin/` is added to your PATH. Three tools you can call from any shell, Makefile, or CI job:
+
+```bash
+moprobe source.mov                    # compact probe
+moprobe --color source.mov            # HDR/color pipeline summary
+moprobe --json source.mov             # full ffprobe JSON
+
+moqc --ref source.mov --out encoded.mp4                    # VMAF + SSIM + PSNR gate
+moqc --ref source.mov --out encoded.mp4 --vmaf-min 95 --format json
+
+mosafe ffmpeg -i in.mov -c:v libx264 -crf 23 -b:v 5M out.mp4   # preflight footguns
+```
+
+`mosafe` exits non-zero on issues — drop it in a CI step to fail builds that would have shipped broken ffmpeg commands.
+
+## Incoming-media watcher
+
+Set `INCOMING_MEDIA_DIR` in the plugin's userConfig and the `incoming-watch` monitor polls it for new media files. Each new, stable (mtime-quiesced) file is surfaced to Claude with a suggested probe prompt so you can triage dropped assets without asking.
+
+## userConfig
+
+13 fields, set at `/plugin install` time:
+
+| Field | Purpose |
+|---|---|
+| `MEDIA_WORK_DIR` | Scratch dir for intermediate renders |
+| `DEFAULT_ENCODE_PRESET` | x264/x265 default preset |
+| `DEFAULT_VMAF_TARGET` | QC gate threshold |
+| `OBS_WEBSOCKET_URL` / `OBS_WEBSOCKET_PASSWORD` | OBS control |
+| `HUGGINGFACE_TOKEN` | AI skill model access |
+| `SHAKA_KEY_SERVER_URL` | DRM key server |
+| `CLOUDFLARE_STREAM_TOKEN` / `MUX_TOKEN_ID` / `MUX_TOKEN_SECRET` / `BUNNY_CDN_TOKEN` | CDN uploads |
+| `INCOMING_MEDIA_DIR` | Directory the watcher polls |
+| `SAFETY_REQUIRE_CONFIRM_OVERWRITE` | Toggle the pre-ffmpeg overwrite guard |
 
 ## Workflows
 
@@ -140,7 +200,7 @@ Full contributor guide: [`CLAUDE.md`](CLAUDE.md).
 
 ## Release
 
-Current: [v1.0.0](https://github.com/damionrashford/media-os/releases/tag/v1.0.0). See [`CHANGELOG.md`](CHANGELOG.md).
+Current: [v2.0.0](https://github.com/damionrashford/media-os/releases/tag/v2.0.0). See [`CHANGELOG.md`](CHANGELOG.md).
 
 Third-party marketplaces do not auto-update. Pull new versions with:
 

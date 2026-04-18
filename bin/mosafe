@@ -1,0 +1,103 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
+"""mosafe — preflight an ffmpeg command before running it.
+
+Takes a full ffmpeg command line, prints every detected foot-gun, and
+exits non-zero if any is found. Wraps the same validator used by the
+PreToolUse hook, but callable standalone for shell scripts / CI.
+
+  mosafe ffmpeg -i in.mov -c:v libx264 -crf 23 -b:v 5M out.mp4
+
+Exit codes: 0 clean, 1 warnings found, 2 invalid invocation.
+"""
+from __future__ import annotations
+
+import os
+import re
+import shlex
+import sys
+from pathlib import Path
+
+
+def scan(cmd: str) -> list[str]:
+    warnings: list[str] = []
+    if "ffmpeg" not in cmd:
+        return warnings
+    try:
+        tokens = shlex.split(cmd, posix=True)
+    except ValueError as e:
+        return [f"unparseable command: {e}"]
+    try:
+        ff_idx = next(i for i, t in enumerate(tokens) if Path(t).name == "ffmpeg")
+    except StopIteration:
+        return ["no ffmpeg invocation found"]
+    args = tokens[ff_idx + 1:]
+    inputs: list[str] = []
+    output = None
+    i = 0
+    while i < len(args):
+        t = args[i]
+        if t == "-i" and i + 1 < len(args):
+            inputs.append(args[i + 1])
+            i += 2
+            continue
+        i += 1
+    if args and not args[-1].startswith("-"):
+        output = args[-1]
+    if output:
+        for inp in inputs:
+            if inp == output:
+                warnings.append(
+                    f"in-place overwrite: input == output ({inp})"
+                )
+        if (
+            os.environ.get("SAFETY_REQUIRE_CONFIRM_OVERWRITE", "true").lower() == "true"
+            and "-y" in args
+            and Path(os.path.expanduser(output)).exists()
+        ):
+            warnings.append(
+                f"-y overwrite of existing file: {output}"
+            )
+        ext = Path(output).suffix.lower()
+        if ext == ".mp4" and "faststart" not in cmd:
+            warnings.append(
+                "MP4 without `-movflags +faststart` (web playback will stall)"
+            )
+    if re.search(r"\bhls_", cmd) and "-sc_threshold" not in cmd:
+        warnings.append(
+            "HLS without `-sc_threshold 0` (scene cuts misalign segments)"
+        )
+    if any(inp.endswith(".ts") for inp in inputs) and output and output.endswith(".mp4"):
+        if "aac_adtstoasc" not in cmd:
+            warnings.append(
+                "TS \u2192 MP4 without `-bsf:a aac_adtstoasc` (ADTS AAC won't mux)"
+            )
+    has_crf = "-crf" in args
+    has_bv = any(t in args for t in ("-b:v", "-b"))
+    if has_crf and has_bv:
+        warnings.append(
+            "both `-crf` and bitrate (`-b:v`/`-b`) set \u2014 conflicting rate control"
+        )
+    return warnings
+
+
+def main() -> int:
+    if len(sys.argv) < 2:
+        sys.stderr.write("usage: mosafe <ffmpeg command ...>\n")
+        return 2
+    cmd = " ".join(shlex.quote(a) for a in sys.argv[1:])
+    warnings = scan(cmd)
+    if not warnings:
+        print("mosafe: clean")
+        return 0
+    print("mosafe: issues found")
+    for w in warnings:
+        print(f"  - {w}")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

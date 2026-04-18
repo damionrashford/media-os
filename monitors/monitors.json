@@ -1,0 +1,8 @@
+{
+  "monitors": {
+    "incoming-watch": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/monitors/scripts/incoming-watch.py",
+      "description": "Poll INCOMING_MEDIA_DIR for new media files, emit one RemoteTrigger per file so Claude can auto-probe + QC."
+    }
+  }
+}

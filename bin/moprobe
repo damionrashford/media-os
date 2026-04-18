@@ -1,0 +1,143 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
+"""moprobe — one-shot media probe, human-readable + machine-parseable.
+
+  moprobe <file>              # compact summary
+  moprobe --json <file>       # full ffprobe JSON
+  moprobe --color <file>      # color-pipeline summary (primaries, transfer, matrix, range, mastering metadata)
+  moprobe --streams <file>    # one line per stream
+
+Shells out to ffprobe. Part of the Media OS plugin toolbelt.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+
+def ffprobe(p: Path) -> dict:
+    if not shutil.which("ffprobe"):
+        sys.stderr.write("moprobe: ffprobe not found in PATH\n")
+        sys.exit(2)
+    r = subprocess.run(
+        [
+            "ffprobe", "-hide_banner", "-v", "error",
+            "-print_format", "json",
+            "-show_format", "-show_streams",
+            "-show_frames", "-read_intervals", "%+#1",
+            "-show_entries", "frame=side_data_list",
+            str(p),
+        ],
+        capture_output=True, text=True, timeout=30,
+    )
+    if r.returncode != 0:
+        sys.stderr.write(f"ffprobe failed: {r.stderr.strip()}\n")
+        sys.exit(r.returncode)
+    return json.loads(r.stdout)
+
+
+def fmt_compact(info: dict) -> str:
+    fmt = info.get("format", {})
+    streams = info.get("streams", [])
+    lines = [
+        f"file:      {fmt.get('filename')}",
+        f"format:    {fmt.get('format_name')} ({fmt.get('format_long_name')})",
+        f"duration:  {fmt.get('duration')}s",
+        f"size:      {fmt.get('size')} B",
+        f"bitrate:   {fmt.get('bit_rate')} bps",
+        f"streams:   {len(streams)}",
+    ]
+    for s in streams:
+        t = s.get("codec_type")
+        if t == "video":
+            lines.append(
+                f"  [v] {s.get('codec_name')} {s.get('width')}x{s.get('height')} "
+                f"{s.get('pix_fmt')} fps={s.get('r_frame_rate')} "
+                f"pri={s.get('color_primaries','-')} trc={s.get('color_transfer','-')} "
+                f"mat={s.get('color_space','-')} range={s.get('color_range','-')}"
+            )
+        elif t == "audio":
+            lines.append(
+                f"  [a] {s.get('codec_name')} ch={s.get('channels')} "
+                f"{s.get('sample_rate')}Hz {s.get('channel_layout','-')}"
+            )
+        elif t == "subtitle":
+            lines.append(f"  [s] {s.get('codec_name')}")
+        elif t == "data":
+            lines.append(f"  [d] {s.get('codec_name')}")
+    return "\n".join(lines)
+
+
+def fmt_color(info: dict) -> str:
+    streams = info.get("streams", [])
+    frames = info.get("frames", [])
+    v = next((s for s in streams if s.get("codec_type") == "video"), None)
+    if not v:
+        return "no video stream"
+    lines = [
+        f"pix_fmt:          {v.get('pix_fmt')}",
+        f"color_primaries:  {v.get('color_primaries','-')}",
+        f"color_transfer:   {v.get('color_transfer','-')}",
+        f"color_space:      {v.get('color_space','-')}",
+        f"color_range:      {v.get('color_range','-')}",
+        f"field_order:      {v.get('field_order','-')}",
+    ]
+    side_data_all = []
+    for fr in frames:
+        for sd in fr.get("side_data_list", []) or []:
+            side_data_all.append(sd)
+    if side_data_all:
+        lines.append("side_data:")
+        for sd in side_data_all:
+            t = sd.get("side_data_type", "?")
+            extras = {k: v for k, v in sd.items() if k != "side_data_type"}
+            lines.append(f"  - {t}  {json.dumps(extras)}")
+    else:
+        lines.append("side_data:        (none — SDR or metadata stripped)")
+    return "\n".join(lines)
+
+
+def fmt_streams(info: dict) -> str:
+    out = []
+    for i, s in enumerate(info.get("streams", [])):
+        out.append(
+            f"{i}\t{s.get('codec_type')}\t{s.get('codec_name')}\t"
+            f"{s.get('width','-')}x{s.get('height','-')}\t"
+            f"{s.get('channels','-')}ch@{s.get('sample_rate','-')}\t"
+            f"{s.get('r_frame_rate','-')}"
+        )
+    return "\n".join(out)
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(prog="moprobe", description="Media OS probe")
+    ap.add_argument("file", type=Path)
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument("--json", action="store_true", help="raw ffprobe JSON")
+    g.add_argument("--color", action="store_true", help="color-pipeline summary")
+    g.add_argument("--streams", action="store_true", help="one line per stream (TSV)")
+    a = ap.parse_args()
+    if not a.file.exists():
+        sys.stderr.write(f"moprobe: file not found: {a.file}\n")
+        return 2
+    info = ffprobe(a.file)
+    if a.json:
+        print(json.dumps(info, indent=2))
+    elif a.color:
+        print(fmt_color(info))
+    elif a.streams:
+        print(fmt_streams(info))
+    else:
+        print(fmt_compact(info))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -4,8 +4,8 @@
     "name": "Media OS"
   },
   "metadata": {
-    "description": "The Media OS for Claude Code. One plugin, 96 production-grade skills covering FFmpeg, professional companion tools, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI, OTIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OIIO), computer vision, WebRTC, and 2026 open-source AI media. Each skill is also a sealed folder at skills/<name>/ \u2014 users who want just one can copy the folder into their own .claude/skills/ directory.",
-    "version": "1.2.0",
+    "description": "The Media OS for Claude Code. One plugin, 96 production skills + 7 orchestrator agents + safety hooks + a PATH-level CLI toolbelt (moprobe, moqc, mosafe) + an incoming-media watcher, covering FFmpeg complete, professional companion tools, OBS Studio, GStreamer/MediaMTX, broadcast IP, control protocols, system audio routing, VFX, computer vision, WebRTC, and 2026 open-source AI media. Each skill is also a sealed folder at skills/<name>/ \u2014 users who want just one can copy the folder into their own .claude/skills/ directory.",
+    "version": "2.0.0",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
     "license": "MIT"
@@ -14,8 +14,8 @@
     {
       "name": "media-os",
       "source": "./",
-      "description": "The complete Media OS bundle \u2014 96 skills across 9 layers. FFmpeg complete, professional companion tools, OBS Studio, streaming frameworks, broadcast IP, control protocols, system audio routing, VFX stack, computer vision, WebRTC, and 2026 open-source AI media. Install this if you want everything in one.",
-      "version": "1.2.0",
+      "description": "The complete Media OS bundle \u2014 96 skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs (moprobe, moqc, mosafe) + incoming-media watcher. Covers FFmpeg complete, professional companion tools, OBS Studio, streaming frameworks, broadcast IP, control protocols, system audio routing, VFX stack, computer vision, WebRTC, and 2026 open-source AI media. Install this if you want everything in one.",
+      "version": "2.0.0",
       "category": "media-production",
       "tags": [
         "ffmpeg",
