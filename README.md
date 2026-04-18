@@ -1,6 +1,37 @@
-# Media OS — Claude Code Plugin
+# media-os
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white&style=for-the-badge)
+![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?logo=ffmpeg&logoColor=white&style=for-the-badge)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&style=for-the-badge)](https://www.linkedin.com/in/damion-rashford)
+
+![GitHub Stars](https://img.shields.io/github/stars/damionrashford/media-os?style=social)
+![GitHub Forks](https://img.shields.io/github/forks/damionrashford/media-os?style=social)
+![GitHub Issues](https://img.shields.io/github/issues/damionrashford/media-os?style=social)
+![Last Commit](https://img.shields.io/github/last-commit/damionrashford/media-os?style=social)
 
 **The Media OS for Claude Code.** 96 production skills + 13 workflow skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs + an incoming-media watcher. Covers FFmpeg end-to-end, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, HDR dynamic metadata, DeckLink, gphoto2), control protocols (MIDI, OSC, DMX, PTZ), system audio routing, VFX (USD, OpenEXR, OpenImageIO), computer vision, WebRTC, and 2026 open-source AI media. One plugin, the full Claude Code feature surface. Or copy a single skill folder on its own.
+
+> 🆓 **Open source under MIT.** No hosted layer, no API key to media-os itself. Bring your own ffmpeg/OBS/CDP creds.
+
+## Why
+
+FFmpeg is powerful but error-prone — one missing flag breaks the pipeline. Broadcast tools (NDI, DeckLink, Dolby Vision, HDR10+) aren't scriptable out of the box. AI media (upscale, interpolate, TTS, gen) is a zoo of incompatible models. **media-os** puts 96 sealed, copy-and-run skills + 7 specialist agents + pre-flight safety hooks behind Claude's natural-language interface, so a broadcast engineer / video-automation dev / live producer / AI-pipeline engineer can say what they want and Claude runs the right toolchain — with `mosafe` lint catching ffmpeg foot-guns before the command fires.
+
+## Common workflows
+
+Task → the skills that execute it:
+
+| Task | Skill chain |
+|---|---|
+| Broadcast HLS / DASH delivery | `ffmpeg-streaming` · `ffmpeg-quality` · `media-shaka` · `ffmpeg-captions` |
+| Dolby Vision / HDR10+ authoring | `ffmpeg-hdr-color` · `hdr-dovi-tool` · `hdr-hdr10plus-tool` · `ffmpeg-mxf-imf` |
+| AI upscale + interpolate + denoise | `media-upscale` · `media-interpolate` · `media-denoise-ai` · `ffmpeg-transcode` |
+| Live OBS + NDI + PTZ production | `obs-websocket` · `ndi-tools` · `ptz-onvif` · `media-midi` · `media-dmx` |
+| Podcast: TTS → mix → normalize | `media-tts-ai` · `ffmpeg-audio-filter` · `media-ffmpeg-normalize` · `ffmpeg-captions` |
+| VFX ACES conform (EXR → master) | `vfx-oiio` · `vfx-openexr` · `ffmpeg-ocio-colorpro` · `ffmpeg-transcode` |
+| Editorial round-trip (Premiere ↔ Resolve ↔ Avid) | `otio-convert` · `ffmpeg-probe` · `media-mediainfo` · `ffmpeg-transcode` |
 
 ## Install
 
@@ -208,6 +239,44 @@ Third-party marketplaces do not auto-update. Pull new versions with:
 /plugin marketplace update media-os
 ```
 
+## FAQ
+
+<details>
+<summary><strong>Does media-os cost money to run?</strong></summary>
+
+No. media-os is MIT-licensed. What costs money: the model you use with Claude Code (Anthropic billing), the external tools the skills call (most free: ffmpeg, OBS, GStreamer, MediaMTX — some paid: Blackmagic DeckLink hardware, NDI HX2 licensing, DRM key servers for Shaka). Each skill's `references/` lists licensing.
+</details>
+
+<details>
+<summary><strong>Do I need all 96 skills?</strong></summary>
+
+No — Claude auto-loads only what a given task needs, and each skill folder is sealed. If you just want Dolby Vision authoring, `cp -r skills/ffmpeg-hdr-color ~/.claude/skills/` works standalone. The plugin is the batteries-included mode; the copy-a-folder mode is the minimalist mode.
+</details>
+
+<details>
+<summary><strong>What's the safety story for live encodes?</strong></summary>
+
+Four hooks run automatically. `SessionStart` probes which ffmpeg build flags + CLIs you have installed (libvmaf, libzimg, libvidstab, librist, libplacebo, hwaccel backends) and surfaces gaps before Claude recommends anything it can't run. `PreToolUse` intercepts Bash calls and blocks common foot-guns — in-place overwrites, missing `-movflags +faststart`, missing `-sc_threshold 0` on HLS, missing `-bsf:a aac_adtstoasc` on TS→MP4 remux, conflicting `-crf` + bitrate. `PostToolUse` ffprobes every ffmpeg output to catch zero-duration / truncated files. `UserPromptSubmit` auto-probes any media path you mention.
+</details>
+
+<details>
+<summary><strong>What's the difference between the 96 skills and the 13 workflow skills?</strong></summary>
+
+The 96 skills are tool-and-technique — `ffmpeg-transcode`, `obs-websocket`, `hdr-dovi-tool`, one skill per bounded capability. The 13 workflow skills orchestrate across them — `workflow-broadcast-delivery`, `workflow-ai-enhancement`, `workflow-podcast-pipeline` — each encoding the full recipe for a domain with the right skill chain, the gotchas, and the variants.
+</details>
+
+<details>
+<summary><strong>What about AI models with restrictive licenses?</strong></summary>
+
+Every Layer-9 AI skill passes a strict OSI-open + commercial-safe filter (Apache-2 / MIT / BSD / GPL). NC / research-only / commercial-restricted models (XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base) are explicitly documented-and-dropped in each AI skill's `references/LICENSES.md` so you don't accidentally ship something you can't monetize.
+</details>
+
+<details>
+<summary><strong>Can I add my own skill?</strong></summary>
+
+Yes. Scaffold via the vendored `.claude/skills/skill-creator`, validate against its `validate.py`. See [CLAUDE.md](CLAUDE.md) for the full contributor pipeline. Every skill is a sealed folder — copy a folder, get a working skill.
+</details>
+
 ## License
 
 [MIT](LICENSE). FFmpeg itself is LGPL 2.1+ / GPL 2+ depending on build ([ffmpeg.org/legal.html](https://ffmpeg.org/legal.html)). Each companion tool and AI model carries its own license — see each skill's `references/`.
@@ -217,3 +286,34 @@ Third-party marketplaces do not auto-update. Pull new versions with:
 - [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) — the runtime
 - [Claude Code plugins](https://docs.claude.com/en/docs/claude-code/plugins) — plugin spec
 - [Agent Skills spec](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) — the standard skills conform to
+
+## ⭐ Star this repo
+
+If media-os helps you ship, a star makes it easier for other engineers to find.
+
+[![Star this repo](https://img.shields.io/github/stars/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os)
+
+---
+
+<!--
+Machine-readable metadata for LLM + search indexers (Perplexity / ChatGPT / Claude / Google AI Overviews).
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "media-os",
+  "description": "Production media plugin for Claude Code. 96 skills + 7 orchestrator agents + 13 workflow skills + safety hooks + CLI toolbelt covering FFmpeg, OBS Studio, GStreamer, MediaMTX, NDI, OpenTimelineIO, HDR dynamic metadata (Dolby Vision, HDR10+), Blackmagic DeckLink, MIDI/OSC/DMX/PTZ, system audio routing, VFX (USD/OpenEXR/OIIO), computer vision, WebRTC, and 2026 open-source AI media.",
+  "applicationCategory": "MultimediaApplication",
+  "applicationSubCategory": "VideoProduction",
+  "operatingSystem": "macOS, Linux, Windows",
+  "license": "https://opensource.org/licenses/MIT",
+  "url": "https://github.com/damionrashford/media-os",
+  "codeRepository": "https://github.com/damionrashford/media-os",
+  "author": { "@type": "Person", "name": "Damion Rashford", "url": "https://github.com/damionrashford" },
+  "keywords": "ffmpeg, obs-studio, gstreamer, mediamtx, broadcast, hdr, dolby-vision, hdr10-plus, video-production, video-generation, image-generation, claude-code, claude-plugin, multi-agent, audio-routing, ndi, opentimelineio, webrtc, open-source-ai, media-production",
+  "softwareRequirements": "Claude Code 2.1.60+, Python 3.10+, uv, ffmpeg",
+  "programmingLanguage": ["Python"],
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
