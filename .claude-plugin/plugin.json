@@ -1,7 +1,8 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "media-os",
-  "version": "2.0.0",
-  "description": "The Media OS for Claude Code. 96 production-grade skills + orchestrator agents + safety hooks + workflow monitors + a PATH-level CLI toolbelt, covering the entire professional media stack — FFmpeg complete (transcode, filters, streaming, HDR, color, broadcast MXF/IMF, DRM, 360\u00b0, VapourSynth), professional companion CLIs (yt-dlp, MKVToolNix, GPAC, Shaka, HandBrake, MoviePy, MediaInfo, PySceneDetect, ffsubsync, ffmpeg-normalize, ImageMagick, ExifTool, SoX, GNU parallel, cloud upload), OBS Studio full stack, streaming frameworks (GStreamer, MediaMTX), broadcast IP (NDI SDK, OpenTimelineIO, HDR dynamic metadata via dovi_tool + hdr10plus_tool, Blackmagic DeckLink, gphoto2), low-level control (MIDI 1.0 + 2.0 UMP, OSC, DMX512/Art-Net/sACN, VISCA + ONVIF PTZ), system audio routing (PipeWire, JACK, Core Audio, WASAPI), VFX (USD, OpenEXR, OpenImageIO), computer vision (OpenCV, MediaPipe), WebRTC (W3C spec, Pion/mediasoup/LiveKit SFUs), and 2026 open-source AI media (Real-ESRGAN/SwinIR/HAT upscale, RIFE/FILM interpolation, rembg/BiRefNet/RVM matting, Kokoro/OpenVoice/Piper TTS, Depth-Anything/MiDaS depth, ComfyUI/FLUX-schnell/Kolors image gen, LTX-Video/CogVideoX video gen, LivePortrait/LatentSync lipsync, PaddleOCR/Tesseract 5 OCR, DeepFilterNet/RNNoise audio denoise, CLIP/SigLIP/BLIP-2/LLaVA tagging). Strict OSI-open + commercial-safe license filter on every AI model.",
+  "version": "2.0.1",
+  "description": "The Media OS for Claude Code. 96 production-grade skills + orchestrator agents + safety hooks + workflow monitors + a PATH-level CLI toolbelt, covering the entire professional media stack — FFmpeg complete (transcode, filters, streaming, HDR, color, broadcast MXF/IMF, DRM, 360°, VapourSynth), professional companion CLIs (yt-dlp, MKVToolNix, GPAC, Shaka, HandBrake, MoviePy, MediaInfo, PySceneDetect, ffsubsync, ffmpeg-normalize, ImageMagick, ExifTool, SoX, GNU parallel, cloud upload), OBS Studio full stack, streaming frameworks (GStreamer, MediaMTX), broadcast IP (NDI SDK, OpenTimelineIO, HDR dynamic metadata via dovi_tool + hdr10plus_tool, Blackmagic DeckLink, gphoto2), low-level control (MIDI 1.0 + 2.0 UMP, OSC, DMX512/Art-Net/sACN, VISCA + ONVIF PTZ), system audio routing (PipeWire, JACK, Core Audio, WASAPI), VFX (USD, OpenEXR, OpenImageIO), computer vision (OpenCV, MediaPipe), WebRTC (W3C spec, Pion/mediasoup/LiveKit SFUs), and 2026 open-source AI media (Real-ESRGAN/SwinIR/HAT upscale, RIFE/FILM interpolation, rembg/BiRefNet/RVM matting, Kokoro/OpenVoice/Piper TTS, Depth-Anything/MiDaS depth, ComfyUI/FLUX-schnell/Kolors image gen, LTX-Video/CogVideoX video gen, LivePortrait/LatentSync lipsync, PaddleOCR/Tesseract 5 OCR, DeepFilterNet/RNNoise audio denoise, CLIP/SigLIP/BLIP-2/LLaVA tagging). Strict OSI-open + commercial-safe license filter on every AI model.",
   "author": {
     "name": "Media OS"
   },
@@ -10,81 +11,97 @@
   "license": "MIT",
   "userConfig": {
     "MEDIA_WORK_DIR": {
+      "title": "Media work directory",
       "description": "Scratch directory for intermediate renders, proxies, and QC reports. Must be writable and have enough space for large media.",
       "type": "string",
       "default": "/tmp/media-os"
     },
     "DEFAULT_ENCODE_PRESET": {
+      "title": "Default encode preset",
       "description": "Default x264/x265 preset when the user doesn't specify one. Slower = better compression. Options: ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow.",
       "type": "string",
       "default": "medium"
     },
     "DEFAULT_VMAF_TARGET": {
-      "description": "Default VMAF score quality target for automated QC gating (0\u2013100). 93 is broadcast-acceptable; 95+ is indistinguishable from source.",
+      "title": "Default VMAF target",
+      "description": "Default VMAF score quality target for automated QC gating (0–100). 93 is broadcast-acceptable; 95+ is indistinguishable from source.",
       "type": "string",
       "default": "93"
     },
     "OBS_WEBSOCKET_URL": {
+      "title": "OBS WebSocket URL",
       "description": "obs-websocket v5 endpoint for the obs-websocket skill and the live-ops agent.",
       "type": "string",
       "default": "ws://localhost:4455"
     },
     "OBS_WEBSOCKET_PASSWORD": {
-      "description": "obs-websocket v5 password. Find it in OBS \u2192 Tools \u2192 obs-websocket Settings \u2192 Show Connect Info. Leave empty if auth is disabled.",
+      "title": "OBS WebSocket password",
+      "description": "obs-websocket v5 password. Find it in OBS → Tools → obs-websocket Settings → Show Connect Info. Leave empty if auth is disabled.",
       "type": "string",
       "default": ""
     },
     "HUGGINGFACE_TOKEN": {
+      "title": "HuggingFace token",
       "description": "HuggingFace access token for gated AI models (some Layer 9 skills need it). Create at https://huggingface.co/settings/tokens.",
       "type": "string",
       "default": ""
     },
     "SHAKA_KEY_SERVER_URL": {
+      "title": "Shaka key-server URL",
       "description": "DRM key-server URL for Shaka Packager (Widevine + PlayReady + FairPlay cbcs). Used by media-shaka and ffmpeg-drm skills.",
       "type": "string",
       "default": ""
     },
     "CLOUDFLARE_STREAM_TOKEN": {
+      "title": "Cloudflare Stream token",
       "description": "Cloudflare Stream API token for media-cloud-upload direct uploads.",
       "type": "string",
       "default": ""
     },
     "MUX_TOKEN_ID": {
+      "title": "Mux token ID",
       "description": "Mux API token ID for media-cloud-upload direct uploads.",
       "type": "string",
       "default": ""
     },
     "MUX_TOKEN_SECRET": {
+      "title": "Mux token secret",
       "description": "Mux API token secret for media-cloud-upload direct uploads.",
       "type": "string",
       "default": ""
     },
     "BUNNY_CDN_TOKEN": {
+      "title": "Bunny.net Stream token",
       "description": "Bunny.net Stream API token for media-cloud-upload direct uploads.",
       "type": "string",
       "default": ""
     },
     "INCOMING_MEDIA_DIR": {
+      "title": "Incoming media directory",
       "description": "Directory the incoming-watch monitor will poll for new media (triggers auto-probe + QC gate). Empty disables the watcher.",
       "type": "string",
       "default": ""
     },
     "LIVE_STREAM_URL": {
+      "title": "Live stream URL",
       "description": "Live stream contribution URL (RTMP/SRT/RTSP/HLS) for the stream-health monitor to probe. Empty disables.",
       "type": "string",
       "default": ""
     },
     "RENDER_QUEUE_URL": {
+      "title": "Render queue URL",
       "description": "Render-farm status endpoint (JSON list of {id,status,name}) polled by the render-queue monitor. Empty disables.",
       "type": "string",
       "default": ""
     },
     "RENDER_QUEUE_DIR": {
+      "title": "Render queue directory",
       "description": "Render-queue status-sidecar directory (*.status files) as an alternative to RENDER_QUEUE_URL. Empty disables.",
       "type": "string",
       "default": ""
     },
     "SAFETY_REQUIRE_CONFIRM_OVERWRITE": {
+      "title": "Require overwrite confirmation",
       "description": "When true, the pre-ffmpeg-validate hook blocks ffmpeg commands that would overwrite an existing output path without -n or explicit confirmation. Turn off for batch automation.",
       "type": "string",
       "default": "true"
