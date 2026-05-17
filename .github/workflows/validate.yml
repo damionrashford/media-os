@@ -1,0 +1,118 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  manifests:
+    name: Validate manifests + skill structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq + yq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y jq
+          sudo curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: plugin.json is valid JSON
+        run: jq empty .claude-plugin/plugin.json
+
+      - name: marketplace.json is valid JSON
+        run: jq empty .claude-plugin/marketplace.json
+
+      - name: plugin.json + marketplace.json versions match
+        run: |
+          PV=$(jq -r .version .claude-plugin/plugin.json)
+          MV=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          PMV=$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)
+          echo "plugin.json: $PV"
+          echo "marketplace.json metadata: $MV"
+          echo "marketplace.json plugins[0]: $PMV"
+          test "$PV" = "$MV" && test "$PV" = "$PMV"
+
+      - name: hooks.json is valid JSON
+        run: jq empty hooks/hooks.json
+
+      - name: monitors.json is valid JSON
+        run: test ! -f monitors/monitors.json || jq empty monitors/monitors.json
+
+      - name: Every skill has SKILL.md with valid frontmatter
+        run: |
+          set -e
+          fail=0
+          for d in skills/*/; do
+            f="$d/SKILL.md"
+            if [ ! -f "$f" ]; then
+              echo "::error::missing $f"
+              fail=1
+              continue
+            fi
+            fm=$(awk '/^---$/{c++; next} c==1{print} c==2{exit}' "$f")
+            if [ -z "$fm" ]; then
+              echo "::error::$f has no YAML frontmatter"
+              fail=1
+              continue
+            fi
+            name=$(echo "$fm" | yq -r .name -)
+            desc=$(echo "$fm" | yq -r .description -)
+            if [ "$name" = "null" ] || [ -z "$name" ]; then
+              echo "::error::$f missing 'name' field"
+              fail=1
+            fi
+            if [ "$desc" = "null" ] || [ -z "$desc" ]; then
+              echo "::error::$f missing 'description' field"
+              fail=1
+            fi
+            folder=$(basename "$d")
+            if [ "$name" != "$folder" ]; then
+              echo "::error::$f name '$name' does not match folder '$folder'"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: No README.md inside skill folders (spec forbids)
+        run: |
+          hits=$(find skills -mindepth 2 -maxdepth 2 -name README.md -print)
+          if [ -n "$hits" ]; then
+            echo "::error::skill folders must not contain README.md:"
+            echo "$hits"
+            exit 1
+          fi
+
+      - name: No absolute /Users or /home paths in distributed files
+        run: |
+          hits=$(grep -RIn -E '/(Users|home)/' skills agents hooks bin monitors .claude-plugin 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "::error::absolute paths leaked into distributed files:"
+            echo "$hits"
+            exit 1
+          fi
+
+      - name: Every bin/ CLI is executable
+        run: |
+          set -e
+          for f in bin/*; do
+            test -x "$f" || { echo "::error::$f is not executable"; exit 1; }
+          done
+
+      - name: Counts in plugin.json match folder reality
+        run: |
+          set -e
+          actual=$(ls -d skills/*/ | wc -l | tr -d ' ')
+          workflow=$(ls -d skills/workflow-*/ 2>/dev/null | wc -l | tr -d ' ')
+          tool=$((actual - workflow))
+          echo "tool skills:     $tool"
+          echo "workflow skills: $workflow"
+          echo "total:           $actual"
+          test "$tool" -eq 96 || { echo "::error::expected 96 tool skills, found $tool"; exit 1; }
+          test "$workflow" -eq 13 || { echo "::error::expected 13 workflow skills, found $workflow"; exit 1; }
