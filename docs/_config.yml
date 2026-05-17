@@ -1,0 +1,10 @@
+# GitHub Pages config — serve /docs as-is, no Jekyll processing.
+# Files prefixed with _ (like _shared.md style names) won't be filtered
+# because there are none in /docs.
+theme: null
+plugins: []
+exclude:
+  - README.md
+  - "*.tmpl"
+include:
+  - .well-known

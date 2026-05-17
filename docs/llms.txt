@@ -1,0 +1,69 @@
+# Media OS
+
+> A Claude Code plugin that routes natural-language requests to production media pipelines. 96 tool-and-technique skills, 13 routed modes, 7 orchestrator agents, 4 safety hooks, 1 dispatch-audit hook, 3 PATH CLIs. Covers FFmpeg complete, OBS Studio, GStreamer, MediaMTX, broadcast IP (NDI, OpenTimelineIO, dovi_tool, hdr10plus_tool, Blackmagic DeckLink, gphoto2), control protocols (MIDI 1.0+2.0 UMP, OSC, DMX512/Art-Net/sACN, VISCA + ONVIF PTZ), system audio routing (PipeWire, JACK, Core Audio, WASAPI), VFX (USD, OpenEXR, OpenImageIO), computer vision (OpenCV, MediaPipe), WebRTC (Pion, mediasoup, LiveKit), and 2026 open-source AI media. Strict Apache-2 / MIT / BSD / GPL license filter on every AI model. MIT licensed.
+
+## Install
+
+- /plugin marketplace add damionrashford/media-os
+- /plugin install media-os@media-os
+
+## How dispatch works
+
+User describes a media production task in natural language → router skill auto-loads on intent → reads `modes/_shared.md` + matched `modes/<mode>.md` from disk → composes prompt = shared + mode + user-ask → spawns specialist via Agent() → specialist runs in isolated context, writes artifact to deterministic path, returns summary → SubagentStop hook logs the dispatch.
+
+## The 13 routed modes
+
+- live-production (specialist: live) — OBS + NDI + DeckLink + PTZ + RTMP/SRT/RIST/WHIP
+- streaming-distribution (delivery) — HLS / DASH / CMAF / LL-HLS + cbcs DRM + CDN upload
+- broadcast-delivery (delivery, approval-gated) — DPP AS-11, Netflix IMF, ProRes, MXF OP1a, IMX50, XDCAM HD422
+- editorial-interchange (architect) — Premiere ↔ Resolve ↔ Avid ↔ FCP via FCPXML, AAF, EDL, OTIO
+- ai-enhancement (architect) — Real-ESRGAN, SwinIR, HAT upscale; RIFE, FILM interpolate; BiRefNet, rembg, RVM matte; Depth-Anything depth; LivePortrait lipsync
+- ai-generation (architect) — FLUX-schnell, Kolors, Sana image; LTX-Video, CogVideoX, Mochi, Wan video; Kokoro, OpenVoice, Piper, StyleTTS2 TTS; Riffusion music
+- podcast-pipeline (architect) — record-to-master, script-to-podcast (TTS), existing-to-master; EBU R128 loudness; whisper captions
+- vfx-pipeline (architect) — EXR / DPX / USD through ACES + OCIO to ProRes 4444 or JPEG 2000 IMF
+- hdr-mastering (hdr) — HDR10, HDR10+, Dolby Vision profiles 5 / 7 / 8.4, HLG, SDR tone-map
+- vod-post-production (encoder) — H.264 / H.265 / AV1 / ProRes / DNxHR with VMAF gate
+- analysis-quality (qc) — VMAF + SSIM + PSNR + loudness + freeze + black + silence detection
+- audio-production (architect) — PipeWire / JACK / Core Audio / WASAPI routing, multitrack mix, DeepFilterNet repair, MIDI/OSC control bridge
+- acquisition-archive (probe) — probe-batch, ingest-card, tether-capture (gphoto2), archive-verify
+
+## The 7 specialists
+
+- architect — designs end-to-end pipelines; serves editorial, AI, podcast, VFX, audio modes
+- probe — forensic file inspection (color, HDR side-data, GOP, captions, timecode)
+- qc — VMAF + SSIM + PSNR + loudness + freeze/black/silence gate
+- hdr — HDR10, HDR10+, Dolby Vision, PQ↔HLG, ACES, OCIO
+- encoder — rate control, pixel format, container flags, hwaccel
+- live — OBS + RTMP/SRT/RIST/WHIP + NDI + DeckLink + PTZ
+- delivery — HLS/DASH packaging + cbcs DRM + CDN upload + IMF/MXF
+
+## CLI toolbelt (added to PATH on install)
+
+- moprobe <file> — compact media inspection; --color for HDR/color summary; --json for ffprobe JSON
+- moqc --ref <src> --out <encoded> [--vmaf-min N] — VMAF + SSIM + PSNR + loudness + freeze/black/silence gate
+- mosafe ffmpeg ... — pre-flight lint of any FFmpeg command (catches missing -movflags +faststart, -sc_threshold 0, aac_adtstoasc, hvc1 vs hev1, zscale sandwich for PQ↔HLG, cbcs vs cenc DRM, in-place overwrites)
+
+## Lifecycle hooks (fire automatically)
+
+- SessionStart — probes installed CLIs + ffmpeg build flags (libvmaf, libzimg, libvidstab, librist, libplacebo, hwaccel)
+- UserPromptSubmit — auto-probes any media path named in the prompt
+- PreToolUse (Bash) — blocks FFmpeg foot-guns before they fire
+- PostToolUse (Bash) — re-ffprobes every FFmpeg output for zero-duration / truncation
+- SubagentStop — logs every dispatch (mode, specialist, duration, exit status) to ${MEDIA_WORK_DIR}/modes/dispatch.log
+
+## License filter on AI skills (Layer 9)
+
+Every model shipped is Apache-2 / MIT / BSD / GPL. Restricted models explicitly documented-and-dropped: XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL / SD3 base.
+
+## Source-of-truth links
+
+- Repository: https://github.com/damionrashford/media-os
+- Releases: https://github.com/damionrashford/media-os/releases
+- Skills catalog (109): https://github.com/damionrashford/media-os/tree/main/skills
+- Modes (13): https://github.com/damionrashford/media-os/tree/main/modes
+- Agents (7): https://github.com/damionrashford/media-os/tree/main/agents
+- CHANGELOG: https://github.com/damionrashford/media-os/blob/main/CHANGELOG.md
+- Contributing: https://github.com/damionrashford/media-os/blob/main/CONTRIBUTING.md
+- Modes pattern reference: https://github.com/damionrashford/modes
+- Claude Code documentation: https://docs.claude.com/en/docs/claude-code/overview
+- Claude Code plugins spec: https://docs.claude.com/en/docs/claude-code/plugins
