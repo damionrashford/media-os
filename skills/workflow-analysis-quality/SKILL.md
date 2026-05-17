@@ -1,7 +1,7 @@
 ---
 name: workflow-analysis-quality
 description: Deep media inspection + automated QC — ffprobe stream details, MediaInfo diagnostics, VMAF/PSNR/SSIM quality metrics, PySceneDetect scene cuts, crop/silence/black-frame/interlacing detection, ffplay scope debugging, NAL/SEI bitstream forensics, metadata audits, loudness compliance against Spotify/Apple/ATSC/EBU specs, and automated CI QC gates. Use when the user says "QC this file", "run VMAF", "compare encoders", "detect scene cuts", "check loudness compliance", "validate delivery spec", "automated QC pipeline", or any deep inspection / quality gating.
-argument-hint: [ref] [out]
+argument-hint: "[ref] [out]"
 ---
 
 # Workflow — Analysis + Quality
