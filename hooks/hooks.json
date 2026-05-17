@@ -45,6 +45,17 @@
           }
         ]
       }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/dispatch-audit.py",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
