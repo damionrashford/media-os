@@ -4,8 +4,8 @@
     "name": "Media OS"
   },
   "metadata": {
-    "description": "The Media OS for Claude Code \u2014 96 production skills covering FFmpeg complete, OBS, broadcast IP (NDI, DeckLink, Dolby Vision, HDR10+), GStreamer/MediaMTX, WebRTC, VFX, and 2026 open-source AI media. Plus 13 workflow skills, 7 orchestrator agents, 4 safety hooks, and 3 PATH-level CLIs (moprobe, moqc, mosafe). Every skill is a sealed folder \u2014 copy one into ~/.claude/skills/ or install the whole plugin.",
-    "version": "2.0.1",
+    "description": "The Media OS for Claude Code with routed modes dispatch \u2014 say what you want, the router spawns the right specialist. 96 production skills + 13 routed modes covering FFmpeg complete, OBS, broadcast IP (NDI, DeckLink, Dolby Vision, HDR10+), GStreamer/MediaMTX, WebRTC, VFX, and 2026 open-source AI media. Plus 7 orchestrator agents, 5 lifecycle hooks (capability detection, prompt context, FFmpeg lint, output verify, dispatch audit), and 3 PATH-level CLIs (moprobe, moqc, mosafe). Every skill is a sealed folder \u2014 copy one into ~/.claude/skills/ or install the whole plugin.",
+    "version": "2.1.0",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
     "license": "MIT"
@@ -14,10 +14,13 @@
     {
       "name": "media-os",
       "source": "./",
-      "description": "Complete Media OS \u2014 96 production skills + 13 workflow skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs (moprobe, moqc, mosafe) + incoming-media watcher. FFmpeg complete, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/DeckLink/Dolby Vision/HDR10+), control protocols (MIDI/OSC/DMX/PTZ), system audio routing, VFX, computer vision, WebRTC, and 2026 open-source AI media (Real-ESRGAN, RIFE, Kokoro TTS, FLUX-schnell, LTX-Video, Depth-Anything, LivePortrait, PaddleOCR).",
-      "version": "2.0.1",
+      "description": "Complete Media OS with routed modes dispatch \u2014 96 production skills + 13 workflow skills + 13 routed modes + 7 orchestrator agents + 5 safety + audit hooks + 3 PATH-level CLIs (moprobe, moqc, mosafe) + incoming-media watcher. The router skill auto-loads on any media production intent and dispatches to the right specialist (architect, probe, qc, hdr, encoder, live, delivery). FFmpeg complete, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/DeckLink/Dolby Vision/HDR10+), control protocols (MIDI/OSC/DMX/PTZ), system audio routing, VFX, computer vision, WebRTC, and 2026 open-source AI media (Real-ESRGAN, RIFE, Kokoro TTS, FLUX-schnell, LTX-Video, Depth-Anything, LivePortrait, PaddleOCR).",
+      "version": "2.1.0",
       "category": "media-production",
       "tags": [
+        "modes",
+        "routed-multi-agent",
+        "dispatch",
         "ffmpeg",
         "video",
         "audio",
