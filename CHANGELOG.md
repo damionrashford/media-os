@@ -4,6 +4,42 @@ All notable changes to the Media OS plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-05-17
+
+### Added — routed modes dispatch (the modes pattern overlay)
+
+Media OS now ships with a router-and-modes dispatch layer on top of the existing skills + agents + hooks. The orchestrator (main-thread Claude) no longer picks skills opportunistically — every media production intent is routed deterministically to the right specialist via a per-task playbook.
+
+- **`skills/media-pipeline-router/SKILL.md`** — auto-loads on any media production intent (~140 trigger phrases packed into the description). Reads `_shared.md` + the matched mode file from disk on every dispatch, composes the prompt, and spawns the right specialist via `Agent()`. The deterministic dispatcher.
+- **`modes/_shared.md`** — cross-cutting prefix prepended to every dispatch. Carries: operator scope, plugin layout source-of-truth, full tool inventory (moprobe / moqc / mosafe + every Bash CLI), output-root template (`${MEDIA_WORK_DIR}/modes/<mode>/{date}_{slug}/`), the FFmpeg-flag hard rules LLMs get wrong from training data alone (movflags, sc_threshold, aac_adtstoasc, hvc1/hev1, zscale sandwich for PQ↔HLG, cbcs vs cenc), the AI license filter (Apache-2 / MIT / BSD / GPL only), and idempotent re-run rules.
+- **`modes/<mode>.md`** — 13 routed playbooks, one per production domain. Each declares its specialist (architect / probe / qc / hdr / encoder / live / delivery), trigger phrases, required + optional inputs, output path template, the per-step pipeline, the literal output schema, and the per-mode quality bar. Modes shipped:
+  - `live-production` (live) — OBS + NDI + DeckLink + PTZ + RTMP/SRT/RIST/WHIP
+  - `streaming-distribution` (delivery) — HLS / DASH / CMAF / LL-HLS + Widevine/PlayReady/FairPlay cbcs DRM + CDN upload
+  - `broadcast-delivery` (delivery, approval-gated) — DPP AS-11 / Netflix IMF / ProRes / IMX50 / XDCAM HD422 / MXF OP1a
+  - `editorial-interchange` (architect) — Premiere ↔ Resolve ↔ Avid ↔ FCP via FCPXML / AAF / EDL / OTIO
+  - `ai-enhancement` (architect) — upscale (Real-ESRGAN / SwinIR / HAT), interpolate (RIFE / FILM), denoise, matte (BiRefNet / rembg / RVM), depth (Depth-Anything), lipsync (LivePortrait / LatentSync)
+  - `ai-generation` (architect) — image (FLUX-schnell / Kolors / Sana), video (LTX-Video / CogVideoX / Mochi / Wan), TTS (Kokoro / OpenVoice / Piper), music (Riffusion / YuE)
+  - `podcast-pipeline` (architect) — record-to-master, script-to-podcast (TTS), or existing-to-master with EBU R128 loudness + captions
+  - `vfx-pipeline` (architect) — EXR / DPX / USD conform through ACES + OCIO to ProRes 4444 / J2K IMF
+  - `hdr-mastering` (hdr) — HDR10 static, HDR10+ dynamic (JSON sidecar mux), Dolby Vision profiles 5 / 7 / 8.4, HLG, SDR tone-map
+  - `vod-post-production` (encoder) — H.264 / H.265 / AV1 / ProRes / DNxHR with VMAF gate + 2-pass support
+  - `analysis-quality` (qc) — VMAF + SSIM + PSNR + loudness + freeze / black / silence detection with per-event timestamps
+  - `audio-production` (architect) — PipeWire / JACK / Core Audio / WASAPI routing, multitrack mix, repair (DeepFilterNet / Demucs), MIDI/OSC control bridge
+  - `acquisition-archive` (probe) — probe-batch, ingest-card, tether-capture (gphoto2), archive-verify (hash-tree)
+- **`hooks/scripts/dispatch-audit.py` + SubagentStop registration** — every dispatch logs one JSON line to `${MEDIA_WORK_DIR}/modes/dispatch.log` (timestamp, mode, specialist, duration, exit status, transcript path). Observability for the dispatch trace.
+- **CI checks for the modes layer** — validates `_shared.md` exists, asserts 13 mode files, verifies every mode's `**Subagent**` line points at a real `agents/<name>.md`, confirms the dispatch-audit hook is executable.
+
+### Changed
+
+- Plugin + marketplace manifests bumped to v2.1.0.
+- Marketplace tags now include `modes`, `routed-multi-agent`, `dispatch` for discoverability.
+
+### Rationale
+
+v2.0 made the plugin active (hooks, agents, CLIs). v2.1 makes it **deterministic** — the router auto-loads on media production intent and forces the dispatch contract (read `_shared.md`, read mode file, compose, spawn) every turn. Without the router, the orchestrator picks skills opportunistically and forgets cross-cutting rules (`mosafe`-wrap, license filter, deterministic output paths) every few turns. With the router, every dispatch goes through the same four-step contract and lands its artifact at a deterministic, overwrite-safe path. Modes are the configurable surface (add a task type = one new mode file + one routing-table row); specialists are fixed identities (almost never change); `_shared.md` is the cross-cutting prefix (edit once, every mode inherits). Pattern sourced from [github.com/damionrashford/modes](https://github.com/damionrashford/modes).
+
+---
+
 ## [2.0.0] — 2026-04-17
 
 ### Added — orchestrator agents, safety hooks, CLI toolbelt, media watcher

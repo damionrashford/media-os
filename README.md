@@ -14,7 +14,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/network/members)
 [![Last Commit](https://img.shields.io/github/last-commit/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/commits/main)
 
-**[Install](#install) · [Skills catalog](#skills-catalog) · [Workflow recipes](#workflow-recipes) · [Agents](#orchestrator-agents) · [Safety hooks](#safety-hooks) · [CLI toolbelt](#cli-toolbelt) · [FAQ](#faq)**
+**[Install](#install) · [Skills catalog](#skills-catalog) · [Routed modes](#routed-modes) · [Workflow recipes](#workflow-recipes) · [Agents](#orchestrator-agents) · [Safety hooks](#safety-hooks) · [CLI toolbelt](#cli-toolbelt) · [FAQ](#faq)**
 
 </div>
 
@@ -108,6 +108,77 @@ The most-requested production tasks and the skill chain Media OS routes them to:
 | **W** | [Workflow recipes](#workflow-recipes) | **13** | End-to-end domain orchestrators (live, streaming, broadcast, editorial, AI, podcast, VFX, HDR, VOD, QC, audio, acquisition, archive) |
 
 → Browse the full catalog at [`skills/`](skills/). Every skill is a sealed folder with a `SKILL.md`, optional `scripts/` (stdlib-only Python 3 via `uv run`), and optional `references/`.
+
+---
+
+## Routed modes
+
+**Media OS implements the [modes pattern](https://github.com/damionrashford/modes) — a routed multi-agent dispatch system.** Say what you want; the router auto-loads on media production intent and spawns the right specialist in an isolated context with a per-task playbook.
+
+### How dispatch works
+
+```
+USER: "encode this master for HLS with VMAF ≥ 95"
+        ↓
+Router skill auto-loads on intent
+        ↓
+Dispatch contract (4 steps, every dispatch):
+  1. Read modes/_shared.md from disk
+  2. Read modes/streaming-distribution.md from disk
+  3. Compose prompt = _shared + mode + user_ask
+  4. Agent(subagent_type="delivery",
+          prompt=composed,
+          description="streaming-distribution")
+        ↓
+delivery specialist runs in isolated context:
+  - probes input, derives bitrate ladder
+  - mosafe-wraps every ffmpeg invocation
+  - encodes tiers, runs moqc per tier
+  - packages HLS/DASH, applies cbcs DRM
+  - writes artifact to deterministic path
+        ↓
+${MEDIA_WORK_DIR}/modes/streaming-distribution/{date}_{slug}/
+```
+
+### The 13 modes (one per production domain)
+
+Each mode declares its specialist, trigger phrases, required + optional inputs, output schema, and quality bar. Modes are the **configurable surface** — adding a task type is one new mode file plus one routing-table row.
+
+| Mode | Specialist | Domain |
+|---|---|---|
+| [`live-production`](modes/live-production.md) | `live` | OBS + NDI + DeckLink + PTZ + RTMP/SRT/RIST/WHIP |
+| [`streaming-distribution`](modes/streaming-distribution.md) | `delivery` | HLS / DASH / CMAF / LL-HLS + cbcs DRM + CDN upload |
+| [`broadcast-delivery`](modes/broadcast-delivery.md) | `delivery` | DPP AS-11 / Netflix IMF / ProRes / MXF OP1a (approval-gated) |
+| [`editorial-interchange`](modes/editorial-interchange.md) | `architect` | Premiere ↔ Resolve ↔ Avid ↔ FCP via FCPXML / AAF / EDL / OTIO |
+| [`ai-enhancement`](modes/ai-enhancement.md) | `architect` | Upscale, interpolate, denoise, matte, depth, lipsync |
+| [`ai-generation`](modes/ai-generation.md) | `architect` | Image / video / TTS / music generation (license-filtered) |
+| [`podcast-pipeline`](modes/podcast-pipeline.md) | `architect` | Record / script / re-master → EBU R128 + captions |
+| [`vfx-pipeline`](modes/vfx-pipeline.md) | `architect` | EXR / DPX / USD through ACES + OCIO to ProRes 4444 / J2K IMF |
+| [`hdr-mastering`](modes/hdr-mastering.md) | `hdr` | HDR10, HDR10+, Dolby Vision profiles 5/7/8.4, HLG, SDR tone-map |
+| [`vod-post-production`](modes/vod-post-production.md) | `encoder` | H.264 / H.265 / AV1 / ProRes / DNxHR with VMAF gate |
+| [`analysis-quality`](modes/analysis-quality.md) | `qc` | VMAF + SSIM + PSNR + loudness + freeze / black / silence |
+| [`audio-production`](modes/audio-production.md) | `architect` | PipeWire / JACK / Core Audio / WASAPI routing, mix, repair, MIDI/OSC |
+| [`acquisition-archive`](modes/acquisition-archive.md) | `probe` | Probe-batch, ingest-card, tether-capture, archive-verify |
+
+### Chained dispatch
+
+Multi-step intents run sequentially with artifact paths passed forward. Examples the router knows about:
+
+| User says | Chain |
+|---|---|
+| "encode + deliver this master for HLS" | `vod-post-production` → `streaming-distribution` |
+| "upscale + interpolate + deliver" | `ai-enhancement` → `vod-post-production` → `streaming-distribution` |
+| "HDR master + broadcast deliver" | `hdr-mastering` → `broadcast-delivery` |
+| "QC + deliver" | `analysis-quality` → if pass → `broadcast-delivery` |
+| "VFX → HDR master" | `vfx-pipeline` → `hdr-mastering` |
+
+### Observability
+
+Every dispatch logs one JSON line to `${MEDIA_WORK_DIR}/modes/dispatch.log` via the `SubagentStop` audit hook — timestamp, mode, specialist, duration, exit status, transcript path. Tail it to see dispatch rate and failure patterns.
+
+### The dispatch contract is deterministic
+
+The router skill auto-loads on every media production intent and forces the four-step contract. The mode files are loaded fresh from disk on every dispatch — never cached, never paraphrased. Cross-cutting rules (`mosafe`-wrap every ffmpeg call, license filter on AI models, deterministic output paths, idempotent re-runs) live in `modes/_shared.md` and apply to every specialist.
 
 ### License filter on AI skills (Layer 9)
 
