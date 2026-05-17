@@ -4,7 +4,7 @@
     "name": "Media OS"
   },
   "metadata": {
-    "description": "The Media OS for Claude Code. One plugin, 96 production skills + 7 orchestrator agents + safety hooks + a PATH-level CLI toolbelt (moprobe, moqc, mosafe) + an incoming-media watcher, covering FFmpeg complete, professional companion tools, OBS Studio, GStreamer/MediaMTX, broadcast IP, control protocols, system audio routing, VFX, computer vision, WebRTC, and 2026 open-source AI media. Each skill is also a sealed folder at skills/<name>/ \u2014 users who want just one can copy the folder into their own .claude/skills/ directory.",
+    "description": "The Media OS for Claude Code \u2014 96 production skills covering FFmpeg complete, OBS, broadcast IP (NDI, DeckLink, Dolby Vision, HDR10+), GStreamer/MediaMTX, WebRTC, VFX, and 2026 open-source AI media. Plus 13 workflow skills, 7 orchestrator agents, 4 safety hooks, and 3 PATH-level CLIs (moprobe, moqc, mosafe). Every skill is a sealed folder \u2014 copy one into ~/.claude/skills/ or install the whole plugin.",
     "version": "2.0.1",
     "homepage": "https://github.com/damionrashford/media-os",
     "repository": "https://github.com/damionrashford/media-os",
@@ -14,7 +14,7 @@
     {
       "name": "media-os",
       "source": "./",
-      "description": "The complete Media OS bundle \u2014 96 skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs (moprobe, moqc, mosafe) + incoming-media watcher. Covers FFmpeg complete, professional companion tools, OBS Studio, streaming frameworks, broadcast IP, control protocols, system audio routing, VFX stack, computer vision, WebRTC, and 2026 open-source AI media. Install this if you want everything in one.",
+      "description": "Complete Media OS \u2014 96 production skills + 13 workflow skills + 7 orchestrator agents + 4 safety hooks + 3 PATH-level CLIs (moprobe, moqc, mosafe) + incoming-media watcher. FFmpeg complete, OBS Studio, GStreamer/MediaMTX, broadcast IP (NDI/DeckLink/Dolby Vision/HDR10+), control protocols (MIDI/OSC/DMX/PTZ), system audio routing, VFX, computer vision, WebRTC, and 2026 open-source AI media (Real-ESRGAN, RIFE, Kokoro TTS, FLUX-schnell, LTX-Video, Depth-Anything, LivePortrait, PaddleOCR).",
       "version": "2.0.1",
       "category": "media-production",
       "tags": [
