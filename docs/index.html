@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0908" />
+
+<title>Media OS — Claude Code plugin for production media work</title>
+<meta name="description" content="A Claude Code plugin that routes natural-language requests to production media pipelines. 96 skills + 13 modes + 7 orchestrator agents covering FFmpeg, OBS, broadcast IP (NDI, DeckLink, Dolby Vision, HDR10+), and 2026 open-source AI media. MIT licensed." />
+
+<meta property="og:title" content="Media OS — Claude Code plugin for production media work" />
+<meta property="og:description" content="96 production skills + 13 routed modes + 7 orchestrator agents. FFmpeg complete, OBS, NDI, DeckLink, Dolby Vision, HDR10+, AI media. MIT." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://damionrashford.github.io/media-os/" />
+<meta property="og:image" content="https://damionrashford.github.io/media-os/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Media OS for Claude Code" />
+<meta name="twitter:description" content="Routed dispatch for FFmpeg, OBS, broadcast IP, HDR, AI media. 96 skills · 13 modes · 7 specialists. MIT." />
+<meta name="twitter:image" content="https://damionrashford.github.io/media-os/assets/og.png" />
+
+<link rel="canonical" href="https://damionrashford.github.io/media-os/" />
+<link rel="alternate" type="text/plain" href="/media-os/llms.txt" title="LLM-readable site map" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Departure+Mono&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" />
+<link rel="stylesheet" href="assets/style.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Media OS for Claude Code",
+  "description": "Claude Code plugin for production media work. 96 skills + 13 routed modes + 7 orchestrator agents covering FFmpeg, OBS, broadcast IP (NDI, DeckLink, Dolby Vision, HDR10+), GStreamer, MediaMTX, WebRTC, VFX, and 2026 open-source AI media. MIT licensed.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "macOS, Linux, Windows",
+  "license": "https://opensource.org/licenses/MIT",
+  "url": "https://github.com/damionrashford/media-os",
+  "downloadUrl": "https://github.com/damionrashford/media-os/releases",
+  "softwareVersion": "2.1.0",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "Damion Rashford", "url": "https://github.com/damionrashford" }
+}
+</script>
+</head>
+
+<body>
+
+<!-- film grain overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- registration marks (decorative corner crosshairs) -->
+<svg class="reg reg-tl" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 12h10M14 12h10M12 0v10M12 14v10" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+<svg class="reg reg-tr" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 12h10M14 12h10M12 0v10M12 14v10" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+
+<!-- header bar -->
+<header class="nav" role="banner">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Media OS home">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-mark">MEDIA·OS</span>
+      <span class="brand-ver">v2.1.0</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#modes">Modes</a>
+      <a href="#specialists">Specialists</a>
+      <a href="#skills">Skills</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/damionrashford/media-os" class="nav-github" rel="noopener">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.07 11.07 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.26 5.69.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+  <!-- SMPTE color bar accent -->
+  <div class="smpte-bars" role="presentation" aria-hidden="true">
+    <i style="--c:#bfbfbf"></i>
+    <i style="--c:#bfbf00"></i>
+    <i style="--c:#00bfbf"></i>
+    <i style="--c:#00bf00"></i>
+    <i style="--c:#bf00bf"></i>
+    <i style="--c:#bf0000"></i>
+    <i style="--c:#0000bf"></i>
+    <i style="--c:#1f1d1a"></i>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-left">
+    <p class="kicker">
+      <span class="kicker-dot"></span>
+      Claude Code plugin · MIT · v2.1.0
+    </p>
+
+    <h1 class="hero-title">
+      Production media,<br />
+      <span class="hero-title-em">routed.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Say what you want — <em>encode this for HLS with VMAF 95, deliver IMF for Netflix, master Dolby Vision profile 8.4, set up an NDI feed with a PTZ camera</em>. Media OS routes every request to the right specialist with the right tools and the right flags. FFmpeg, OBS, NDI, DeckLink, Dolby Vision, HDR10+, and 2026 open-source AI media.
+    </p>
+
+    <div class="hero-install">
+      <span class="prompt">/plugin&nbsp;</span>marketplace add damionrashford/media-os<br />
+      <span class="prompt">/plugin&nbsp;</span>install media-os@media-os
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/damionrashford/media-os">
+        Browse the repo
+        <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#modes">See the 13 modes</a>
+    </div>
+
+    <ul class="hero-tags">
+      <li>ffmpeg</li>
+      <li>obs-studio</li>
+      <li>ndi</li>
+      <li>decklink</li>
+      <li>dolby-vision</li>
+      <li>hdr10-plus</li>
+      <li>gstreamer</li>
+      <li>mediamtx</li>
+      <li>webrtc</li>
+      <li>aces</li>
+      <li>opentimelineio</li>
+      <li>real-esrgan</li>
+      <li>kokoro-tts</li>
+      <li>flux-schnell</li>
+    </ul>
+  </div>
+
+  <!-- DISPATCH PANEL (the showpiece) -->
+  <aside class="dispatch" aria-label="Live dispatch demonstration">
+    <header class="dispatch-head">
+      <span class="rec" aria-hidden="true"></span>
+      <span class="dispatch-label">DISPATCH&nbsp;TRACE</span>
+      <span class="dispatch-tc" id="tc">00:00:00:00</span>
+    </header>
+
+    <div class="dispatch-screen" id="dispatch-screen">
+      <!-- populated by JS -->
+    </div>
+
+    <footer class="dispatch-foot">
+      <span class="dispatch-foot-label">CYCLING · 5 EXAMPLES</span>
+      <span class="dispatch-foot-bars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i>
+      </span>
+    </footer>
+  </aside>
+
+</section>
+
+<!-- STATS ROW -->
+<section class="stats" aria-label="Capability counts">
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-n">96</div>
+      <div class="stat-l">tool skills</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">13</div>
+      <div class="stat-l">routed modes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">07</div>
+      <div class="stat-l">specialist agents</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">05</div>
+      <div class="stat-l">lifecycle hooks</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">03</div>
+      <div class="stat-l">CLI tools</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS MEDIA OS -->
+<section class="why">
+  <header class="section-head">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Why this exists</h2>
+  </header>
+  <div class="why-grid">
+    <article>
+      <h3>FFmpeg is unforgiving.</h3>
+      <p>One missing flag — <code>-movflags +faststart</code>, <code>-sc_threshold 0</code>, <code>aac_adtstoasc</code>, <code>hvc1</code> instead of <code>hev1</code> — and the pipeline ships a broken file. Every skill front-loads the gotchas LLMs get wrong from training data alone, and <code>mosafe</code> lints commands before they fire.</p>
+    </article>
+    <article>
+      <h3>Broadcast tools aren't scriptable.</h3>
+      <p>NDI, DeckLink, Dolby Vision, HDR10+ — production-grade, but not designed for natural-language interfaces. Media OS provides scripted entry points for all of them, with the right metadata sidecar mux (HDR10+ JSON, DV RPU) handled.</p>
+    </article>
+    <article>
+      <h3>AI media is a license minefield.</h3>
+      <p>Every Layer 9 AI skill ships a hard filter: only Apache-2 / MIT / BSD / GPL models. XTTS-v2, FLUX-dev, SVD, Meta MusicGen — explicitly documented-and-dropped. You don't accidentally ship something you can't monetize.</p>
+    </article>
+  </div>
+</section>
+
+<!-- DISPATCH CONTRACT DIAGRAM -->
+<section class="contract">
+  <header class="section-head">
+    <span class="section-num">02</span>
+    <h2 class="section-title">The dispatch contract</h2>
+    <p class="section-sub">Every request flows through the same four-step contract. Deterministic. Read fresh from disk. No shortcuts.</p>
+  </header>
+
+  <div class="contract-flow">
+    <div class="flow-step">
+      <div class="flow-num">01</div>
+      <h4>Router auto-loads</h4>
+      <p>The router skill packs ~140 trigger phrases. On any media production intent, it loads and forces the contract.</p>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">→</div>
+    <div class="flow-step">
+      <div class="flow-num">02</div>
+      <h4>Read two files</h4>
+      <p><code>modes/_shared.md</code> (cross-cutting rules) + <code>modes/&lt;mode&gt;.md</code> (the playbook). Fresh from disk every dispatch.</p>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">→</div>
+    <div class="flow-step">
+      <div class="flow-num">03</div>
+      <h4>Compose</h4>
+      <p>Shared prefix + mode body + user's exact ask. Joined with two newlines. No paraphrasing.</p>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">→</div>
+    <div class="flow-step">
+      <div class="flow-num">04</div>
+      <h4>Spawn specialist</h4>
+      <p>The right agent runs in isolated context, writes to a deterministic path. Audit hook logs every dispatch.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 MODES GRID -->
+<section class="modes" id="modes">
+  <header class="section-head">
+    <span class="section-num">03</span>
+    <h2 class="section-title">13 routed modes</h2>
+    <p class="section-sub">One playbook per production domain. Each declares its specialist, trigger phrases, inputs, output schema, and quality bar.</p>
+  </header>
+
+  <div class="modes-grid">
+    <a class="mode" data-color="red" href="https://github.com/damionrashford/media-os/blob/main/modes/live-production.md">
+      <header><span class="mode-spec">live</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">live-production</h4>
+      <p>OBS · NDI · DeckLink · PTZ · RTMP / SRT / RIST / WHIP. Multi-bitrate contribution feeds, dropped-frame monitoring, PTZ preset recalls.</p>
+    </a>
+    <a class="mode" data-color="yellow" href="https://github.com/damionrashford/media-os/blob/main/modes/streaming-distribution.md">
+      <header><span class="mode-spec">delivery</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">streaming-distribution</h4>
+      <p>HLS · DASH · CMAF · LL-HLS. Per-tier VMAF gate. Widevine + PlayReady + FairPlay via unified <code>cbcs</code>. CDN push.</p>
+    </a>
+    <a class="mode" data-color="yellow" href="https://github.com/damionrashford/media-os/blob/main/modes/broadcast-delivery.md">
+      <header><span class="mode-spec">delivery</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">broadcast-delivery <span class="approval">approval-gated</span></h4>
+      <p>DPP AS-11 · Netflix IMF · ProRes · MXF OP1a · IMX50 · XDCAM HD422. Full conformance matrix, loudness within ±0.5 LU.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/editorial-interchange.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">editorial-interchange</h4>
+      <p>Premiere ↔ Resolve ↔ Avid ↔ FCP via FCPXML, AAF, EDL, OTIO. Media relink, timecode-aware, translation report.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/ai-enhancement.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">ai-enhancement</h4>
+      <p>Real-ESRGAN · SwinIR · RIFE · FILM · BiRefNet · Depth-Anything · LivePortrait. Apache-2 / MIT / BSD / GPL only.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/ai-generation.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">ai-generation</h4>
+      <p>FLUX-schnell · Kolors · LTX-Video · CogVideoX · Kokoro TTS · OpenVoice · Riffusion. Seed-tracked for reproducibility.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/podcast-pipeline.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">podcast-pipeline</h4>
+      <p>Record-to-master · script-to-podcast · existing-to-master. EBU R128 loudness gate, whisper captions, ID3 tags.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/vfx-pipeline.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">vfx-pipeline</h4>
+      <p>EXR · DPX · USD through ACES + OCIO to ProRes 4444 / JPEG 2000 IMF. Reference-frame pixel verification.</p>
+    </a>
+    <a class="mode" data-color="purple" href="https://github.com/damionrashford/media-os/blob/main/modes/hdr-mastering.md">
+      <header><span class="mode-spec">hdr</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">hdr-mastering</h4>
+      <p>HDR10 · HDR10+ · Dolby Vision profiles 5 / 7 / 8.4 · HLG · SDR tone-map. zscale sandwich for PQ↔HLG, RPU mux verified.</p>
+    </a>
+    <a class="mode" data-color="orange" href="https://github.com/damionrashford/media-os/blob/main/modes/vod-post-production.md">
+      <header><span class="mode-spec">encoder</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">vod-post-production</h4>
+      <p>H.264 · H.265 · AV1 · ProRes · DNxHR. VMAF gate, 2-pass, hwaccel, <code>hvc1</code> for Apple compat.</p>
+    </a>
+    <a class="mode" data-color="teal" href="https://github.com/damionrashford/media-os/blob/main/modes/analysis-quality.md">
+      <header><span class="mode-spec">qc</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">analysis-quality</h4>
+      <p>VMAF · SSIM · PSNR · loudness · freeze · black · silence. Per-event timestamps to the millisecond.</p>
+    </a>
+    <a class="mode" data-color="blue" href="https://github.com/damionrashford/media-os/blob/main/modes/audio-production.md">
+      <header><span class="mode-spec">architect</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">audio-production</h4>
+      <p>PipeWire · JACK · Core Audio · WASAPI routing. Multitrack mix, DeepFilterNet repair, MIDI/OSC control bridge.</p>
+    </a>
+    <a class="mode" data-color="green" href="https://github.com/damionrashford/media-os/blob/main/modes/acquisition-archive.md">
+      <header><span class="mode-spec">probe</span><span class="mode-dot"></span></header>
+      <h4 class="mode-name">acquisition-archive</h4>
+      <p>Probe-batch · ingest-card · tether-capture (gphoto2) · archive-verify. Hash-tree validation against bit rot.</p>
+    </a>
+  </div>
+</section>
+
+<!-- 7 SPECIALISTS -->
+<section class="specialists" id="specialists">
+  <header class="section-head">
+    <span class="section-num">04</span>
+    <h2 class="section-title">7 orchestrator agents</h2>
+    <p class="section-sub">Each specialist arrives with a scoped tool allowlist, preloaded skills, and a stable identity. They serve multiple modes and almost never change.</p>
+  </header>
+
+  <div class="spec-grid">
+    <article class="spec" data-color="blue">
+      <header><span class="spec-tag">architect</span></header>
+      <p>Designs end-to-end pipelines before any command runs. The generalist that handles editorial, AI, podcast, VFX, and audio modes.</p>
+    </article>
+    <article class="spec" data-color="green">
+      <header><span class="spec-tag">probe</span></header>
+      <p>Forensic file inspection — color, HDR side-data, GOP, captions, timecode, metadata. Serves acquisition + archive.</p>
+    </article>
+    <article class="spec" data-color="teal">
+      <header><span class="spec-tag">qc</span></header>
+      <p>VMAF + SSIM + PSNR + loudness + freeze / black / silence. Quality gate with per-event timestamps.</p>
+    </article>
+    <article class="spec" data-color="purple">
+      <header><span class="spec-tag">hdr</span></header>
+      <p>HDR10, HDR10+, Dolby Vision, PQ↔HLG, ACES, OCIO. The color-science specialist.</p>
+    </article>
+    <article class="spec" data-color="orange">
+      <header><span class="spec-tag">encoder</span></header>
+      <p>Rate control, pixel format, container flags, hardware acceleration. VOD post-production.</p>
+    </article>
+    <article class="spec" data-color="red">
+      <header><span class="spec-tag">live</span></header>
+      <p>OBS + RTMP/SRT/RIST/WHIP + NDI + DeckLink + PTZ. Live ops.</p>
+    </article>
+    <article class="spec" data-color="yellow">
+      <header><span class="spec-tag">delivery</span></header>
+      <p>HLS / DASH packaging + cbcs DRM + CDN upload + IMF / MXF broadcast delivery.</p>
+    </article>
+  </div>
+</section>
+
+<!-- CLI TOOLBELT -->
+<section class="cli">
+  <header class="section-head">
+    <span class="section-num">05</span>
+    <h2 class="section-title">CLI toolbelt</h2>
+    <p class="section-sub">Three commands added to your <code>PATH</code> on install. Use them from any shell, Makefile, or CI job.</p>
+  </header>
+
+  <div class="terminal">
+    <header class="terminal-head">
+      <span class="terminal-dot dot-r"></span>
+      <span class="terminal-dot dot-y"></span>
+      <span class="terminal-dot dot-g"></span>
+      <span class="terminal-title">media-os · zsh</span>
+    </header>
+    <div class="terminal-body">
+      <p><span class="ps">$</span> <b>moprobe</b> --color master.mov</p>
+      <p class="out">  primaries: bt2020 · transfer: smpte2084 · matrix: bt2020nc · MaxCLL/MaxFALL: 1000/400</p>
+      <p class="out">  HDR10+ JSON: present · DV RPU: profile 8.4 · GOP: 48 · TC: 01:00:00:00</p>
+      <br />
+      <p><span class="ps">$</span> <b>mosafe</b> ffmpeg -i master.mov -c:v libx265 -b:v 5M -tag:v hvc1 -movflags +faststart out.mp4</p>
+      <p class="ok">  ✓ mp4 + faststart: present</p>
+      <p class="ok">  ✓ hevc + hvc1 tag: Apple-compatible</p>
+      <p class="ok">  ✓ no in-place overwrite</p>
+      <p class="out">  → safe to execute</p>
+      <br />
+      <p><span class="ps">$</span> <b>moqc</b> --ref master.mov --out out.mp4 --vmaf-min 95 --format json</p>
+      <p class="out">  VMAF: 96.21 · SSIM: 0.987 · PSNR: 41.8 · LUFS: -23.1 · TP: -1.4 dBTP</p>
+      <p class="ok">  PASS (above VMAF threshold)</p>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS COVERAGE -->
+<section class="skills" id="skills">
+  <header class="section-head">
+    <span class="section-num">06</span>
+    <h2 class="section-title">96 skills across 9 layers</h2>
+    <p class="section-sub">Every skill is a sealed folder. Copy one into <code>~/.claude/skills/</code> or install the full plugin.</p>
+  </header>
+
+  <table class="layers">
+    <thead>
+      <tr><th>#</th><th>Layer</th><th>Count</th><th>Coverage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td>FFmpeg complete</td><td><b>37</b></td><td>transcode, streaming, filters, HDR, codecs, protocols, broadcast MXF/IMF, DRM, 360°, VapourSynth</td></tr>
+      <tr><td>02</td><td>Professional companion tools</td><td><b>17</b></td><td>yt-dlp, MKVToolNix, Shaka, GPAC, MediaInfo, ImageMagick, ExifTool, SoX, HandBrake, whisper.cpp, Demucs</td></tr>
+      <tr><td>03</td><td>OBS Studio</td><td><b>04</b></td><td>obs-websocket v5, profile authoring, C++ plugin SDK, Python/Lua scripting</td></tr>
+      <tr><td>04</td><td>Streaming frameworks</td><td><b>02</b></td><td>GStreamer pipelines, MediaMTX all-protocol server</td></tr>
+      <tr><td>05</td><td>Broadcast IP + editorial + HDR dynamic</td><td><b>06</b></td><td>NDI, OpenTimelineIO, dovi_tool, hdr10plus_tool, Blackmagic DeckLink, gphoto2</td></tr>
+      <tr><td>06</td><td>Control protocols + system audio</td><td><b>09</b></td><td>MIDI 1.0 + 2.0 UMP, OSC, DMX512/Art-Net/sACN, VISCA + ONVIF PTZ, PipeWire/JACK/Core Audio/WASAPI</td></tr>
+      <tr><td>07</td><td>VFX stack</td><td><b>03</b></td><td>Pixar USD, OpenEXR, OpenImageIO</td></tr>
+      <tr><td>08</td><td>Computer vision + WebRTC</td><td><b>06</b></td><td>OpenCV, MediaPipe Tasks, W3C WebRTC spec, Pion, mediasoup, LiveKit</td></tr>
+      <tr><td>09</td><td>2026 open-source AI</td><td><b>12</b></td><td>Real-ESRGAN · RIFE · BiRefNet · Kokoro TTS · Riffusion · FLUX-schnell · LTX-Video · LivePortrait · Depth-Anything · PaddleOCR · DeepFilterNet · CLIP/SigLIP</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- INSTALL -->
+<section class="install" id="install">
+  <header class="section-head">
+    <span class="section-num">07</span>
+    <h2 class="section-title">Install</h2>
+  </header>
+
+  <div class="install-grid">
+    <article class="install-card">
+      <h4>Option A · Full plugin</h4>
+      <div class="install-code">
+        <span class="prompt">/plugin&nbsp;</span>marketplace add damionrashford/media-os<br />
+        <span class="prompt">/plugin&nbsp;</span>install media-os@media-os
+      </div>
+      <p>All 109 skills load under <code>/media-os:</code>. CLI tools added to <code>PATH</code>. Hooks register on session start.</p>
+    </article>
+    <article class="install-card">
+      <h4>Option B · Single skill</h4>
+      <div class="install-code">
+        git clone https://github.com/damionrashford/media-os.git /tmp/media-os<br />
+        cp -r /tmp/media-os/skills/ffmpeg-hdr-color ~/.claude/skills/<br />
+        cp -r /tmp/media-os/skills/obs-websocket ~/.claude/skills/
+      </div>
+      <p>Every skill is a sealed folder. Copy what you need; standalone load under <code>/&lt;skill-name&gt;</code>.</p>
+    </article>
+  </div>
+
+  <p class="install-req">
+    Requires Claude Code ≥ 2.1.60, Python ≥ 3.10, recent FFmpeg build.
+    macOS · Linux · Windows.
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-mark">MEDIA·OS</span>
+      <p>The Claude Code plugin for production media work.</p>
+      <p class="copy">MIT licensed. Built by <a href="https://github.com/damionrashford">Damion Rashford</a>.</p>
+    </div>
+    <div>
+      <h5>Repository</h5>
+      <ul>
+        <li><a href="https://github.com/damionrashford/media-os">GitHub</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/releases">Releases</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/blob/main/CHANGELOG.md">CHANGELOG</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/blob/main/CONTRIBUTING.md">Contributing</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/issues/new/choose">Open an issue</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/discussions">Discussions</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Documentation</h5>
+      <ul>
+        <li><a href="https://github.com/damionrashford/media-os/tree/main/skills">Skills catalog (109)</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/tree/main/modes">Modes (13)</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/tree/main/agents">Agents (7)</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/tree/main/hooks">Hooks</a></li>
+        <li><a href="https://github.com/damionrashford/media-os/tree/main/bin">CLIs</a></li>
+        <li><a href="llms.txt">llms.txt (AI agents)</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></li>
+        <li><a href="https://docs.claude.com/en/docs/claude-code/plugins">Plugins spec</a></li>
+        <li><a href="https://github.com/damionrashford/modes">modes pattern</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>MEDIA·OS · v2.1.0</span>
+    <span class="foot-tc" id="footTc">00:00:00:00</span>
+    <span><a href="https://github.com/damionrashford/media-os/blob/main/LICENSE">MIT LICENSE</a></span>
+  </div>
+</footer>
+
+<script src="assets/app.js" defer></script>
+</body>
+</html>
