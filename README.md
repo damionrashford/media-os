@@ -2,36 +2,48 @@
 
 # Media OS for Claude Code
 
-**The complete media production toolchain for Claude Code — FFmpeg, OBS, broadcast IP, HDR, AI media. 96 production skills, 13 workflow recipes, 7 orchestrator agents, 4 safety hooks, 3 CLIs. MIT licensed.**
+**Routed multi-agent media production for Claude Code.** Say what you want — _encode this for HLS, master Dolby Vision profile 8.4, set up an NDI feed with a PTZ camera_ — the router spawns the right specialist with the right tools and the right flags.
+
+**96 skills · 13 routed modes · 7 specialist agents · 5 lifecycle hooks · 3 PATH CLIs.** MIT licensed. v2.1.0.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge)](https://docs.claude.com/en/docs/claude-code/plugins)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white&style=for-the-badge)](https://www.python.org/)
 [![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?logo=ffmpeg&logoColor=white&style=for-the-badge)](https://ffmpeg.org/)
-[![CI](https://img.shields.io/github/actions/workflow/status/damionrashford/media-os/validate.yml?style=for-the-badge&label=validate)](https://github.com/damionrashford/media-os/actions/workflows/validate.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/damionrashford/media-os/validate.yml?style=for-the-badge&label=ci)](https://github.com/damionrashford/media-os/actions/workflows/validate.yml)
 
-[![GitHub Stars](https://img.shields.io/github/stars/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/network/members)
-[![Last Commit](https://img.shields.io/github/last-commit/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/commits/main)
+[![Stars](https://img.shields.io/github/stars/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/stargazers)
+[![Forks](https://img.shields.io/github/forks/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/network/members)
+[![Last commit](https://img.shields.io/github/last-commit/damionrashford/media-os?style=social)](https://github.com/damionrashford/media-os/commits/main)
 
-**[Install](#install) · [Skills catalog](#skills-catalog) · [Routed modes](#routed-modes) · [Workflow recipes](#workflow-recipes) · [Agents](#orchestrator-agents) · [Safety hooks](#safety-hooks) · [CLI toolbelt](#cli-toolbelt) · [FAQ](#faq)**
+🌐 **[damionrashford.github.io/media-os](https://damionrashford.github.io/media-os/)** — marketing site & docs
 
 </div>
 
+<table align="center">
+<tr>
+<td><a href="#install"><b>Install</b></a></td>
+<td><a href="#quick-examples">Quick examples</a></td>
+<td><a href="#routed-modes">Routed modes</a></td>
+<td><a href="#specialists">Specialists</a></td>
+<td><a href="#safety-hooks">Hooks</a></td>
+<td><a href="#cli-toolbelt">CLIs</a></td>
+<td><a href="#skills-catalog">Skills</a></td>
+<td><a href="#configuration">Config</a></td>
+<td><a href="#faq">FAQ</a></td>
+</tr>
+</table>
+
 ---
 
-## What is Media OS?
+## Why use Media OS
 
-**Media OS is a Claude Code plugin that turns natural-language requests into production-grade media pipelines.** Tell Claude *"deliver this master to HLS with VMAF ≥ 95 and Widevine DRM"* or *"set up an NDI feed from OBS to MediaMTX with a PTZ camera on cam-2"* — Media OS routes to the right skill chain, runs the right CLI with the right flags, and catches the foot-guns before they ship a broken file.
+Built for **broadcast engineers, video automation developers, live producers, and AI media pipeline engineers** who want Claude's natural-language interface over the real toolchain — not yet another wrapper that fails on the third edge case.
 
-Built for **broadcast engineers, video automation developers, live producers, and AI media pipeline engineers** who want Claude's natural-language interface over the real toolchain (FFmpeg, OBS, GStreamer, MediaMTX, NDI, DeckLink, Dolby Vision authoring tools, ComfyUI, etc.) — not yet another wrapper that fails on the third edge case.
-
-### Why this exists
-
-- **FFmpeg is powerful but unforgiving** — one missing flag (`-movflags +faststart`, `-sc_threshold 0`, `aac_adtstoasc`) breaks the pipeline. Every skill front-loads the gotchas LLMs get wrong from training data alone.
-- **Broadcast tools aren't scriptable out of the box** — NDI, DeckLink, Dolby Vision, HDR10+, OpenTimelineIO. Media OS provides scripted entry points for all of them.
-- **AI media is a license minefield** — every Layer 9 AI skill ships a hard filter: only Apache-2 / MIT / BSD / GPL models. NC and research-only models are explicitly documented-and-dropped.
-- **Safety hooks catch mistakes pre-flight** — `mosafe` lints FFmpeg commands before they run; `PostToolUse` re-probes every output for zero-duration / truncation.
+- **FFmpeg is unforgiving.** One missing flag — `-movflags +faststart`, `-sc_threshold 0`, `aac_adtstoasc`, `hvc1` vs `hev1` — ships a broken file. Every skill front-loads the gotchas LLMs get wrong from training data alone, and `mosafe` lints commands before they run.
+- **Broadcast tools aren't scriptable.** NDI, DeckLink, Dolby Vision, HDR10+, OpenTimelineIO — production-grade but not designed for natural-language interfaces. Media OS provides scripted entry points for all of them, with the right metadata sidecar mux handled.
+- **AI media is a license minefield.** Every Layer 9 AI skill ships a hard filter: only Apache-2 / MIT / BSD / GPL models. NC, research-only, and commercial-restricted models are explicitly documented-and-dropped.
+- **Routed dispatch is deterministic.** The router skill auto-loads on any production intent and forces the four-step contract (read `_shared.md`, read mode file, compose, spawn). No opportunistic skill selection; no forgotten cross-cutting rules.
 
 ---
 
@@ -44,11 +56,11 @@ Built for **broadcast engineers, video automation developers, live producers, an
 /plugin install media-os@media-os
 ```
 
-All **109 skills** (96 tool + 13 workflow) load under the `/media-os:` namespace. Claude auto-triggers the right skill for each request. The `bin/` CLIs (`moprobe`, `moqc`, `mosafe`) are added to your `PATH` automatically.
+All **109 skills** (96 tool + 13 workflow) plus the routing layer load under `/media-os:`. The router auto-triggers on intent. The `bin/` CLIs (`moprobe`, `moqc`, `mosafe`) are added to your `PATH`. Hooks register on session start.
 
 ### Option B — Copy a single skill
 
-Every skill at [`skills/<name>/`](skills/) is a **sealed self-contained folder** — `SKILL.md` + optional `scripts/` + `references/`, no cross-skill imports. Copy just the one you need:
+Every skill at [`skills/<name>/`](skills/) is a **sealed self-contained folder** — `SKILL.md` + optional `scripts/` + `references/`, no cross-skill imports.
 
 ```bash
 git clone https://github.com/damionrashford/media-os.git /tmp/media-os
@@ -57,7 +69,7 @@ cp -r /tmp/media-os/skills/obs-websocket      ~/.claude/skills/
 cp -r /tmp/media-os/skills/hdr-dovi-tool      ~/.claude/skills/
 ```
 
-Standalone skills load under `/ffmpeg-hdr-color`, `/obs-websocket`, etc. — no plugin namespace, no marketplace dependency.
+Standalone skills load under `/ffmpeg-hdr-color`, `/obs-websocket`, etc. No plugin namespace, no marketplace dependency.
 
 ### Requirements
 
@@ -65,55 +77,32 @@ Standalone skills load under `/ffmpeg-hdr-color`, `/obs-websocket`, etc. — no 
 |---|---|---|
 | Claude Code | ≥ 2.1.60 | Plugin system support |
 | Python | ≥ 3.10 | All helper scripts are stdlib-only, run via `uv run` |
-| FFmpeg | Recent full build | `brew install ffmpeg` / `apt install ffmpeg` / `winget install Gyan.FFmpeg` |
-| External tools | Per-skill | See [Requirements](#per-skill-requirements) — install only what you use |
+| FFmpeg | Recent full build | `brew install ffmpeg` · `apt install ffmpeg` · `winget install Gyan.FFmpeg` |
+| Per-skill CLIs | varies | See [Configuration](#configuration) — install only what you use |
 
 ---
 
-## Common workflows
+## Quick examples
 
 The most-requested production tasks and the skill chain Media OS routes them to:
 
-| Production task | Skills invoked (in order) |
-|---|---|
-| **Broadcast HLS / DASH delivery with DRM** | `ffmpeg-streaming` → `ffmpeg-quality` → `media-shaka` → `ffmpeg-captions` |
-| **Dolby Vision / HDR10+ authoring** | `ffmpeg-hdr-color` → `hdr-dovi-tool` → `hdr-hdr10plus-tool` → `ffmpeg-mxf-imf` |
-| **AI upscale + interpolate + denoise** | `media-upscale` → `media-interpolate` → `media-denoise-ai` → `ffmpeg-transcode` |
-| **Live OBS + NDI + PTZ production** | `obs-websocket` → `ndi-tools` → `ptz-onvif` → `media-midi` → `media-dmx` |
-| **Podcast: TTS → mix → normalize → captions** | `media-tts-ai` → `ffmpeg-audio-filter` → `media-ffmpeg-normalize` → `ffmpeg-captions` |
-| **VFX ACES conform (EXR → master)** | `vfx-oiio` → `vfx-openexr` → `ffmpeg-ocio-colorpro` → `ffmpeg-transcode` |
-| **Editorial round-trip (Premiere ↔ Resolve ↔ Avid)** | `otio-convert` → `ffmpeg-probe` → `media-mediainfo` → `ffmpeg-transcode` |
-| **Streaming origin (RTMP/SRT/WHIP/RIST)** | `mediamtx-server` → `ffmpeg-rist-zmq` → `ffmpeg-whip` |
-| **Lipsync + face animation** | `media-lipsync` → `media-tts-ai` → `ffmpeg-transcode` |
-
-→ Full set of orchestrated production recipes: [Workflow recipes](#workflow-recipes).
-
----
-
-## Skills catalog
-
-**109 skills total**: 96 tool-and-technique skills across 9 layers, plus 13 end-to-end workflow recipes.
-
-| # | Layer | Count | Coverage |
-|---|---|---|---|
-| **1** | [FFmpeg complete](skills/) | **37** | transcode, streaming, filters, HDR, codecs, protocols, broadcast MXF/IMF, DRM, 360°, VapourSynth |
-| **2** | [Professional companion tools](skills/) | **17** | yt-dlp, MKVToolNix, Shaka Packager, GPAC, MediaInfo, ImageMagick, ExifTool, SoX, HandBrake, whisper.cpp, Demucs, PySceneDetect, ffmpeg-normalize, MoviePy, alass, cloud upload, GNU parallel |
-| **3** | [OBS Studio](skills/) | **4** | obs-websocket v5, profile authoring, C++ plugin SDK, Python/Lua scripting |
-| **4** | [Streaming frameworks](skills/) | **2** | GStreamer pipelines, MediaMTX all-protocol server |
-| **5** | [Broadcast IP + editorial + HDR dynamic](skills/) | **6** | NDI, OpenTimelineIO, dovi_tool, hdr10plus_tool, Blackmagic DeckLink SDI, gphoto2 DSLR tether |
-| **6** | [Control protocols + system audio](skills/) | **9** | MIDI 1.0 + 2.0 UMP, OSC, DMX512/Art-Net/sACN via OLA, VISCA + ONVIF PTZ, PipeWire/JACK/Core Audio/WASAPI |
-| **7** | [VFX stack](skills/) | **3** | Pixar USD, OpenEXR, OpenImageIO |
-| **8** | [Computer vision + WebRTC](skills/) | **6** | OpenCV, MediaPipe Tasks, W3C WebRTC spec, Pion (Go), mediasoup (Node SFU), LiveKit (Go SFU) |
-| **9** | [2026 open-source AI media](skills/) | **12** | Real-ESRGAN / SwinIR / HAT upscale · RIFE / FILM interpolation · rembg / BiRefNet / RVM matting · Kokoro / OpenVoice / Piper / StyleTTS2 TTS · Riffusion music gen · ComfyUI / FLUX-schnell / Kolors image gen · LTX-Video / CogVideoX video gen · LivePortrait / LatentSync lipsync · Depth-Anything / MiDaS depth · PaddleOCR / Tesseract 5 OCR · DeepFilterNet / RNNoise denoise · CLIP / SigLIP / BLIP-2 / LLaVA tagging |
-| **W** | [Workflow recipes](#workflow-recipes) | **13** | End-to-end domain orchestrators (live, streaming, broadcast, editorial, AI, podcast, VFX, HDR, VOD, QC, audio, acquisition, archive) |
-
-→ Browse the full catalog at [`skills/`](skills/). Every skill is a sealed folder with a `SKILL.md`, optional `scripts/` (stdlib-only Python 3 via `uv run`), and optional `references/`.
+| You say... | Mode dispatched | Skills invoked |
+|---|---|---|
+| "encode this for HLS, VMAF ≥ 95" | `streaming-distribution` | `ffmpeg-streaming` → `ffmpeg-quality` → `media-shaka` → `ffmpeg-captions` |
+| "master Dolby Vision profile 8.4 for HLS" | `hdr-mastering` → `streaming-distribution` | `ffmpeg-hdr-color` → `hdr-dovi-tool` → `hdr-hdr10plus-tool` → `ffmpeg-mxf-imf` |
+| "upscale + interpolate + denoise" | `ai-enhancement` | `media-upscale` → `media-interpolate` → `media-denoise-ai` → `ffmpeg-transcode` |
+| "set up NDI feed from OBS with PTZ on cam-2" | `live-production` | `obs-websocket` → `ndi-tools` → `ptz-onvif` → `media-midi` → `media-dmx` |
+| "podcast: TTS → mix → normalize → captions" | `podcast-pipeline` | `media-tts-ai` → `ffmpeg-audio-filter` → `media-ffmpeg-normalize` → `ffmpeg-captions` |
+| "VFX ACES conform (EXR → master)" | `vfx-pipeline` | `vfx-oiio` → `vfx-openexr` → `ffmpeg-ocio-colorpro` → `ffmpeg-transcode` |
+| "Premiere ↔ Resolve round-trip" | `editorial-interchange` | `otio-convert` → `ffmpeg-probe` → `media-mediainfo` → `ffmpeg-transcode` |
+| "QC + deliver IMF for Netflix" | `analysis-quality` → `broadcast-delivery` | `moqc` → `ffmpeg-mxf-imf` → `media-shaka` |
+| "lipsync + face animation" | `ai-enhancement` | `media-lipsync` → `media-tts-ai` → `ffmpeg-transcode` |
 
 ---
 
 ## Routed modes
 
-**Media OS implements the [modes pattern](https://github.com/damionrashford/modes) — a routed multi-agent dispatch system.** Say what you want; the router auto-loads on media production intent and spawns the right specialist in an isolated context with a per-task playbook.
+**Media OS implements the [modes pattern](https://github.com/damionrashford/modes) — a routed multi-agent dispatch system.** The router skill auto-loads on any media production intent and forces a deterministic four-step contract.
 
 ### How dispatch works
 
@@ -126,21 +115,21 @@ Dispatch contract (4 steps, every dispatch):
   1. Read modes/_shared.md from disk
   2. Read modes/streaming-distribution.md from disk
   3. Compose prompt = _shared + mode + user_ask
-  4. Agent(subagent_type="delivery",
-          prompt=composed,
-          description="streaming-distribution")
+  4. Agent(subagent_type="delivery", prompt=composed, description="streaming-distribution")
         ↓
 delivery specialist runs in isolated context:
   - probes input, derives bitrate ladder
   - mosafe-wraps every ffmpeg invocation
   - encodes tiers, runs moqc per tier
-  - packages HLS/DASH, applies cbcs DRM
+  - packages HLS / DASH, applies cbcs DRM
   - writes artifact to deterministic path
         ↓
 ${MEDIA_WORK_DIR}/modes/streaming-distribution/{date}_{slug}/
 ```
 
-### The 13 modes (one per production domain)
+Mode files are read **fresh from disk on every dispatch** — never cached, never paraphrased. Cross-cutting rules (`mosafe`-wrap every ffmpeg call, license filter on AI models, deterministic output paths, idempotent re-runs) live in `modes/_shared.md` and apply to every specialist.
+
+### The 13 modes
 
 Each mode declares its specialist, trigger phrases, required + optional inputs, output schema, and quality bar. Modes are the **configurable surface** — adding a task type is one new mode file plus one routing-table row.
 
@@ -148,167 +137,148 @@ Each mode declares its specialist, trigger phrases, required + optional inputs, 
 |---|---|---|
 | [`live-production`](modes/live-production.md) | `live` | OBS + NDI + DeckLink + PTZ + RTMP/SRT/RIST/WHIP |
 | [`streaming-distribution`](modes/streaming-distribution.md) | `delivery` | HLS / DASH / CMAF / LL-HLS + cbcs DRM + CDN upload |
-| [`broadcast-delivery`](modes/broadcast-delivery.md) | `delivery` | DPP AS-11 / Netflix IMF / ProRes / MXF OP1a (approval-gated) |
+| [`broadcast-delivery`](modes/broadcast-delivery.md) ⚠️ | `delivery` | DPP AS-11 · Netflix IMF · ProRes · MXF OP1a (approval-gated) |
 | [`editorial-interchange`](modes/editorial-interchange.md) | `architect` | Premiere ↔ Resolve ↔ Avid ↔ FCP via FCPXML / AAF / EDL / OTIO |
 | [`ai-enhancement`](modes/ai-enhancement.md) | `architect` | Upscale, interpolate, denoise, matte, depth, lipsync |
-| [`ai-generation`](modes/ai-generation.md) | `architect` | Image / video / TTS / music generation (license-filtered) |
+| [`ai-generation`](modes/ai-generation.md) | `architect` | Image / video / TTS / music gen (license-filtered) |
 | [`podcast-pipeline`](modes/podcast-pipeline.md) | `architect` | Record / script / re-master → EBU R128 + captions |
 | [`vfx-pipeline`](modes/vfx-pipeline.md) | `architect` | EXR / DPX / USD through ACES + OCIO to ProRes 4444 / J2K IMF |
-| [`hdr-mastering`](modes/hdr-mastering.md) | `hdr` | HDR10, HDR10+, Dolby Vision profiles 5/7/8.4, HLG, SDR tone-map |
+| [`hdr-mastering`](modes/hdr-mastering.md) | `hdr` | HDR10, HDR10+, Dolby Vision profiles 5 / 7 / 8.4, HLG, SDR tone-map |
 | [`vod-post-production`](modes/vod-post-production.md) | `encoder` | H.264 / H.265 / AV1 / ProRes / DNxHR with VMAF gate |
 | [`analysis-quality`](modes/analysis-quality.md) | `qc` | VMAF + SSIM + PSNR + loudness + freeze / black / silence |
 | [`audio-production`](modes/audio-production.md) | `architect` | PipeWire / JACK / Core Audio / WASAPI routing, mix, repair, MIDI/OSC |
 | [`acquisition-archive`](modes/acquisition-archive.md) | `probe` | Probe-batch, ingest-card, tether-capture, archive-verify |
 
+⚠️ = approval-gated (operator confirms target spec before dispatch).
+
+The 13 modes are 1:1 with the 13 portable `workflow-*` skills in [`skills/`](skills/) — same domain coverage, two delivery surfaces. The modes layer is the orchestrated path (auto-route, dispatch contract, deterministic output paths); the `workflow-*` skills are the copy-a-folder portable path.
+
 ### Chained dispatch
 
-Multi-step intents run sequentially with artifact paths passed forward. Examples the router knows about:
+Multi-step intents run sequentially with artifact paths passed forward. The router knows about:
 
-| User says | Chain |
+| You say... | Chain |
 |---|---|
 | "encode + deliver this master for HLS" | `vod-post-production` → `streaming-distribution` |
 | "upscale + interpolate + deliver" | `ai-enhancement` → `vod-post-production` → `streaming-distribution` |
 | "HDR master + broadcast deliver" | `hdr-mastering` → `broadcast-delivery` |
-| "QC + deliver" | `analysis-quality` → if pass → `broadcast-delivery` |
+| "QC + deliver" | `analysis-quality` → (if pass) → `broadcast-delivery` |
 | "VFX → HDR master" | `vfx-pipeline` → `hdr-mastering` |
 
 ### Observability
 
-Every dispatch logs one JSON line to `${MEDIA_WORK_DIR}/modes/dispatch.log` via the `SubagentStop` audit hook — timestamp, mode, specialist, duration, exit status, transcript path. Tail it to see dispatch rate and failure patterns.
+Every dispatch logs one JSON line to `${MEDIA_WORK_DIR}/modes/dispatch.log` via the `SubagentStop` audit hook — timestamp, mode, specialist, duration, exit status, transcript path.
 
-### The dispatch contract is deterministic
-
-The router skill auto-loads on every media production intent and forces the four-step contract. The mode files are loaded fresh from disk on every dispatch — never cached, never paraphrased. Cross-cutting rules (`mosafe`-wrap every ffmpeg call, license filter on AI models, deterministic output paths, idempotent re-runs) live in `modes/_shared.md` and apply to every specialist.
-
-### License filter on AI skills (Layer 9)
-
-Every model shipped in a Layer 9 skill is **Apache-2 / MIT / BSD / GPL**. Models with NC / research-only / commercial-restricted licenses — **XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base** — are explicitly documented-and-dropped in each AI skill's [`references/LICENSES.md`](skills/). You don't accidentally ship something you can't monetize.
+```bash
+tail -F ${MEDIA_WORK_DIR}/modes/dispatch.log | jq
+```
 
 ---
 
-## Workflow recipes
+## Specialists
 
-13 end-to-end production workflows shipped as first-class skills. Say "I need to deliver to broadcast" and Claude auto-loads [`workflow-broadcast-delivery`](skills/workflow-broadcast-delivery), or invoke directly with `/media-os:workflow-broadcast-delivery`.
+7 domain agents with pre-loaded skill sets and tool restrictions. Spawn from any Claude conversation, or let the router dispatch them.
 
-| Domain | Workflow skill |
-|---|---|
-| Live production | [`workflow-live-production`](skills/workflow-live-production) |
-| Streaming distribution | [`workflow-streaming-distribution`](skills/workflow-streaming-distribution) |
-| Broadcast delivery | [`workflow-broadcast-delivery`](skills/workflow-broadcast-delivery) |
-| Editorial interchange | [`workflow-editorial-interchange`](skills/workflow-editorial-interchange) |
-| AI enhancement | [`workflow-ai-enhancement`](skills/workflow-ai-enhancement) |
-| AI generation | [`workflow-ai-generation`](skills/workflow-ai-generation) |
-| Podcast pipeline | [`workflow-podcast-pipeline`](skills/workflow-podcast-pipeline) |
-| VFX pipeline | [`workflow-vfx-pipeline`](skills/workflow-vfx-pipeline) |
-| HDR mastering | [`workflow-hdr`](skills/workflow-hdr) |
-| VOD post-production | [`workflow-vod-post-production`](skills/workflow-vod-post-production) |
-| Analysis + QC | [`workflow-analysis-quality`](skills/workflow-analysis-quality) |
-| Audio production | [`workflow-audio-production`](skills/workflow-audio-production) |
-| Acquisition + archive | [`workflow-acquisition-archive`](skills/workflow-acquisition-archive) |
-
-Each workflow skill documents the full skill chain, step-by-step pipeline, variants (e.g. live vs VOD HLS), and the production gotchas that break real pipelines.
-
----
-
-## Orchestrator agents
-
-7 domain specialists with pre-loaded skill sets and tool restrictions. Spawn from any Claude conversation:
-
-| Agent | Specialization |
-|---|---|
-| [`architect`](agents/architect.md) | Plans end-to-end pipelines before any command runs |
-| [`probe`](agents/probe.md) | Forensic file inspection (color, HDR side-data, GOP, captions, timecode) |
-| [`qc`](agents/qc.md) | Automated quality gate — VMAF + SSIM + PSNR + loudness + freeze/black/silence detection |
-| [`hdr`](agents/hdr.md) | HDR10, HDR10+, Dolby Vision, PQ↔HLG, ACES, OpenColorIO |
-| [`encoder`](agents/encoder.md) | Rate control, pixel format, container flags, hardware acceleration |
-| [`live`](agents/live.md) | OBS + RTMP/SRT/RIST/WHIP + NDI + DeckLink + PTZ |
-| [`delivery`](agents/delivery.md) | HLS/DASH packaging + DRM (cbcs) + CDN upload + IMF/MXF |
+| Agent | Color | Specialization |
+|---|---|---|
+| [`architect`](agents/architect.md) | 🔵 blue | Plans end-to-end pipelines before any command runs |
+| [`probe`](agents/probe.md) | 🟢 green | Forensic file inspection — color, HDR side-data, GOP, captions, timecode |
+| [`qc`](agents/qc.md) | 🟦 teal | Automated quality gate — VMAF + SSIM + PSNR + loudness + freeze/black/silence |
+| [`hdr`](agents/hdr.md) | 🟣 purple | HDR10, HDR10+, Dolby Vision, PQ ↔ HLG, ACES, OpenColorIO |
+| [`encoder`](agents/encoder.md) | 🟠 orange | Rate control, pixel format, container flags, hardware acceleration |
+| [`live`](agents/live.md) | 🔴 red | OBS + RTMP/SRT/RIST/WHIP + NDI + DeckLink + PTZ |
+| [`delivery`](agents/delivery.md) | 🟡 yellow | HLS/DASH packaging + cbcs DRM + CDN upload + IMF/MXF |
 
 ---
 
 ## Safety hooks
 
-4 lifecycle hooks fire automatically on install and catch the FFmpeg mistakes that take a pipeline down:
+5 lifecycle hooks fire automatically. Four catch the FFmpeg mistakes that take a pipeline down; one audits every dispatch.
 
 | Event | What it does |
 |---|---|
-| `SessionStart` | Detects installed CLIs + FFmpeg build flags (`libvmaf`, `libzimg`, `libvidstab`, `librist`, `libplacebo`, hwaccel backends) and surfaces gaps before Claude recommends anything it can't run |
-| `UserPromptSubmit` | When you name a media path in your prompt, auto-probes it and drops the summary (codec, color, HDR side-data, duration, GOP) into context |
+| `SessionStart` | Probes installed CLIs + FFmpeg build flags (`libvmaf`, `libzimg`, `libvidstab`, `librist`, `libplacebo`, hwaccel) and surfaces gaps before Claude recommends anything it can't run |
+| `UserPromptSubmit` | When you name a media path, auto-probes it and drops the summary (codec, color, HDR side-data, duration, GOP) into context |
 | `PreToolUse(Bash)` | Flags in-place overwrites · missing `-movflags +faststart` · missing `-sc_threshold 0` on HLS · missing `aac_adtstoasc` on TS→MP4 · conflicting `-crf` + `-b:v` |
-| `PostToolUse(Bash)` | Re-`ffprobe`s the output of every FFmpeg call; catches zero-duration / truncated files before they ship |
+| `PostToolUse(Bash)` | Re-`ffprobe`s every FFmpeg output; catches zero-duration / truncated files before they ship |
+| `SubagentStop` | Logs every routed dispatch (mode, specialist, duration, exit status) to `${MEDIA_WORK_DIR}/modes/dispatch.log` |
 
 ---
 
 ## CLI toolbelt
 
-Three commands added to your `PATH` after install. Use them from any shell, Makefile, or CI job:
-
-### `moprobe` — compact media inspection
+Three commands added to your `PATH` on install. Use them from any shell, Makefile, or CI job.
 
 ```bash
-moprobe source.mov                    # one-line summary
-moprobe --color source.mov            # HDR / color pipeline summary
-moprobe --json source.mov             # full ffprobe JSON
-```
+# Compact media inspection
+moprobe source.mov                                # one-line summary
+moprobe --color source.mov                        # HDR / color pipeline summary
+moprobe --json source.mov                         # full ffprobe JSON
 
-### `moqc` — quality gate
-
-```bash
-moqc --ref source.mov --out encoded.mp4
+# Quality gate (VMAF + SSIM + PSNR + loudness + freeze/black/silence)
 moqc --ref source.mov --out encoded.mp4 --vmaf-min 95 --format json
+
+# FFmpeg pre-flight lint (wrap every ffmpeg call in CI)
+mosafe ffmpeg -i in.mov -c:v libx264 -crf 23 -b:v 5M out.mp4 || exit 1
 ```
 
-Runs VMAF + SSIM + PSNR + loudness analysis. Exits non-zero if quality drops below threshold — drop it in CI.
-
-### `mosafe` — FFmpeg pre-flight lint
-
-```bash
-mosafe ffmpeg -i in.mov -c:v libx264 -crf 23 -b:v 5M out.mp4
-```
-
-Catches conflicting flags, missing container hints, and risky overwrites **before** the command runs. Exits non-zero on detected issues. Wrap any `ffmpeg` invocation in CI: `mosafe ffmpeg ... || exit 1`.
+All three exit non-zero on failure — drop them in CI directly. The plugin also runs an `incoming-watch` background monitor that polls `INCOMING_MEDIA_DIR` for new stable files and surfaces them to Claude with a suggested probe.
 
 ---
 
-## Incoming-media watcher
+## Skills catalog
 
-Set `INCOMING_MEDIA_DIR` in plugin userConfig and the `incoming-watch` monitor polls the directory for new stable (mtime-quiesced) files. Each new asset is surfaced to Claude with a suggested probe prompt — triage dropped media without asking.
+**96 tool-and-technique skills across 9 layers**, plus **13 workflow-* recipe skills** (the portable counterparts of the 13 routed modes).
+
+| # | Layer | Count | Coverage |
+|---|---|---|---|
+| **1** | FFmpeg complete | **37** | transcode, streaming, filters, HDR, codecs, protocols, broadcast MXF/IMF, DRM, 360°, VapourSynth |
+| **2** | Professional companion tools | **17** | yt-dlp, MKVToolNix, Shaka Packager, GPAC, MediaInfo, ImageMagick, ExifTool, SoX, HandBrake, whisper.cpp, Demucs, PySceneDetect, ffmpeg-normalize, MoviePy, alass, cloud upload, GNU parallel |
+| **3** | OBS Studio | **4** | obs-websocket v5, profile authoring, C++ plugin SDK, Python/Lua scripting |
+| **4** | Streaming frameworks | **2** | GStreamer pipelines, MediaMTX all-protocol server |
+| **5** | Broadcast IP + editorial + HDR dynamic | **6** | NDI, OpenTimelineIO, dovi_tool, hdr10plus_tool, Blackmagic DeckLink SDI, gphoto2 DSLR tether |
+| **6** | Control protocols + system audio | **9** | MIDI 1.0 + 2.0 UMP, OSC, DMX512/Art-Net/sACN via OLA, VISCA + ONVIF PTZ, PipeWire/JACK/Core Audio/WASAPI |
+| **7** | VFX stack | **3** | Pixar USD, OpenEXR, OpenImageIO |
+| **8** | Computer vision + WebRTC | **6** | OpenCV, MediaPipe Tasks, W3C WebRTC spec, Pion (Go), mediasoup (Node SFU), LiveKit (Go SFU) |
+| **9** | 2026 open-source AI media | **12** | Real-ESRGAN · SwinIR · HAT · RIFE · FILM · BiRefNet · rembg · RVM · Kokoro · OpenVoice · Piper · StyleTTS2 · Riffusion · ComfyUI · FLUX-schnell · Kolors · LTX-Video · CogVideoX · LivePortrait · LatentSync · Depth-Anything · MiDaS · PaddleOCR · DeepFilterNet · CLIP · SigLIP |
+| **W** | Workflow recipe skills | **13** | Portable counterparts of the 13 [routed modes](#routed-modes) |
+
+Every skill is a sealed folder. Browse the full catalog at [`skills/`](skills/).
+
+### License filter on AI skills
+
+Every model shipped in a Layer 9 skill is **Apache-2 / MIT / BSD / GPL**. Restricted models — **XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base** — are explicitly documented-and-dropped in each AI skill's [`references/LICENSES.md`](skills/). You don't accidentally ship something you can't monetize.
 
 ---
 
 ## Configuration
 
-16 fields, all set at `/plugin install` time:
+### `userConfig` fields (set at `/plugin install` time)
 
 | Field | Purpose | Default |
 |---|---|---|
 | `MEDIA_WORK_DIR` | Scratch directory for intermediate renders | `/tmp/media-os` |
-| `DEFAULT_ENCODE_PRESET` | x264/x265 default preset | `medium` |
+| `DEFAULT_ENCODE_PRESET` | x264 / x265 default preset | `medium` |
 | `DEFAULT_VMAF_TARGET` | QC gate threshold | `93` |
-| `OBS_WEBSOCKET_URL` | OBS control endpoint | `ws://localhost:4455` |
-| `OBS_WEBSOCKET_PASSWORD` | OBS auth | _empty_ |
+| `OBS_WEBSOCKET_URL` / `_PASSWORD` | OBS control endpoint + auth | `ws://localhost:4455` |
 | `HUGGINGFACE_TOKEN` | AI skill model access | _empty_ |
 | `SHAKA_KEY_SERVER_URL` | DRM key server for Shaka Packager | _empty_ |
-| `CLOUDFLARE_STREAM_TOKEN` | Cloudflare Stream uploads | _empty_ |
-| `MUX_TOKEN_ID` / `MUX_TOKEN_SECRET` | Mux uploads | _empty_ |
-| `BUNNY_CDN_TOKEN` | Bunny.net Stream uploads | _empty_ |
-| `INCOMING_MEDIA_DIR` | Watcher directory | _empty (disabled)_ |
+| `CLOUDFLARE_STREAM_TOKEN` · `MUX_TOKEN_ID/SECRET` · `BUNNY_CDN_TOKEN` | CDN upload credentials | _empty_ |
+| `INCOMING_MEDIA_DIR` | Watcher target | _empty (disabled)_ |
 | `LIVE_STREAM_URL` | Stream-health monitor target | _empty (disabled)_ |
-| `RENDER_QUEUE_URL` / `RENDER_QUEUE_DIR` | Render farm monitor | _empty (disabled)_ |
-| `SAFETY_REQUIRE_CONFIRM_OVERWRITE` | Toggle the pre-FFmpeg overwrite guard | `true` |
+| `RENDER_QUEUE_URL` / `_DIR` | Render farm monitor | _empty (disabled)_ |
+| `SAFETY_REQUIRE_CONFIRM_OVERWRITE` | Toggle pre-FFmpeg overwrite guard | `true` |
 
----
+### External tool requirements (per skill)
 
-## Per-skill requirements
-
-Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out to the real CLI. **Install only what your workflows actually need:**
+Install only what your workflows actually need. Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out to the real CLI.
 
 <details>
-<summary><strong>FFmpeg + companion tools</strong> (37 + 17 skills)</summary>
+<summary><strong>FFmpeg + companion tools</strong> (Layers 1 + 2)</summary>
 
 | Skill family | External tool | Required build flags |
 |---|---|---|
-| `ffmpeg-*` (most) | `ffmpeg`, `ffprobe`, `ffplay` | A full-featured build (`brew install ffmpeg`) |
+| `ffmpeg-*` (most) | `ffmpeg`, `ffprobe`, `ffplay` | A full-featured build |
 | `ffmpeg-stabilize` | ffmpeg | `--enable-libvidstab` |
 | `ffmpeg-quality` | ffmpeg | `--enable-libvmaf` |
 | `ffmpeg-hdr-color` | ffmpeg | `--enable-libzimg` |
@@ -316,9 +286,9 @@ Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out t
 | `ffmpeg-ocio-colorpro` | ffmpeg + OpenColorIO | OCIO link |
 | `ffmpeg-*` (GPU tonemap) | ffmpeg + libplacebo | `--enable-libplacebo` |
 | `media-ytdlp` | `yt-dlp` | — |
-| `media-whisper` | `whisper.cpp` or `faster-whisper` | — |
+| `media-whisper` | `whisper.cpp` / `faster-whisper` | — |
 | `media-demucs` | `demucs` | — |
-| `media-mkvtoolnix` | `mkvmerge`, `mkvextract`, `mkvpropedit` | — |
+| `media-mkvtoolnix` | `mkvmerge` / `mkvextract` / `mkvpropedit` | — |
 | `media-gpac` | `MP4Box` | — |
 | `media-shaka` | `packager` (Shaka) | — |
 | `media-handbrake` | `HandBrakeCLI` | — |
@@ -327,7 +297,7 @@ Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out t
 | `media-mediainfo` | `mediainfo` | — |
 | `media-sox` | `sox` | — |
 | `media-scenedetect` | `scenedetect` | — |
-| `media-subtitle-sync` | `alass` or `ffsubsync` | — |
+| `media-subtitle-sync` | `alass` / `ffsubsync` | — |
 | `media-ffmpeg-normalize` | `ffmpeg-normalize` | — |
 | `media-moviepy` | `moviepy` | — |
 | `media-batch` | `parallel` (GNU parallel) | — |
@@ -342,7 +312,7 @@ Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out t
 |---|---|
 | `hdr-dovi-tool` | `dovi_tool` |
 | `hdr-hdr10plus-tool` | `hdr10plus_tool` |
-| `ndi-tools` | NDI Tools runtime (Vizrt/NewTek) |
+| `ndi-tools` | NDI Tools runtime (Vizrt / NewTek) |
 | `decklink-tools` | Blackmagic Desktop Video driver |
 | `gphoto2-tether` | `gphoto2` (libgphoto2) |
 | `media-dmx` | `ola` / `olad` daemon |
@@ -354,7 +324,7 @@ Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out t
 </details>
 
 <details>
-<summary><strong>VFX</strong> (Layer 7)</summary>
+<summary><strong>VFX + AI media</strong> (Layers 7 + 9)</summary>
 
 | Skill | External tool |
 |---|---|
@@ -362,12 +332,7 @@ Every helper script is stdlib-only Python 3 (runs via `uv run`) and shells out t
 | `vfx-oiio` | `oiiotool`, `iinfo`, `iconvert` |
 | `vfx-openexr` | OpenEXR CLI + libOpenEXR |
 
-</details>
-
-<details>
-<summary><strong>AI media</strong> (Layer 9)</summary>
-
-Layer 9 skills require Python + a model runtime (PyTorch or similar). Each AI skill's [`references/`](skills/) documents exact model install paths and GPU requirements. Most benefit significantly from a CUDA / Metal / ROCm-capable GPU. **All models are Apache-2 / MIT / BSD / GPL.**
+Layer 9 AI skills require Python + a model runtime (PyTorch or similar). Each AI skill's [`references/`](skills/) documents exact model install paths and GPU requirements. Most benefit significantly from a CUDA / Metal / ROCm-capable GPU. **All models are Apache-2 / MIT / BSD / GPL.**
 
 </details>
 
@@ -375,25 +340,24 @@ Layer 9 skills require Python + a model runtime (PyTorch or similar). Each AI sk
 
 ## Architecture
 
-- **Skills are sealed.** One folder, one `SKILL.md`, optional `scripts/` and `references/`. No cross-skill imports. Copy a folder, get a working skill.
+- **Skills are sealed.** One folder, one `SKILL.md`, optional `scripts/` and `references/`. No cross-skill imports — copy a folder, get a working skill.
 - **SKILL.md bodies ≤ 500 lines.** Deep reference material lives in `references/<topic>.md` and loads on demand via progressive disclosure.
-- **Helper scripts are stdlib Python 3.** PEP 723 inline deps (`uv run` ready), `--dry-run`, `--verbose`, the exact shell command printed to stderr before executing.
-- **Gotchas front-loaded.** Every `SKILL.md` has a Gotchas section with the exact production traps LLMs get wrong from training data alone — wrong pixel format, missing `-movflags +faststart`, `-sc_threshold 0` for HLS, `aac_adtstoasc` for TS→MP4 remux, ASS `&HAABBGGRR` color order, `zscale=t=linear→format=gbrpf32le` sandwich for PQ↔HLG, `fieldmatch→decimate` IVTC order, `repeat-headers=1` for streaming HEVC, `hvc1` vs `hev1` tags, `cbcs` scheme for unified Widevine + PlayReady + FairPlay DRM.
+- **Helper scripts are stdlib Python 3.** PEP 723 inline deps (`uv run` ready), `--dry-run`, `--verbose`, exact shell command printed to stderr before executing.
+- **Gotchas front-loaded.** Every `SKILL.md` lists production traps LLMs get wrong from training data alone — wrong pixel format, missing `-movflags +faststart`, `-sc_threshold 0` for HLS, `aac_adtstoasc` for TS→MP4, ASS `&HAABBGGRR` color order, `zscale=t=linear→format=gbrpf32le` sandwich for PQ ↔ HLG, `fieldmatch → decimate` IVTC order, `repeat-headers=1` for streaming HEVC, `hvc1` vs `hev1` tags, `cbcs` for unified DRM.
+- **Modes are deterministic.** Mode files are loaded fresh from disk on every dispatch. The router skill auto-loads on intent and forces the four-step contract (read `_shared.md`, read mode file, compose, spawn). No opportunistic skill selection.
 
-→ Full contributor reference: [`CLAUDE.md`](CLAUDE.md).
+→ Full contributor reference: [`CLAUDE.md`](CLAUDE.md). Modes pattern reference: [github.com/damionrashford/modes](https://github.com/damionrashford/modes).
 
 ---
 
-## Contributing
+## Contributing & releases
 
 Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-**Quick paths:**
-
 - 🐛 [Report a broken skill / hook / CLI](https://github.com/damionrashford/media-os/issues/new?template=bug.yml)
-- 💡 [Propose a new tool-and-technique skill](https://github.com/damionrashford/media-os/issues/new?template=skill_request.yml)
-- 🛤️ [Propose a new workflow recipe](https://github.com/damionrashford/media-os/issues/new?template=workflow_request.yml)
-- 💬 [Show & tell / ask questions](https://github.com/damionrashford/media-os/discussions)
+- 💡 [Propose a new skill](https://github.com/damionrashford/media-os/issues/new?template=skill_request.yml)
+- 🛤️ [Propose a new workflow / mode](https://github.com/damionrashford/media-os/issues/new?template=workflow_request.yml)
+- 💬 [Discussions](https://github.com/damionrashford/media-os/discussions)
 
 **Author a new skill locally:**
 
@@ -402,93 +366,95 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 uv run .claude/skills/skill-creator/scripts/scaffold.py \
   --name <new-skill> \
   --output skills \
-  --with-scripts \
-  --with-references \
+  --with-scripts --with-references \
   --description "What it does. Use when the user asks to X, Y, or Z."
 
 # Validate (matches CI)
 uv run .claude/skills/skill-creator/scripts/validate.py skills/<new-skill>
 ```
 
-Exit codes: `0` clean · `2` warnings only (acceptable) · `1` spec violation (must fix). CI at [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs the same checks.
+Exit codes: `0` clean · `2` warnings only (acceptable) · `1` spec violation (must fix). CI at [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs the same checks plus modes-layer validation.
 
----
-
-## Release & updates
-
-Current: **v2.0.1** — see [CHANGELOG.md](CHANGELOG.md) and [releases](https://github.com/damionrashford/media-os/releases).
-
-Third-party marketplaces do not auto-update. Pull new versions with:
-
-```text
-/plugin marketplace update media-os
-```
+**Releases:** see [CHANGELOG.md](CHANGELOG.md) and [GitHub releases](https://github.com/damionrashford/media-os/releases). Current: **v2.1.0**. Third-party marketplaces do not auto-update — pull new versions with `/plugin marketplace update media-os`.
 
 ---
 
 ## FAQ
 
-### Does Media OS cost money to run?
+<details>
+<summary><strong>Does Media OS cost money to run?</strong></summary>
 
-No. Media OS is MIT-licensed. The costs you incur: the Claude model you use (Anthropic billing) and the external tools the skills call (most free — FFmpeg, OBS, GStreamer, MediaMTX — some paid: Blackmagic DeckLink hardware, NDI HX2 licensing, DRM key servers for Shaka). Each skill's [`references/`](skills/) lists licensing.
+No. Media OS is MIT-licensed. You pay for the Claude model you use (Anthropic billing) and any paid external tools — most are free (FFmpeg, OBS, GStreamer, MediaMTX); some are paid (Blackmagic DeckLink hardware, NDI HX2 licensing, DRM key servers for Shaka). Each skill's [`references/`](skills/) lists licensing.
+</details>
 
-### Do I need all 109 skills?
+<details>
+<summary><strong>Do I need all 109 skills?</strong></summary>
 
-No. Claude auto-loads only what each task needs, and every skill folder is sealed. If you only want Dolby Vision authoring, `cp -r skills/ffmpeg-hdr-color ~/.claude/skills/` works standalone. The plugin install is the batteries-included mode; the copy-a-folder mode is the minimalist mode.
+No. Claude auto-loads only what each task needs, and every skill folder is sealed. Copy a single folder into `~/.claude/skills/` to use one standalone, or install the full plugin for batteries-included mode.
+</details>
 
-### What's the safety story for live encodes?
+<details>
+<summary><strong>What's the safety story for live encodes?</strong></summary>
 
-Four hooks run automatically. `SessionStart` probes which FFmpeg build flags + CLIs are installed (libvmaf, libzimg, libvidstab, librist, libplacebo, hwaccel backends) and surfaces gaps before Claude recommends anything it can't actually run. `PreToolUse` intercepts Bash calls and blocks common foot-guns — in-place overwrites, missing `-movflags +faststart`, missing `-sc_threshold 0` on HLS, missing `-bsf:a aac_adtstoasc` on TS→MP4 remux, conflicting `-crf` + bitrate. `PostToolUse` re-`ffprobe`s every FFmpeg output to catch zero-duration / truncated files. `UserPromptSubmit` auto-probes any media path you mention.
+Five hooks run automatically. `SessionStart` probes installed CLIs and FFmpeg build flags. `UserPromptSubmit` auto-probes any media path you mention. `PreToolUse` blocks common FFmpeg foot-guns (in-place overwrites, missing `-movflags +faststart`, missing `-sc_threshold 0` on HLS, missing `aac_adtstoasc` on TS→MP4 remux, conflicting `-crf` + bitrate). `PostToolUse` re-`ffprobe`s every output for zero-duration / truncation. `SubagentStop` logs every routed dispatch to `dispatch.log`.
+</details>
 
-### What's the difference between the 96 skills and the 13 workflow skills?
+<details>
+<summary><strong>What's the difference between the 13 modes and the 13 workflow-* skills?</strong></summary>
 
-The 96 skills are **tool-and-technique** — `ffmpeg-transcode`, `obs-websocket`, `hdr-dovi-tool` — one skill per bounded capability. The 13 workflow skills **orchestrate across them** — `workflow-broadcast-delivery`, `workflow-ai-enhancement`, `workflow-podcast-pipeline` — each encodes the full recipe for a production domain with the skill chain, the gotchas, and the variants.
+Same domain coverage, two delivery surfaces. **Modes** are the orchestrated path — the router skill auto-loads on intent, reads `modes/_shared.md` + the matched mode file, composes a prompt, spawns the specialist, and the artifact lands at a deterministic path. **`workflow-*` skills** are the copy-a-folder portable path — sealed self-contained capability declarations you can `cp -r` into another project without the router. Use modes when you want orchestrated dispatch; use the `workflow-*` skills when you want one folder you can move.
+</details>
 
-### What about AI models with restrictive licenses?
+<details>
+<summary><strong>What about AI models with restrictive licenses?</strong></summary>
 
-Every Layer 9 AI skill passes a strict OSI-open + commercial-safe filter (Apache-2 / MIT / BSD / GPL). Restrictive models — XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base — are explicitly documented-and-dropped in each AI skill's `references/LICENSES.md` so you don't accidentally ship something you can't monetize.
+Every Layer 9 AI skill passes a strict OSI-open and commercial-safe filter (Apache-2, MIT, BSD, GPL only). Restrictive models — XTTS-v2, F5-TTS, CodeFormer, DAIN, SVD, Wav2Lip, SadTalker, Surya, FLUX-dev, Meta MusicGen, SDXL/SD3 base — are explicitly documented-and-dropped in each AI skill's `references/LICENSES.md`.
+</details>
 
-### How does Media OS compare to running FFmpeg manually?
+<details>
+<summary><strong>How does Media OS compare to running FFmpeg manually?</strong></summary>
 
 Media OS does not replace FFmpeg — it gives Claude the right vocabulary, flag combinations, and pre-flight checks for FFmpeg, OBS, GStreamer, MediaMTX, NDI, DeckLink, Dolby Vision, and 50+ other media tools. You still run the real tools; Media OS makes sure the agent calls them with the right arguments, validates the output, and catches the gotchas LLMs get wrong from training alone.
+</details>
 
-### Can I add my own skill?
+<details>
+<summary><strong>Does Media OS work without an internet connection?</strong></summary>
 
-Yes. Scaffold via the vendored [`.claude/skills/skill-creator`](.claude/skills/), validate with `validate.py`, ship a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) and [CLAUDE.md](CLAUDE.md) for the full pipeline. Every skill is a sealed folder — copy a folder, get a working skill.
+Yes for most skills — FFmpeg, OBS, GStreamer, NDI, DeckLink, MIDI, OSC, DMX all run locally. Internet is required for AI model downloads (first run only, cached after), cloud upload skills, DRM key server skills, and `yt-dlp`.
+</details>
 
-### Does Media OS work without an internet connection?
+<details>
+<summary><strong>Which platforms are supported?</strong></summary>
 
-Yes for most skills — FFmpeg, OBS, GStreamer, NDI, DeckLink, MIDI, OSC, DMX all run locally. Internet is required for: AI model downloads (first run only, cached after), cloud upload skills (`media-cloud-upload`), DRM key server skills (`media-shaka`), and `media-ytdlp`.
+macOS (Apple Silicon + Intel), Linux (x86_64 + ARM), Windows (x86_64). Some skills are platform-conditional — `audio-coreaudio` is macOS-only, `audio-wasapi` is Windows-only, `audio-pipewire` and `audio-jack` are Linux-primary. Each `SKILL.md` documents platform support.
+</details>
 
-### Which platforms are supported?
+<details>
+<summary><strong>Can I add my own skill?</strong></summary>
 
-macOS (Apple Silicon + Intel), Linux (x86_64 + ARM), Windows (x86_64). Some skills are platform-conditional — `audio-coreaudio` is macOS-only, `audio-wasapi` is Windows-only, `audio-pipewire` and `audio-jack` are Linux-primary. Each skill's `SKILL.md` documents platform support.
+Yes. Scaffold via the vendored [`.claude/skills/skill-creator`](.claude/skills/), validate with `validate.py`, ship a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) and [CLAUDE.md](CLAUDE.md). Every skill is a sealed folder — copy a folder, get a working skill.
+</details>
 
 ---
 
-## License
+## License & related
 
-[MIT](LICENSE). FFmpeg itself is LGPL 2.1+ / GPL 2+ depending on build ([ffmpeg.org/legal.html](https://ffmpeg.org/legal.html)). Each companion tool and AI model carries its own license — see each skill's [`references/`](skills/).
+**[MIT](LICENSE).** FFmpeg itself is LGPL 2.1+ / GPL 2+ depending on build ([ffmpeg.org/legal.html](https://ffmpeg.org/legal.html)). Each companion tool and AI model carries its own license — see each skill's [`references/`](skills/).
 
-## Related
-
-- [Claude Code documentation](https://docs.claude.com/en/docs/claude-code/overview) — the runtime
-- [Claude Code plugins spec](https://docs.claude.com/en/docs/claude-code/plugins) — the plugin standard
-- [Agent Skills specification](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) — the skills standard
-- [Media OS project site](https://damionrashford.github.io/media-os/) — full documentation + searchable skill catalog
-- [LLM machine-readable index](https://damionrashford.github.io/media-os/llms.txt) — for AI agent discovery
+- [**Media OS project site**](https://damionrashford.github.io/media-os/) — marketing site, full docs, llms.txt for AI agents
+- [**Claude Code documentation**](https://docs.claude.com/en/docs/claude-code/overview) — the runtime
+- [**Claude Code plugins spec**](https://docs.claude.com/en/docs/claude-code/plugins)
+- [**Agent Skills specification**](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
+- [**Modes pattern**](https://github.com/damionrashford/modes) — the dispatch architecture this plugin implements
 
 ---
 
 <div align="center">
 
-### ⭐ Star Media OS
-
-If Media OS ships you a working pipeline, a star helps other engineers find it.
+### ⭐ If Media OS ships you a working pipeline, leave a star.
 
 [![Star](https://img.shields.io/github/stars/damionrashford/media-os?style=for-the-badge&logo=github&label=Star%20on%20GitHub)](https://github.com/damionrashford/media-os/stargazers)
 
-Built by [Damion Rashford](https://github.com/damionrashford) · [LinkedIn](https://www.linkedin.com/in/damion-rashford)
+Built by [**Damion Rashford**](https://github.com/damionrashford) · [LinkedIn](https://www.linkedin.com/in/damion-rashford)
 
 </div>
-
