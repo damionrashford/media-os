@@ -30,8 +30,8 @@ file 'clip2.mp4'
 With absolute paths or paths containing spaces — still single-quoted:
 
 ```
-file '/Users/me/Movies/part one.mp4'
-file '/Users/me/Movies/part two.mp4'
+file '/path/to/Movies/part one.mp4'
+file '/path/to/Movies/part two.mp4'
 ```
 
 Escaping a literal `'` in a filename. Close the quote, backslash-escape, reopen:

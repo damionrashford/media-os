@@ -89,7 +89,7 @@ FPSCommon=60
 
 [Output]
 Mode=Advanced
-RecFilePath=/Users/you/Videos
+RecFilePath=~/Videos
 RecFormat2=mkv
 RecEncoder=obs_x264
 StreamEncoder=obs_x264

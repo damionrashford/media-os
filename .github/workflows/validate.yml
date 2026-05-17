@@ -91,7 +91,8 @@ jobs:
 
       - name: No absolute /Users or /home paths in distributed files
         run: |
-          hits=$(grep -RIn -E '/(Users|home)/' skills agents hooks bin monitors .claude-plugin 2>/dev/null || true)
+          # Match filesystem paths but skip URL paths (lines containing ://).
+          hits=$(grep -RIn -E '/(Users|home)/' skills agents hooks bin monitors .claude-plugin modes 2>/dev/null | grep -v '://' || true)
           if [ -n "$hits" ]; then
             echo "::error::absolute paths leaked into distributed files:"
             echo "$hits"
