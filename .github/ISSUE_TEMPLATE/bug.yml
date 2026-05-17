@@ -1,0 +1,46 @@
+name: Bug report
+description: A skill, agent, hook, or CLI tool is broken
+title: "[bug] "
+labels: [bug]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Which skill / agent / hook / CLI?
+      description: e.g. `ffmpeg-hdr-color`, `moqc`, `pre-ffmpeg-validate.py`
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: media-os version
+      description: Output of `cat ~/.claude/plugins/media-os/.claude-plugin/plugin.json | jq -r .version`
+      placeholder: "2.0.1"
+    validations:
+      required: true
+  - type: input
+    id: ffmpeg
+    attributes:
+      label: ffmpeg version (if relevant)
+      description: First line of `ffmpeg -version`
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Exact command + input file characteristics (codec, container, resolution, fps, HDR metadata)
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior + error output
+      render: shell
+    validations:
+      required: true

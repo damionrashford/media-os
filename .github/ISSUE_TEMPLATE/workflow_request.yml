@@ -1,0 +1,31 @@
+name: Workflow request
+description: Propose a new end-to-end workflow skill (`workflow-*`)
+title: "[workflow] "
+labels: [workflow-request]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Proposed workflow name (kebab-case, must start with workflow-)
+      placeholder: workflow-something
+    validations:
+      required: true
+  - type: textarea
+    id: domain
+    attributes:
+      label: Production domain
+      description: e.g. "podcast post-production", "live esports broadcast", "VFX dailies turnaround"
+    validations:
+      required: true
+  - type: textarea
+    id: chain
+    attributes:
+      label: Skill chain
+      description: List the existing `skills/*` that this workflow orchestrates, in order
+    validations:
+      required: true
+  - type: textarea
+    id: missing
+    attributes:
+      label: Missing skills
+      description: If the chain requires a skill that doesn't exist yet, file a separate "Skill request" issue and link it here

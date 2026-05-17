@@ -1,0 +1,47 @@
+name: Skill request
+description: Propose a new tool-and-technique skill (Layers 1-9)
+title: "[skill] "
+labels: [skill-request]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Proposed skill name (kebab-case)
+      placeholder: ffmpeg-something or media-something
+    validations:
+      required: true
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Which layer does it belong in?
+      options:
+        - "1 — FFmpeg complete"
+        - "2 — Professional companion tools"
+        - "3 — OBS Studio"
+        - "4 — Streaming frameworks (GStreamer / MediaMTX)"
+        - "5 — Broadcast IP / editorial / HDR dynamic"
+        - "6 — Control protocols + system audio"
+        - "7 — VFX (USD / OpenEXR / OIIO)"
+        - "8 — Computer vision / WebRTC"
+        - "9 — 2026 open-source AI media"
+    validations:
+      required: true
+  - type: textarea
+    id: tool
+    attributes:
+      label: Underlying CLI / library it wraps
+      description: Name, project URL, license. AI models must be Apache-2 / MIT / BSD / GPL — no NC / research-only / commercial-restricted.
+    validations:
+      required: true
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Production use case
+      description: What real-world workflow does this unlock?
+    validations:
+      required: true
+  - type: textarea
+    id: scripts
+    attributes:
+      label: Helper scripts you'd want
+      description: List the `scripts/*.py` files this skill should ship (stdlib-only Python 3, PEP 723 inline-dep header)
