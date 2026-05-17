@@ -110,9 +110,42 @@ jobs:
           set -e
           actual=$(ls -d skills/*/ | wc -l | tr -d ' ')
           workflow=$(ls -d skills/workflow-*/ 2>/dev/null | wc -l | tr -d ' ')
-          tool=$((actual - workflow))
+          router=$(ls -d skills/media-pipeline-router/ 2>/dev/null | wc -l | tr -d ' ')
+          tool=$((actual - workflow - router))
           echo "tool skills:     $tool"
           echo "workflow skills: $workflow"
+          echo "router skill:    $router"
           echo "total:           $actual"
           test "$tool" -eq 96 || { echo "::error::expected 96 tool skills, found $tool"; exit 1; }
           test "$workflow" -eq 13 || { echo "::error::expected 13 workflow skills, found $workflow"; exit 1; }
+          test "$router" -eq 1 || { echo "::error::expected 1 router skill (media-pipeline-router), found $router"; exit 1; }
+
+      - name: Modes layer is intact
+        run: |
+          set -e
+          test -f modes/_shared.md || { echo "::error::missing modes/_shared.md"; exit 1; }
+          mode_count=$(ls modes/*.md 2>/dev/null | grep -v _shared.md | wc -l | tr -d ' ')
+          test "$mode_count" -eq 13 || { echo "::error::expected 13 mode files, found $mode_count"; exit 1; }
+          echo "modes: $mode_count"
+
+      - name: Every mode declares a real specialist
+        run: |
+          set -e
+          fail=0
+          for m in modes/*.md; do
+            [ "$(basename "$m")" = "_shared.md" ] && continue
+            specialist=$(grep -E '^\*\*Subagent\*\*:' "$m" | head -1 | sed -E 's/.*`([^`]+)`.*/\1/')
+            if [ -z "$specialist" ]; then
+              echo "::error::$m has no **Subagent**: line"
+              fail=1
+              continue
+            fi
+            if [ ! -f "agents/${specialist}.md" ]; then
+              echo "::error::$m declares specialist '$specialist' but agents/${specialist}.md does not exist"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: dispatch-audit hook is executable
+        run: test -x hooks/scripts/dispatch-audit.py
