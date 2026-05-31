@@ -84,12 +84,12 @@
 
 Join separate mic files into aligned tracks via `amix` / `amerge`. Auto time-align against a clap or common audio marker.
 
-### Step 2 — AI denoise per stem BEFORE mixing
+### Step 2 — Denoise per stem BEFORE mixing
 
-`ai-enhance`:
-- **DeepFilterNet** per mic (general use, 48 kHz mono).
-- **RNNoise** for steady-state hum.
-- **Resemble Enhance** for speech clarity.
+`ffmpeg-filter`:
+- **`afftdn`** per mic (FFT broadband denoise; tune `nr`/`nf`).
+- **`arnndn=m=<model>.rnnn`** (RNNoise model) for steady-state hum/hiss.
+- **`anlmdn`** (non-local-means) for low-SNR voice.
 
 ### Step 3 — Classical audio polish
 

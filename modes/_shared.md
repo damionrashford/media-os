@@ -88,7 +88,7 @@ Hard rules. Wrap every ffmpeg call in `mosafe` to enforce.
 
 ### License filter on AI work
 
-When invoking any AI media skill (`ai-enhance`, `ai-generate`, `ai-understand`, `ai-lipsync`):
+When invoking any AI media skill (`real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`):
 
 1. Read `${CLAUDE_PLUGIN_ROOT}/skills/<skill>/references/LICENSES.md` BEFORE selecting a model.
 2. Use only Apache-2 / MIT / BSD / GPL models.

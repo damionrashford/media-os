@@ -20,7 +20,7 @@
 1. Read tool skills per `task`:
    - `route` → `audio-routing` (Linux primary), `audio-routing` (Linux/macOS), `audio-routing` (macOS), `audio-routing` (Windows).
    - `mix` → `ffmpeg-filter`, `ffmpeg-filter`, `media-audio-cli`, `media-audio-cli`.
-   - `repair` → `media-demucs` (source-separation), `media-audio-cli` (de-click), `ai-enhance` (DeepFilterNet for voice).
+   - `repair` → `media-demucs` (source-separation), `media-audio-cli` (de-click), `ffmpeg-filter` (afftdn / arnndn voice denoise).
    - `control-bridge` → `media-control`, `media-control`.
 2. **Platform detection**: detect host OS via `uname -s` and route to the right audio skill (don't suggest PipeWire on macOS).
 3. Branch by `task`:
@@ -112,7 +112,7 @@
 
 ### Step 5 — AI processing
 
-`ai-enhance` (DeepFilterNet / RNNoise / Resemble Enhance), `media-demucs` (stem separation), `ai-generate` (Kokoro / OpenVoice / Piper), `ai-generate` (Riffusion / YuE), `media-whisper` (transcription).
+`ffmpeg-filter` (afftdn / arnndn / anlmdn denoise), `media-demucs` (stem separation), `ai-generate` (Kokoro / OpenVoice / Piper), `ai-generate` (Riffusion / YuE), `media-whisper` (transcription).
 
 ### Step 6 — Loudness certification
 

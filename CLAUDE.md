@@ -167,7 +167,7 @@ Control + system audio (3): `media-control`, `ptz`, `audio-routing`.
 
 VFX + CV + WebRTC (3): `vfx`, `cv`, `webrtc`.
 
-AI media (4): `ai-enhance`, `ai-generate`, `ai-understand`, `ai-lipsync`.
+AI media (4): `real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`.
 
 ### Docs-search anti-hallucination guardrail
 
@@ -186,12 +186,12 @@ When editing modes or these two skills, keep the Iron Laws and the rationalizati
 
 ## AI skill license discipline
 
-Every AI skill (`ai-enhance`, `ai-generate`, `ai-understand`, `ai-lipsync`) passes a strict OSI-open + commercial-safe filter. Allowed licenses: Apache-2, MIT, BSD, GPL.
+Every AI skill (`real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`) passes a strict OSI-open + commercial-safe filter. Allowed licenses: Apache-2, MIT, BSD, GPL.
 
 Always-dropped — NEVER recommend even if the user asks by name:
 - XTTS-v2 (Coqui CPML NC), F5-TTS (research), FLUX-dev (NC), SDXL / SD3 base (restrictive), Stable Video Diffusion (NC research), Wav2Lip (research), SadTalker (NC), Meta MusicGen (CC-BY-NC), Surya OCR (commercial restriction), CodeFormer (NC research), DAIN (research-only).
 
-Each AI skill enumerates its dropped models with explicit reasoning in per-technique license files under `references/` — e.g. `ai-enhance/references/upscale-LICENSES.md`, `ai-generate/references/sd-LICENSES.md`, `ai-understand/references/matte-LICENSES.md`, `ai-lipsync/references/LICENSES.md`. When authoring or modifying an AI technique, update the matching `*-LICENSES.md`.
+Each AI skill enumerates its dropped models with explicit reasoning in per-technique license files under `references/` — e.g. `real-esrgan/references/licenses.md`, `ai-generate/references/sd-LICENSES.md`, `ai-understand/references/matte-LICENSES.md`, `ai-lipsync/references/LICENSES.md`. When authoring or modifying an AI technique, update the matching `*-LICENSES.md`.
 
 ## Version management
 

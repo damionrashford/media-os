@@ -90,7 +90,7 @@ The most-requested production tasks and the skill chain Media OS routes them to:
 |---|---|---|
 | "encode this for HLS, VMAF ≥ 95" | `streaming-distribution` | `ffmpeg-stream` → `ffmpeg-analyze` → `media-package` → `ffmpeg-subtitle` |
 | "master Dolby Vision profile 8.4 for HLS" | `hdr-mastering` → `streaming-distribution` | `ffmpeg-color` → `hdr-meta` → `ffmpeg-broadcast` → `ffmpeg-stream` |
-| "upscale + interpolate + denoise" | `ai-enhancement` | `ai-enhance` → `ffmpeg-encode` |
+| "upscale + interpolate + denoise" | `ai-enhancement` | `real-esrgan` → `ffmpeg-encode` |
 | "set up NDI feed from OBS with PTZ on cam-2" | `live-production` | `obs` → `broadcast-io` → `ptz` → `media-control` |
 | "podcast: TTS → mix → normalize → captions" | `podcast-pipeline` | `ai-generate` → `ffmpeg-filter` → `media-audio-cli` → `ffmpeg-subtitle` |
 | "VFX ACES conform (EXR → master)" | `vfx-pipeline` | `vfx` → `ffmpeg-color` → `ffmpeg-encode` |
@@ -238,7 +238,7 @@ All three exit non-zero on failure — drop them in CI directly. The plugin also
 | **Frameworks + broadcast IP** | **6** | `obs` (websocket / config / scripting / plugins), `gstreamer`, `mediamtx`, `broadcast-io` (DeckLink / NDI / gphoto2), `otio`, `hdr-meta` (dovi_tool / hdr10plus_tool) |
 | **Control + system audio** | **3** | `media-control` (MIDI / OSC / DMX), `ptz` (VISCA / ONVIF), `audio-routing` (PipeWire / JACK / CoreAudio / WASAPI) |
 | **VFX + CV + WebRTC** | **3** | `vfx` (OIIO / OpenEXR / USD), `cv` (OpenCV / MediaPipe), `webrtc` (spec / Pion / mediasoup / LiveKit) |
-| **AI media** (all OSI-open / commercial-safe) | **4** | `ai-enhance` (upscale / interpolate / denoise), `ai-generate` (image / video / TTS / music), `ai-understand` (matte / depth / OCR / tag), `ai-lipsync` |
+| **AI media** (all OSI-open / commercial-safe) | **4** | `real-esrgan` (image + video super-resolution), `ai-generate` (image / video / TTS / music), `ai-understand` (matte / depth / OCR / tag), `ai-lipsync` |
 
 Every skill is a sealed folder. Browse the full catalog at [`skills/`](skills/).
 
@@ -323,7 +323,7 @@ Install only what your workflows actually need. Every helper script is stdlib-on
 | `vfx` (OIIO) | `oiiotool`, `iinfo`, `iconvert` |
 | `vfx` (OpenEXR) | OpenEXR CLI + libOpenEXR |
 
-The AI skills (`ai-enhance`, `ai-generate`, `ai-understand`, `ai-lipsync`) require Python + a model runtime (PyTorch or similar). Each AI skill's [`references/`](skills/) documents exact model install paths and GPU requirements. Most benefit significantly from a CUDA / Metal / ROCm-capable GPU. **All models are Apache-2 / MIT / BSD / GPL.**
+The AI skills (`real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`) require Python + a model runtime (PyTorch or similar). Each AI skill's [`references/`](skills/) documents exact model install paths and GPU requirements. Most benefit significantly from a CUDA / Metal / ROCm-capable GPU. **All models are Apache-2 / MIT / BSD / GPL.**
 
 </details>
 

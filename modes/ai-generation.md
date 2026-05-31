@@ -201,7 +201,7 @@ OpenVoice clone → LivePortrait drives portrait → FLUX-schnell branded backgr
 - **CogVideoX-5b needs ~20 GB VRAM.** 2b variant runs on 8 GB at lower quality.
 - **Riffusion produces 5.11-second clips natively.** Chain with crossfade for longer, or use YuE for structured long-form.
 - **LivePortrait expects clean frontal portrait.** Angled faces, glasses, occluded mouths degrade output.
-- **LivePortrait outputs 512×512 by default.** Upscale with `ai-enhance` for larger.
+- **LivePortrait outputs 512×512 by default.** Upscale with `real-esrgan` for larger.
 - **Whisper `large-v3` is 3 GB.** Test with `base.en` (140 MB) first — quality gap to `medium` (1.5 GB) is small for clean audio.
 - **Whisper hallucinates on silence.** Trim leading/trailing with `silenceremove`.
 - **Whisper word-level timestamps require `--word_timestamps True`** (faster-whisper) or `--max-len 1 --split-on-word` (whisper.cpp).
