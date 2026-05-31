@@ -44,3 +44,6 @@ tmp/
 *.mp4.part
 *.mkv.part
 test-output/
+
+# personal dev symlinks into other projects (not part of the plugin)
+.claude/skills/studio
