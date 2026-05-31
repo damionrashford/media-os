@@ -36,7 +36,7 @@ Skipped the probe? Stop and probe. Wrote a bare ffmpeg line? Delete it, re-emit 
 - `${CLAUDE_PLUGIN_ROOT}/agents/<name>.md` — 7 specialist identities (`architect`, `probe`, `qc`, `hdr`, `encoder`, `live`, `delivery`).
 - `${CLAUDE_PLUGIN_ROOT}/modes/<mode>.md` — per-task playbooks (this directory).
 - `${CLAUDE_PLUGIN_ROOT}/hooks/scripts/*.py` — 4 lifecycle hooks + 1 dispatch audit; fire automatically.
-- `${CLAUDE_PLUGIN_ROOT}/bin/{moprobe,moqc,mosafe}` — added to PATH on plugin activation.
+- `${CLAUDE_PLUGIN_ROOT}/bin/{moprobe,moqc,mosafe}` — invoke by full path `${CLAUDE_PLUGIN_ROOT}/bin/<tool>` (Claude Code does not auto-add `bin/` to PATH). If the operator has added `bin/` to their PATH, the bare names below also work.
 
 ## Tool inventory
 
