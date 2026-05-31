@@ -151,7 +151,7 @@ Each mode declares its specialist, trigger phrases, required + optional inputs, 
 
 ⚠️ = approval-gated (operator confirms target spec before dispatch).
 
-The 13 modes are 1:1 with the 13 portable `workflow-*` skills in [`skills/`](skills/) — same domain coverage, two delivery surfaces. The modes layer is the orchestrated path (auto-route, dispatch contract, deterministic output paths); the `workflow-*` skills are the copy-a-folder portable path.
+The 13 modes are the single source of truth for production pipelines. Each is a self-contained orchestration playbook: the router auto-loads on intent, reads `modes/_shared.md` + the matched mode file (inputs, step pipeline, output schema, quality bar, and a folded `## Playbook reference` of gotchas/variants/examples), composes a prompt, and spawns the specialist — artifacts land at deterministic paths.
 
 ### Chained dispatch
 
@@ -228,7 +228,7 @@ All three exit non-zero on failure — drop them in CI directly. The plugin also
 
 ## Skills catalog
 
-**96 tool-and-technique skills across 9 layers**, plus **13 workflow-* recipe skills** (the portable counterparts of the 13 routed modes).
+**96 tool-and-technique skills across 9 layers**, orchestrated by **13 routed modes**.
 
 | # | Layer | Count | Coverage |
 |---|---|---|---|
@@ -400,9 +400,9 @@ Five hooks run automatically. `SessionStart` probes installed CLIs and FFmpeg bu
 </details>
 
 <details>
-<summary><strong>What's the difference between the 13 modes and the 13 workflow-* skills?</strong></summary>
+<summary><strong>How do the 13 modes relate to the tool skills?</strong></summary>
 
-Same domain coverage, two delivery surfaces. **Modes** are the orchestrated path — the router skill auto-loads on intent, reads `modes/_shared.md` + the matched mode file, composes a prompt, spawns the specialist, and the artifact lands at a deterministic path. **`workflow-*` skills** are the copy-a-folder portable path — sealed self-contained capability declarations you can `cp -r` into another project without the router. Use modes when you want orchestrated dispatch; use the `workflow-*` skills when you want one folder you can move.
+Modes are routed orchestration playbooks; tool skills are the techniques they compose. The router auto-loads on media intent, reads `modes/_shared.md` + the matched `modes/<name>.md` (which carries the full pipeline — inputs, steps, output schema, quality bar, and a folded playbook of gotchas/variants/examples), then spawns the specialist subagent; the artifact lands at a deterministic path. Earlier releases shipped parallel `workflow-*` skills that duplicated the modes — in v3 those were folded into the mode files so there is one source of truth per pipeline.
 </details>
 
 <details>
