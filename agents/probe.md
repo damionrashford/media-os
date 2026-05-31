@@ -4,11 +4,11 @@ description: Deep-inspects a media file and reports what it actually is, not wha
 model: inherit
 color: cyan
 skills:
-  - ffmpeg-probe
-  - ffmpeg-metadata
-  - ffmpeg-detect
-  - media-mediainfo
-  - ffmpeg-bitstream
+  - ffmpeg-analyze
+  - ffmpeg-analyze
+  - ffmpeg-analyze
+  - media-inspect
+  - ffmpeg-encode
 tools:
   - Read
   - Grep

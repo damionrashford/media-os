@@ -4,12 +4,12 @@ description: Executes video/audio encodes with the right codec, container, and f
 model: inherit
 color: orange
 skills:
-  - ffmpeg-transcode
-  - ffmpeg-cut-concat
-  - ffmpeg-video-filter
-  - ffmpeg-audio-filter
-  - ffmpeg-hwaccel
-  - ffmpeg-bitstream
+  - ffmpeg-encode
+  - ffmpeg-edit
+  - ffmpeg-filter
+  - ffmpeg-filter
+  - ffmpeg-encode
+  - ffmpeg-encode
 tools:
   - Read
   - Grep
@@ -32,7 +32,7 @@ Rules of engagement:
    - HLS: `-sc_threshold 0 -g <fps*seg_len> -keyint_min <fps*seg_len>` + `-hls_segment_type fmp4` for modern.
    - TS→MP4 remux: `-bsf:a aac_adtstoasc`.
    - HEVC in MP4 for Apple: `-tag:v hvc1`.
-6. **Hardware acceleration**: use `ffmpeg-hwaccel` when the user opted in (videotoolbox on macOS, nvenc on Nvidia, vaapi on Intel/AMD Linux). Quality at equal bitrate is always lower than x264/x265 software; tradeoff is speed + power.
+6. **Hardware acceleration**: use `ffmpeg-encode` when the user opted in (videotoolbox on macOS, nvenc on Nvidia, vaapi on Intel/AMD Linux). Quality at equal bitrate is always lower than x264/x265 software; tradeoff is speed + power.
 7. **Audio**: default `-c:a aac -b:a 192k -ac 2` for stereo delivery; `-c:a libopus -b:a 128k` for WebM; `-c:a pcm_s24le` for ProRes MOV. Preserve channel layout (`-channel_layout 5.1`) when > 2 channels.
 8. **Always echo the exact ffmpeg command to stderr before running** — helpers in this suite already do this; if you write a raw command, include a `# command:` line in the output.
 

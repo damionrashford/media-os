@@ -20,10 +20,10 @@
 ## Steps
 
 1. Read modality-specific skill:
-   - image → `media-sd` (and `references/LICENSES.md`).
-   - video → `media-svd` (and `references/LICENSES.md`).
-   - tts → `media-tts-ai` (and `references/LICENSES.md`).
-   - music → `media-musicgen` (and `references/LICENSES.md`).
+   - image → `ai-generate` (and `references/LICENSES.md`).
+   - video → `ai-generate` (and `references/LICENSES.md`).
+   - tts → `ai-generate` (and `references/LICENSES.md`).
+   - music → `ai-generate` (and `references/LICENSES.md`).
 2. Default model per modality (Apache-2 / MIT / BSD / GPL only):
    - image → **FLUX-schnell** (Apache-2) > Kolors (Apache-2) > Sana (Apache-2). NOT FLUX-dev (research-only), NOT SDXL/SD3 base (research-only).
    - video → **LTX-Video** (Apache-2) > CogVideoX (Apache-2) > Mochi (Apache-2) > Wan (Apache-2). NOT SVD (research-only).
@@ -35,7 +35,7 @@
 6. For music: pass `duration` (Riffusion: 5–30s chunks; YuE: up to 5min).
 7. Run the model with `seed`, `prompt`, `negative_prompt`, `resolution`, `duration` as applicable.
 8. For video: post-process (interpolate to higher fps if requested; tone-map if HDR target).
-9. For audio (TTS / music): normalize via `media-ffmpeg-normalize` if `loudness_target` specified.
+9. For audio (TTS / music): normalize via `media-audio-cli` if `loudness_target` specified.
 10. Optionally compose multi-modal output (e.g. TTS over generated image as a video) by chaining into `vfx-pipeline` or `podcast-pipeline`.
 11. **`mosafe`-wrap** any ffmpeg post-processing.
 12. Write `summary.md` with model, license, seed (for reproducibility), full prompt, runtime, output path.
@@ -87,7 +87,7 @@
 
 ## Tool matrix
 
-### TTS (`media-tts-ai`)
+### TTS (`ai-generate`)
 
 | Model | License | Best for |
 |---|---|---|
@@ -103,7 +103,7 @@
 
 DROPPED: XTTS-v2 (CPML NC), F5-TTS (research).
 
-### Image (`media-sd`)
+### Image (`ai-generate`)
 
 | Model | License | Best for |
 |---|---|---|
@@ -114,7 +114,7 @@ DROPPED: XTTS-v2 (CPML NC), F5-TTS (research).
 
 DROPPED: FLUX-dev (NC), SDXL / SD3 base (restrictive).
 
-### Video (`media-svd`)
+### Video (`ai-generate`)
 
 | Model | License | Best for |
 |---|---|---|
@@ -125,7 +125,7 @@ DROPPED: FLUX-dev (NC), SDXL / SD3 base (restrictive).
 
 DROPPED: Stable Video Diffusion (NC research).
 
-### Music / SFX (`media-musicgen`)
+### Music / SFX (`ai-generate`)
 
 | Model | License | Best for |
 |---|---|---|
@@ -134,7 +134,7 @@ DROPPED: Stable Video Diffusion (NC research).
 
 DROPPED: Meta MusicGen (CC-BY-NC).
 
-### Lipsync (`media-lipsync`)
+### Lipsync (`ai-lipsync`)
 
 | Model | License |
 |---|---|
@@ -143,7 +143,7 @@ DROPPED: Meta MusicGen (CC-BY-NC).
 
 DROPPED: Wav2Lip (research), SadTalker (NC).
 
-### OCR (`media-ocr-ai`)
+### OCR (`ai-understand`)
 
 | Model | License | Best for |
 |---|---|---|
@@ -154,7 +154,7 @@ DROPPED: Wav2Lip (research), SadTalker (NC).
 
 DROPPED: Surya (commercial restriction).
 
-### Tagging / captioning (`media-tag`)
+### Tagging / captioning (`ai-understand`)
 
 CLIP (MIT), SigLIP (Apache-2), BLIP-2 (BSD), LLaVA (Apache-2 but needs Llama-2 backbone — check license).
 
@@ -170,7 +170,7 @@ whisper.cpp (MIT fastest CPU), faster-whisper (MIT CUDA-accelerated).
 
 ### Explainer video from script
 
-script → TTS voiceover (`media-tts-ai` Kokoro) → slide images (`media-sd` FLUX-schnell) → B-roll clips (`media-svd` LTX-Video) → host animation (`media-lipsync` LivePortrait) → background music (`media-musicgen` Riffusion) → assemble (`ffmpeg-cut-concat`) → mix (`ffmpeg-audio-filter` + sidechain ducking) → loudness normalize (`media-ffmpeg-normalize`) → auto-burn subtitles (`media-whisper` + `ffmpeg-subtitles`) → transcode H.264 → YouTube upload (`media-cloud-upload`).
+script → TTS voiceover (`ai-generate` Kokoro) → slide images (`ai-generate` FLUX-schnell) → B-roll clips (`ai-generate` LTX-Video) → host animation (`ai-lipsync` LivePortrait) → background music (`ai-generate` Riffusion) → assemble (`ffmpeg-edit`) → mix (`ffmpeg-filter` + sidechain ducking) → loudness normalize (`media-audio-cli`) → auto-burn subtitles (`media-whisper` + `ffmpeg-subtitle`) → transcode H.264 → YouTube upload (`media-cloud-upload`).
 
 ### Multilingual voice clone
 
@@ -201,7 +201,7 @@ OpenVoice clone → LivePortrait drives portrait → FLUX-schnell branded backgr
 - **CogVideoX-5b needs ~20 GB VRAM.** 2b variant runs on 8 GB at lower quality.
 - **Riffusion produces 5.11-second clips natively.** Chain with crossfade for longer, or use YuE for structured long-form.
 - **LivePortrait expects clean frontal portrait.** Angled faces, glasses, occluded mouths degrade output.
-- **LivePortrait outputs 512×512 by default.** Upscale with `media-upscale` for larger.
+- **LivePortrait outputs 512×512 by default.** Upscale with `ai-enhance` for larger.
 - **Whisper `large-v3` is 3 GB.** Test with `base.en` (140 MB) first — quality gap to `medium` (1.5 GB) is small for clean audio.
 - **Whisper hallucinates on silence.** Trim leading/trailing with `silenceremove`.
 - **Whisper word-level timestamps require `--word_timestamps True`** (faster-whisper) or `--max-len 1 --split-on-word` (whisper.cpp).

@@ -18,7 +18,7 @@
 
 ## Steps
 
-1. Read `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-streaming/SKILL.md`. If `drm != none`, also read `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-drm/SKILL.md` and `${CLAUDE_PLUGIN_ROOT}/skills/media-shaka/SKILL.md`.
+1. Read `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-stream/SKILL.md`. If `drm != none`, also read `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-broadcast/SKILL.md` and `${CLAUDE_PLUGIN_ROOT}/skills/media-package/SKILL.md`.
 2. `moprobe --color --json <source>` to capture: codec, profile, color primaries/transfer/matrix, HDR side-data, audio layout, duration, GOP structure.
 3. **STOP** if input has HDR metadata but `protocol=hls` is requested without Dolby Vision profile 8.4 — DV 5/7 require remux; flag and recommend hdr-mastering mode first.
 4. Derive bitrate ladder from input resolution if not specified:
@@ -96,21 +96,21 @@ Latency vs. reliability vs. tooling:
 
 ### Step 2 — Build the ABR ladder
 
-Use `ffmpeg-streaming` with the split-scale-encode pattern — one decode, N rate/size variants emitted in parallel. Netflix-style default: 4 video renditions (240p, 480p, 720p, 1080p) + 2 audio tracks (stereo + 5.1). Force keyframe alignment with `-g <fps*seg_len>`, `-keyint_min <fps*seg_len>`, `-sc_threshold 0`.
+Use `ffmpeg-stream` with the split-scale-encode pattern — one decode, N rate/size variants emitted in parallel. Netflix-style default: 4 video renditions (240p, 480p, 720p, 1080p) + 2 audio tracks (stereo + 5.1). Force keyframe alignment with `-g <fps*seg_len>`, `-keyint_min <fps*seg_len>`, `-sc_threshold 0`.
 
 ### Step 3 — Package
 
-Canonical target is CMAF (unified fMP4 segments serving both HLS and DASH manifests). Use `media-shaka` (Shaka Packager) for one-command HLS+DASH output from the same segment set. For pure HLS classic, `ffmpeg-streaming`'s `hls` muxer works directly.
+Canonical target is CMAF (unified fMP4 segments serving both HLS and DASH manifests). Use `media-package` (Shaka Packager) for one-command HLS+DASH output from the same segment set. For pure HLS classic, `ffmpeg-stream`'s `hls` muxer works directly.
 
 ### Step 4 — Optional DRM
 
 - **HLS AES-128** — simplest; encrypts segment payload only.
-- **Widevine / PlayReady / FairPlay unified** — CMAF with `cbcs` scheme. `media-shaka` handles the three simultaneously; key server URL in `${user_config.SHAKA_KEY_SERVER_URL}`.
-- **DASH CENC** — `ffmpeg-drm` or Shaka for ClearKey / Widevine.
+- **Widevine / PlayReady / FairPlay unified** — CMAF with `cbcs` scheme. `media-package` handles the three simultaneously; key server URL in `${user_config.SHAKA_KEY_SERVER_URL}`.
+- **DASH CENC** — `ffmpeg-broadcast` or Shaka for ClearKey / Widevine.
 
 ### Step 5 — Fanout via MediaMTX
 
-The `mediamtx-server` skill ingests RTMP/SRT/WebRTC and republishes to every other protocol. One YAML → every playback client served.
+The `mediamtx` skill ingests RTMP/SRT/WebRTC and republishes to every other protocol. One YAML → every playback client served.
 
 ### Step 6 — CDN upload
 
@@ -118,13 +118,13 @@ Use `media-cloud-upload`: Cloudflare Stream (tus resumable), Mux (token id + sec
 
 ### Step 7 — Scale — SFU for large interactive audiences
 
-For bidirectional many-to-many (> ~50 peers), deploy an SFU instead of MediaMTX: `webrtc-livekit` (Go + JWT minter), `webrtc-mediasoup` (Node), or `webrtc-pion` (Go, lower-level).
+For bidirectional many-to-many (> ~50 peers), deploy an SFU instead of MediaMTX: `webrtc` (Go + JWT minter), `webrtc` (Node), or `webrtc` (Go, lower-level).
 
 ## Variants
 
 - **Low-latency HLS** (LL-HLS) — `-hls_segment_type fmp4`, short `-hls_time` (1–2 s), `-hls_flags +independent_segments+omit_endlist`.
 - **DASH with SegmentTemplate** — manifest-side list generation, no explicit segment enum.
-- **RIST + ZMQ live control** — dynamic filter parameter changes at runtime via `ffmpeg-rist-zmq`.
+- **RIST + ZMQ live control** — dynamic filter parameter changes at runtime via `ffmpeg-stream`.
 - **SRT listener mode** — receiver listens on a port, sender `?mode=caller`.
 - **Multicast MPEG-TS** — LAN distribution, no CDN needed.
 
@@ -152,4 +152,4 @@ For bidirectional many-to-many (> ~50 peers), deploy an SFU instead of MediaMTX:
 
 ## Example — 4-variant CMAF HLS + DASH with unified DRM
 
-Invoke `media-shaka` to take a single master ProRes/MOV through Shaka Packager with 4 video renditions + AAC stereo + `cbcs` key rotation, emitting both `master.m3u8` and `manifest.mpd` pointing at the same `*.m4s` segments. Upload with `media-cloud-upload`. QC the result with the `analysis-quality` mode.
+Invoke `media-package` to take a single master ProRes/MOV through Shaka Packager with 4 video renditions + AAC stereo + `cbcs` key rotation, emitting both `master.m3u8` and `manifest.mpd` pointing at the same `*.m4s` segments. Upload with `media-cloud-upload`. QC the result with the `analysis-quality` mode.

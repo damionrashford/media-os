@@ -66,7 +66,7 @@ Hard rules. Wrap every ffmpeg call in `mosafe` to enforce.
 
 ### License filter on AI work
 
-When invoking any Layer 9 AI skill (`media-upscale`, `media-tts-ai`, `media-interpolate`, `media-musicgen`, `media-sd`, `media-svd`, `media-lipsync`, `media-matte`, `media-denoise-ai`, `media-depth`, `media-ocr-ai`, `media-tag`):
+When invoking any Layer 9 AI skill (`ai-enhance`, `ai-generate`, `ai-enhance`, `ai-generate`, `ai-generate`, `ai-generate`, `ai-lipsync`, `ai-understand`, `ai-enhance`, `ai-understand`, `ai-understand`, `ai-understand`):
 
 1. Read `${CLAUDE_PLUGIN_ROOT}/skills/<skill>/references/LICENSES.md` BEFORE selecting a model.
 2. Use only Apache-2 / MIT / BSD / GPL models.

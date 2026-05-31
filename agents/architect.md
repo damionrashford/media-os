@@ -4,11 +4,11 @@ description: Designs end-to-end media pipelines before a single command runs. Us
 model: inherit
 color: blue
 skills:
-  - ffmpeg-probe
-  - ffmpeg-transcode
-  - ffmpeg-hdr-color
-  - ffmpeg-streaming
-  - ffmpeg-drm
+  - ffmpeg-analyze
+  - ffmpeg-encode
+  - ffmpeg-color
+  - ffmpeg-stream
+  - ffmpeg-broadcast
 tools:
   - Read
   - Grep

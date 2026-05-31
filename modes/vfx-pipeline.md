@@ -17,12 +17,12 @@
 
 ## Steps
 
-1. Read tool skills: `vfx-oiio`, `vfx-openexr`, `vfx-usd`, `ffmpeg-ocio-colorpro`, `ffmpeg-lut-grade`, `ffmpeg-hdr-color`.
+1. Read tool skills: `vfx`, `vfx`, `vfx`, `ffmpeg-color`, `ffmpeg-color`, `ffmpeg-color`.
 2. Use `oiiotool --info <source-frame>` to capture per-channel bit depth, compression (PIZ/ZIPS/DWA/none), color space metadata (if `acesImage` chroma tag present), display window vs data window.
 3. For EXR sequences: verify all frames in `frame_range` exist (`ls <pattern>` count vs expected). Surface missing frames as a STOP condition.
 4. For USD stages: `usdview --no-window` headless render via Hydra (Storm/RTX) to produce an EXR sequence.
 5. Validate `working_space` and `target_space` exist in the OCIO config (`ociocheck --inputconfig <ocio_config>` plus enum lookup).
-6. Build the conform graph per `ffmpeg-ocio-colorpro` SKILL.md:
+6. Build the conform graph per `ffmpeg-color` SKILL.md:
    - For ACES → Rec.709: `OCIOColorSpace inputspace=ACEScg outputspace="Output - Rec.709"`.
    - For Rec.2020 PQ delivery: `OCIOColorSpace inputspace=ACEScg outputspace="Utility - Linear - Rec.2020"` → then `zscale=t=linear:p=2020:m=2020nc → format=gbrpf32le → zscale=p=bt2020:t=smpte2084` for PQ encode.
    - Apply `lut` after the working-to-target conform (creative grade goes last).
@@ -81,15 +81,15 @@
 
 ### Step 1 — Inspect EXR
 
-`vfx-openexr` (`exrctl header` for channels / compression / chromaticities; `exrctl info` for multi-part / multi-view).
+`vfx` (`exrctl header` for channels / compression / chromaticities; `exrctl info` for multi-part / multi-view).
 
 ### Step 2 — Inspect USD
 
-`vfx-usd` (`usdctl info` for hierarchy; `usdctl flatten` to resolve LIVRPS composition).
+`vfx` (`usdctl info` for hierarchy; `usdctl flatten` to resolve LIVRPS composition).
 
 ### Step 3 — Color config
 
-`export OCIO=/opt/aces/config.ocio`. `ffmpeg-ocio-colorpro list-transforms` to confirm what's available. Core ACES spaces:
+`export OCIO=/opt/aces/config.ocio`. `ffmpeg-color list-transforms` to confirm what's available. Core ACES spaces:
 
 | Role | Space |
 |---|---|
@@ -101,7 +101,7 @@
 
 ### Step 4 — EXR → ProRes dailies
 
-`vfx-oiio` (`oiiotool` color-managed ACEScg → Rec.709) OR `ffmpeg-ocio-colorpro` with the OCIO filter. ProRes 4444 XQ 12-bit for no clipping; 422 HQ 10-bit has YCbCr color loss vs EXR.
+`vfx` (`oiiotool` color-managed ACEScg → Rec.709) OR `ffmpeg-color` with the OCIO filter. ProRes 4444 XQ 12-bit for no clipping; 422 HQ 10-bit has YCbCr color loss vs EXR.
 
 ### Step 5 — Plates for VFX vendors
 
@@ -121,15 +121,15 @@ Verify color space = ACEScg. Check resolution, duration, frame count match. Roun
 
 ### Step 9 — Hand off to editorial
 
-EXR ACEScg → Rec.2020 ST2084 ProRes 4444 XQ (HDR10 dailies) or straight to J2K IMF via `ffmpeg-mxf-imf`.
+EXR ACEScg → Rec.2020 ST2084 ProRes 4444 XQ (HDR10 dailies) or straight to J2K IMF via `ffmpeg-broadcast`.
 
 ### Step 10 — Back to NLE
 
-Emit FCPXML via `otio-convert` for editor relink.
+Emit FCPXML via `otio` for editor relink.
 
 ## Variants
 
-- **Stereo 3D** — `exrctl info` for multi-view, `extract-view` per eye, compose side-by-side via `ffmpeg-360-3d`.
+- **Stereo 3D** — `exrctl info` for multi-view, `extract-view` per eye, compose side-by-side via `ffmpeg-composite`.
 - **Deep compositing** — `exrctl deep-info` on Z-layers, flatten deep → flat for ffmpeg compat.
 - **Environment maps** — `exrctl envmap` cubemap ↔ latlong.
 - **Camera log → ACEScg** — ARRI LogC / Sony SLog / RED Log mapped via OCIO.
@@ -163,4 +163,4 @@ Emit FCPXML via `otio-convert` for editor relink.
 
 ## Example — ARRI LogC plate → ACEScg comp → HDR10 IMF
 
-ARRI footage LogC v3 → OCIO transform to ACEScg EXR (16-bit half ZIP) → handoff to comp → ingest comp EXR sequence → `oiiotool` color-convert ACEScg → Rec.2020 ST2084 ProRes 4444 XQ 12-bit → `ffmpeg-mxf-imf` J2K IMF.
+ARRI footage LogC v3 → OCIO transform to ACEScg EXR (16-bit half ZIP) → handoff to comp → ingest comp EXR sequence → `oiiotool` color-convert ACEScg → Rec.2020 ST2084 ProRes 4444 XQ 12-bit → `ffmpeg-broadcast` J2K IMF.

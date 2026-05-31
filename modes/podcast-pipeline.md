@@ -18,15 +18,15 @@
 
 ## Steps
 
-1. Read tool skills: `media-tts-ai`, `ffmpeg-audio-filter`, `media-ffmpeg-normalize`, `ffmpeg-captions`, `media-whisper`, `media-demucs` (for record-to-master if needs de-noise/source-separation).
+1. Read tool skills: `ai-generate`, `ffmpeg-filter`, `media-audio-cli`, `ffmpeg-subtitle`, `media-whisper`, `media-demucs` (for record-to-master if needs de-noise/source-separation).
 2. Branch by `mode`:
-   - **`script-to-podcast`**: invoke `media-tts-ai` with chosen voice + script chunks. Concatenate chunks with `ffmpeg -f concat`. Skip to step 4.
+   - **`script-to-podcast`**: invoke `ai-generate` with chosen voice + script chunks. Concatenate chunks with `ffmpeg -f concat`. Skip to step 4.
    - **`record-to-master`**: `moprobe <source>` → if multi-track, route through `media-demucs` for vocal isolation; otherwise straight to step 3.
    - **`existing-to-master`**: `moprobe <source>` → straight to step 3.
 3. De-noise: `DeepFilterNet` (MIT) for voice. NOT Wave-U-Net (research-only).
-4. EQ + compression: high-pass at 80Hz, gentle compression (3:1 ratio, -12dB threshold) via `ffmpeg-audio-filter` `acompressor` + `highpass=f=80`.
+4. EQ + compression: high-pass at 80Hz, gentle compression (3:1 ratio, -12dB threshold) via `ffmpeg-filter` `acompressor` + `highpass=f=80`.
 5. If `music_bed`: ffmpeg `-filter_complex amix` with -18dB music bed under the voice (or sidechain compression for ducking).
-6. Loudness normalization: `media-ffmpeg-normalize` to `target_lufs` (default -16 LUFS, -1.0 dBTP true peak).
+6. Loudness normalization: `media-audio-cli` to `target_lufs` (default -16 LUFS, -1.0 dBTP true peak).
 7. **`mosafe`-wrap** the final ffmpeg invocations.
 8. If `captions`: run `whisper.cpp` (or `faster-whisper`) on the normalized audio. Produce both `.srt` (for video embedding) and `.vtt` (for podcast platforms supporting it).
 9. Final output: MP3 192kbps CBR (Apple Podcasts spec) OR M4A AAC 128kbps (modern). Embed ID3 tags (title, artist, year, cover art if provided).
@@ -86,14 +86,14 @@ Join separate mic files into aligned tracks via `amix` / `amerge`. Auto time-ali
 
 ### Step 2 — AI denoise per stem BEFORE mixing
 
-`media-denoise-ai`:
+`ai-enhance`:
 - **DeepFilterNet** per mic (general use, 48 kHz mono).
 - **RNNoise** for steady-state hum.
 - **Resemble Enhance** for speech clarity.
 
 ### Step 3 — Classical audio polish
 
-SoX or `ffmpeg-audio-filter`: `highpass=f=80`, parametric EQ boost at ~3 kHz, compand for consistent level.
+SoX or `ffmpeg-filter`: `highpass=f=80`, parametric EQ boost at ~3 kHz, compand for consistent level.
 
 ### Step 4 — Music bed + ducking
 
@@ -109,16 +109,16 @@ Use `--word_timestamps True` (faster-whisper) or `--max-len 1 --split-on-word` (
 
 ### Step 6 — Auto-sync drifted subs (optional)
 
-`media-subtitle-sync`: `alass` first, `ffsubsync` as fallback.
+`ffmpeg-subtitle`: `alass` first, `ffsubsync` as fallback.
 
 ### Step 7 — Auto-chapter
 
-- **Silence-based** — `ffmpeg-detect` silencedetect at `-35 dB` min-duration `5 s`.
+- **Silence-based** — `ffmpeg-analyze` silencedetect at `-35 dB` min-duration `5 s`.
 - **Diarization-based** — pyannote.audio or simple-diarizer (external to Whisper).
 
 ### Step 8 — Loudness normalize
 
-`media-ffmpeg-normalize` EBU R128 two-pass:
+`media-audio-cli` EBU R128 two-pass:
 
 | Target | LUFS |
 |---|---|
@@ -141,7 +141,7 @@ Use `--word_timestamps True` (faster-whisper) or `--max-len 1 --split-on-word` (
 
 - **Interview podcast** — pyannote diarization, SRT with speaker labels.
 - **Music podcast / DJ set** — `media-demucs` stem isolation for promo clips.
-- **Binaural / ASMR** — `ffmpeg-audio-spatial` sofalizer HRTF, azimuth/elevation per track.
+- **Binaural / ASMR** — `ffmpeg-filter` sofalizer HRTF, azimuth/elevation per track.
 - **Video podcast with scene detection** — multi-camera auto-cut at detected scenes.
 - **Transcript → blog post** — Whisper + external LLM formatting.
 - **Multi-language release** — transcribe original, translate externally, mux multiple sub tracks with language metadata.
@@ -154,7 +154,7 @@ Use `--word_timestamps True` (faster-whisper) or `--max-len 1 --split-on-word` (
 - **DeepFilterNet: 16 kHz or 48 kHz MONO only.** Mix inputs at 48 kHz mono.
 - **RNNoise: 48 kHz mono 16-bit, strict.** Resample first or it fails silently.
 - **`loudnorm -target -14` is Spotify Master, NOT podcasts.** Podcasts want −16 (Apple) or −19 (ACX).
-- **Single-pass `loudnorm` uses guardrails** — two-pass measures then applies. For compliance, use `media-ffmpeg-normalize` (two-pass).
+- **Single-pass `loudnorm` uses guardrails** — two-pass measures then applies. For compliance, use `media-audio-cli` (two-pass).
 - **`loudnorm` applies a limiter** — over-loudnormed audio sounds compressed. Tune `lra` to preserve dynamics.
 - **Sidechain compression order: key input FIRST, compressed signal SECOND.** Wrong order = wrong ducking.
 - **Whisper hallucinates on silence.** `silenceremove` leading/trailing before transcription.

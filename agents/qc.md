@@ -4,10 +4,10 @@ description: Runs automated quality control on a rendered output against a refer
 model: inherit
 color: green
 skills:
-  - ffmpeg-quality
-  - ffmpeg-detect
-  - ffmpeg-probe
-  - media-ffmpeg-normalize
+  - ffmpeg-analyze
+  - ffmpeg-analyze
+  - ffmpeg-analyze
+  - media-audio-cli
 tools:
   - Read
   - Grep

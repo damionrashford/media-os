@@ -19,7 +19,7 @@
 
 ## Steps
 
-1. Read tool skills: `ffmpeg-transcode`, `ffmpeg-quality`, `ffmpeg-hwaccel`, `ffmpeg-bitstream`.
+1. Read tool skills: `ffmpeg-encode`, `ffmpeg-analyze`, `ffmpeg-encode`, `ffmpeg-encode`.
 2. `moprobe --color --json <source>` to capture resolution, fps, color, bit depth, audio, duration.
 3. **STOP** if `bitrate` AND `crf` both provided — they're mutually exclusive. Surface to operator.
 4. **STOP** if HDR target requested without `hdr-mastering` mode first — VOD post-prod doesn't author HDR metadata; it preserves what's there or strips it.
@@ -101,7 +101,7 @@ Hardware-accelerated H.264 (NVENC / QSV / VideoToolbox). Real-time or faster on 
 
 #### Step 3 — Cut / trim / concat
 
-`ffmpeg-cut-concat`:
+`ffmpeg-edit`:
 - `trim --mode stream-copy` — FAST, keyframe-snapped.
 - `trim --mode reencode` — frame-accurate.
 - `concat --mode copy` — same codec.
@@ -109,15 +109,15 @@ Hardware-accelerated H.264 (NVENC / QSV / VideoToolbox). Real-time or faster on 
 
 #### Step 4 — Color grade
 
-`ffmpeg-lut-grade` for `.cube`/`.3dl`/Hald CLUT. `ffmpeg-ocio-colorpro` for OCIO/ACES. Manual `eq`, `curves`, `colorbalance` filters via `ffmpeg-video-filter`.
+`ffmpeg-color` for `.cube`/`.3dl`/Hald CLUT. `ffmpeg-color` for OCIO/ACES. Manual `eq`, `curves`, `colorbalance` filters via `ffmpeg-filter`.
 
 #### Step 5 — Stabilize
 
-`ffmpeg-stabilize` two-pass (`vidstabdetect` → `vidstabtransform`) for best quality; `deshake` single-pass for speed.
+`ffmpeg-restore` two-pass (`vidstabdetect` → `vidstabtransform`) for best quality; `deshake` single-pass for speed.
 
 #### Step 6 — Denoise
 
-`ffmpeg-denoise-restore`: `nlmeans` for film grain, `bm3d` heavier preserves detail, `hqdn3d` general fast.
+`ffmpeg-restore`: `nlmeans` for film grain, `bm3d` heavier preserves detail, `hqdn3d` general fast.
 
 #### Step 7 — Scale / crop / reframe
 
@@ -125,11 +125,11 @@ Hardware-accelerated H.264 (NVENC / QSV / VideoToolbox). Real-time or faster on 
 
 #### Step 8 — Speed / time manipulation
 
-`ffmpeg-speed-time`: `setpts`, `atempo`, `minterpolate` for smooth slow-mo, freeze frame, reverse.
+`ffmpeg-edit`: `setpts`, `atempo`, `minterpolate` for smooth slow-mo, freeze frame, reverse.
 
 #### Step 9 — Chromakey / greenscreen
 
-`ffmpeg-chromakey`: `chromakey` + `despill` filters.
+`ffmpeg-composite`: `chromakey` + `despill` filters.
 
 #### Step 10 — Text / lower thirds
 
@@ -137,19 +137,19 @@ Hardware-accelerated H.264 (NVENC / QSV / VideoToolbox). Real-time or faster on 
 
 #### Step 11 — Subtitles
 
-`ffmpeg-subtitles`: soft-mux, burn-in, extract, format convert.
+`ffmpeg-subtitle`: soft-mux, burn-in, extract, format convert.
 
 #### Step 12 — Audio finishing
 
-EQ + compression via `ffmpeg-audio-filter`, loudness via `media-ffmpeg-normalize`.
+EQ + compression via `ffmpeg-filter`, loudness via `media-audio-cli`.
 
 #### Step 13 — Thumbnails / sprite sheets
 
-`ffmpeg-frames-images`: extract every N seconds, sprite sheet for scrubber UI, animated GIF preview.
+`ffmpeg-edit`: extract every N seconds, sprite sheet for scrubber UI, animated GIF preview.
 
 #### Step 14 — Chapters + metadata
 
-`ffmpeg-metadata`: chapter markers + cover art.
+`ffmpeg-analyze`: chapter markers + cover art.
 
 #### Step 15 — Final delivery
 
@@ -168,7 +168,7 @@ the `analysis-quality` mode — VMAF vs reference, spec assertions.
 - **Batch** — `media-batch` runs `finish-xxx.sh` across N files in parallel.
 - **Programmatic (MoviePy)** — when ffmpeg filtergraph gets unwieldy, drop to Python.
 - **Vertical social** — face-tracking auto-crop 16:9 → 9:16.
-- **360° VR edit** — equirect → stereographic "little planet" via `ffmpeg-360-3d`.
+- **360° VR edit** — equirect → stereographic "little planet" via `ffmpeg-composite`.
 
 ### Gotchas
 
@@ -190,7 +190,7 @@ the `analysis-quality` mode — VMAF vs reference, spec assertions.
 - **`vidstab` requires `--enable-libvidstab`** ffmpeg build. Some Ubuntu stock builds lack it.
 - **`atempo` preserves pitch; `asetrate` shifts pitch.** Combine carefully.
 - **`-ss` before `-i`** = fast seek, non-frame-accurate. **`-ss` after `-i`** = frame-accurate, sequential. Use after for accuracy.
-- **Two-pass loudnorm via `media-ffmpeg-normalize`.** Single-pass applies runtime auto limits.
+- **Two-pass loudnorm via `media-audio-cli`.** Single-pass applies runtime auto limits.
 - **`-map 0:v:0 -map 0:a:0`** selects first video+audio. Default `-map 0` grabs ALL streams.
 - **HandBrake presets are opinionated.** "Fast 1080p30" = H.264 CRF 22 + AAC 160. Sometimes wrong for source.
 - **Alpha preservation needs `-pix_fmt yuva420p`** (or yuva444p) AND `-c:v qtrle` or `-c:v prores_ks -profile:v 4` (ProRes 4444). H.264 has NO alpha.

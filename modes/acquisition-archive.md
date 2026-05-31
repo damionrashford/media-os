@@ -17,7 +17,7 @@
 
 ## Steps
 
-1. Read tool skills: `ffmpeg-probe`, `media-mediainfo`, `media-exiftool`, `gphoto2-tether` (for tether), `decklink-tools` (for SDI capture), `media-batch` (for parallel probe).
+1. Read tool skills: `ffmpeg-analyze`, `media-inspect`, `media-inspect`, `broadcast-io` (for tether), `broadcast-io` (for SDI capture), `media-batch` (for parallel probe).
 2. Branch by `task`:
    - **`probe-batch`**: For each media file in `source` (recursive), run `moprobe --json <file>` and `exiftool -j <file>`. Store both in a flat NDJSON at `<destination>/manifest.ndjson` keyed by path. Compute hash per `hash_algo`.
    - **`ingest-card`**: Validate card mount point. Walk DCIM/MISC/CLIP directories per common camera layouts (Sony XAVC, Canon CR3, RED R3D, ARRI MXF, GoPro MP4). Copy with verify-after-copy (read back, hash-check). Append to manifest.
@@ -104,27 +104,27 @@ Pick per source:
 
 | Source | Skill | Method |
 |---|---|---|
-| Web video (1000+ sites) | `media-ytdlp` | `bestvideo+bestaudio` merged, subs + thumbnail + description |
-| Screen + webcam + mic | `ffmpeg-capture` | AVFoundation (macOS) / X11 (Linux) / GDI (Windows) |
-| Broadcast SDI | `decklink-tools` | ProRes 422 HQ 10-bit + PCM 24-bit, or `v210` raw lossless |
-| DSLR tethered | `gphoto2-tether` | single shot, intervalometer timelapse, live view MJPEG |
-| NDI network | `ndi-tools` | `nditools.py find`, record to disk |
-| RTSP / IP camera | `ffmpeg-streaming` or `mediamtx-server` | direct capture TCP, or multi-camera fanout with segmented MP4 |
-| PTZ-positioned | `ptz-visca` / `ptz-onvif` | preset-recall, then any of the above |
+| Web video (1000+ sites) | `media-download` | `bestvideo+bestaudio` merged, subs + thumbnail + description |
+| Screen + webcam + mic | `ffmpeg-edit` | AVFoundation (macOS) / X11 (Linux) / GDI (Windows) |
+| Broadcast SDI | `broadcast-io` | ProRes 422 HQ 10-bit + PCM 24-bit, or `v210` raw lossless |
+| DSLR tethered | `broadcast-io` | single shot, intervalometer timelapse, live view MJPEG |
+| NDI network | `broadcast-io` | `nditools.py find`, record to disk |
+| RTSP / IP camera | `ffmpeg-stream` or `mediamtx` | direct capture TCP, or multi-camera fanout with segmented MP4 |
+| PTZ-positioned | `ptz` / `ptz` | preset-recall, then any of the above |
 
 ### Step 2 — Verify integrity
 
 - **Full-decode pass** — `ffmpeg -v error -i <file> -f null -` (non-zero exit = corrupt).
-- **Deep probe** — `ffmpeg-probe` + `media-mediainfo`.
+- **Deep probe** — `ffmpeg-analyze` + `media-inspect`.
 - **SHA-256 checksum** — store alongside the file.
 
 ### Step 3 — Preserve metadata
 
-`media-exiftool` — EXIF from photos, MOV `udta`, XMP sidecars for custom archival fields. `ffmpeg-metadata` for MKV global + chapter tags.
+`media-inspect` — EXIF from photos, MOV `udta`, XMP sidecars for custom archival fields. `ffmpeg-analyze` for MKV global + chapter tags.
 
 ### Step 4 — Normalize to archival container
 
-MKV is the default — supports every codec, attachments, chapters, unlimited tracks. Attach the probe + mediainfo + checksum as sidecar files inside the MKV if using `media-mkvtoolnix`.
+MKV is the default — supports every codec, attachments, chapters, unlimited tracks. Attach the probe + mediainfo + checksum as sidecar files inside the MKV if using `media-package`.
 
 ### Step 5 — Optional codec normalization
 
@@ -152,8 +152,8 @@ MKV is the default — supports every codec, attachments, chapters, unlimited tr
 ## Variants
 
 - **Continuous SDI with segmentation** — 1-hour segments via `segment` muxer, auto-delete after 30 days.
-- **Automated content tagging** — extract keyframes, `media-tag` CLIP/SigLIP per frame, consolidate tags in sidecar JSON.
-- **OCR verification** — 0.2 fps extract, `media-ocr-ai` per frame, consolidate burn-in text.
+- **Automated content tagging** — extract keyframes, `ai-understand` CLIP/SigLIP per frame, consolidate tags in sidecar JSON.
+- **OCR verification** — 0.2 fps extract, `ai-understand` per frame, consolidate burn-in text.
 - **Color-space-aware archival** — preserve original color tags; DO NOT auto-convert to sRGB.
 - **Incremental sync** — rsync + post-sync checksum verification.
 
@@ -186,4 +186,4 @@ MKV is the default — supports every codec, attachments, chapters, unlimited tr
 
 ## Example — Archive 24-hour SDI broadcast feed
 
-`decklink-tools` capture → `ffmpeg` segmenter → 1-hour MP4 segments → per-segment: full-decode check + SHA-256 + MediaInfo JSON sidecar → batch-upload to Glacier Deep Archive via `media-cloud-upload` with lifecycle rule for 30-day local purge after upload confirmation.
+`broadcast-io` capture → `ffmpeg` segmenter → 1-hour MP4 segments → per-segment: full-decode check + SHA-256 + MediaInfo JSON sidecar → batch-upload to Glacier Deep Archive via `media-cloud-upload` with lifecycle rule for 30-day local purge after upload confirmation.

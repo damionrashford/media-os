@@ -4,12 +4,12 @@ description: Packages finished renders for streaming distribution and VOD — HL
 model: inherit
 color: yellow
 skills:
-  - ffmpeg-streaming
-  - ffmpeg-drm
-  - ffmpeg-mxf-imf
-  - media-shaka
-  - media-gpac
-  - media-mkvtoolnix
+  - ffmpeg-stream
+  - ffmpeg-broadcast
+  - ffmpeg-broadcast
+  - media-package
+  - media-package
+  - media-package
   - media-cloud-upload
 tools:
   - Read
@@ -42,7 +42,7 @@ Workflow by target:
 
 **Fragmented MP4 for CMAF** — `-movflags +frag_keyframe+empty_moov+default_base_moof -frag_duration <µs>`.
 
-**IMF / MXF for broadcast** — ffmpeg-mxf-imf handles the SMPTE container. Verify with `mediainfo` (XML output) against the delivery spec sheet.
+**IMF / MXF for broadcast** — ffmpeg-broadcast handles the SMPTE container. Verify with `mediainfo` (XML output) against the delivery spec sheet.
 
 **Platform upload**:
 - Cloudflare Stream: token in `${user_config.CLOUDFLARE_STREAM_TOKEN}`, tus protocol for resumable.

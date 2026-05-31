@@ -18,7 +18,7 @@
 
 ## Steps
 
-1. Read each relevant tool-skill: `media-upscale`, `media-interpolate`, `media-denoise-ai`, `media-matte`, `media-depth`, `media-lipsync`.
+1. Read each relevant tool-skill: `ai-enhance`, `ai-enhance`, `ai-enhance`, `ai-understand`, `ai-understand`, `ai-lipsync`.
 2. For each requested enhancement, read `${CLAUDE_PLUGIN_ROOT}/skills/<skill>/references/LICENSES.md` and pick the highest-quality Apache-2 / MIT / BSD / GPL model:
    - **upscale**: Real-ESRGAN (BSD) > SwinIR (Apache-2) > HAT (Apache-2). NOT: ESRGAN-Plus (research-only).
    - **interpolate**: RIFE (MIT) > FILM (Apache-2). NOT: DAIN (research-only).
@@ -32,7 +32,7 @@
    - Run the underlying skill's helper script (`uv run ${CLAUDE_PLUGIN_ROOT}/skills/<skill>/scripts/<helper>.py --input <prev> --output <next>`).
    - On GPU-bound steps, surface estimated runtime (resolution × frame count × model factor). Confirm with operator for jobs > 1 hour.
 6. After AI pass(es), run `moqc --ref <source> --out <final>` if upscale or interpolate was applied (perceptual sanity check, not a gate).
-7. If output is a frame sequence, optionally re-mux to video via `ffmpeg-transcode` using the source's original codec or as specified.
+7. If output is a frame sequence, optionally re-mux to video via `ffmpeg-encode` using the source's original codec or as specified.
 8. **`mosafe`-wrap** any final re-mux ffmpeg call.
 9. Write `summary.md` with model selection + license per step, runtime per step, before/after metrics.
 
@@ -79,18 +79,18 @@
 
 ### Step 1 — Probe source
 
-`ffmpeg-probe`. Capture resolution, frame rate, codec artifacts, audio noise floor, color space (BT.601 / BT.709 / SDR), bit depth, chroma.
+`ffmpeg-analyze`. Capture resolution, frame rate, codec artifacts, audio noise floor, color space (BT.601 / BT.709 / SDR), bit depth, chroma.
 
 ### Step 2 — Undo legacy artifacts BEFORE AI
 
-- **Telecined 29.97i → 23.976p** — `ffmpeg-ivtc` (`fieldmatch → decimate`).
-- **True interlaced** — `yadif` via `ffmpeg-video-filter`.
-- **Compression noise** — `ffmpeg-denoise-restore` (`nlmeans`, `hqdn3d`).
-- **Unstable handheld** — `ffmpeg-stabilize` two-pass (`vidstabdetect` → `vidstabtransform`).
+- **Telecined 29.97i → 23.976p** — `ffmpeg-restore` (`fieldmatch → decimate`).
+- **True interlaced** — `yadif` via `ffmpeg-filter`.
+- **Compression noise** — `ffmpeg-restore` (`nlmeans`, `hqdn3d`).
+- **Unstable handheld** — `ffmpeg-restore` two-pass (`vidstabdetect` → `vidstabtransform`).
 
 ### Step 3 — AI super-resolution
 
-Use `media-upscale`:
+Use `ai-enhance`:
 - **Real-ESRGAN x4plus** — live-action default.
 - **Real-ESRGAN anime6b** — animation.
 - **SwinIR** — graphics / text.
@@ -99,7 +99,7 @@ Use `media-upscale`:
 
 ### Step 4 — Frame interpolation
 
-`media-interpolate`:
+`ai-enhance`:
 - **RIFE v4.6** (MIT) — handles scene cuts.
 - **FILM** (Apache-2) — slightly smoother, drops on scene cuts.
 
@@ -107,7 +107,7 @@ Target integer multiples for clean math (23.976 → 47.952 exact 2×). 23.976 �
 
 ### Step 5 — AI audio denoise
 
-`media-denoise-ai`:
+`ai-enhance`:
 - **DeepFilterNet** — general, 16 kHz or 48 kHz MONO only.
 - **RNNoise** — lightweight, hardcoded 48 kHz mono 16-bit.
 - **Resemble Enhance** — speech super-res.
@@ -116,24 +116,24 @@ Isolate stems first with `media-demucs` if source is mixed.
 
 ### Step 6 — Background removal (optional)
 
-`media-matte`:
+`ai-understand`:
 - **rembg** (MIT) — fastest.
 - **BiRefNet / RMBG-2.0** — stills only; per-frame for video produces temporal flicker.
 - **RVM (RobustVideoMatting)** — temporally coherent, GPL-3 (propagates if shipped embedded; commercial OK via dynamic linking).
 
 ### Step 7 — Depth estimation (optional)
 
-`media-depth`:
+`ai-understand`:
 - **Depth-Anything v2** (Apache-2) — fastest, relative depth.
 - **MiDaS** — for relighting / 3D reprojection.
 
 ### Step 8 — Color + HDR finish
 
-LUT (`ffmpeg-lut-grade`), OCIO ACES (`ffmpeg-ocio-colorpro`), or SDR→HLG tone-map (`ffmpeg-hdr-color`).
+LUT (`ffmpeg-color`), OCIO ACES (`ffmpeg-color`), or SDR→HLG tone-map (`ffmpeg-color`).
 
 ### Step 9 — QC + final encode
 
-`ffmpeg-quality` VMAF vs source (80–95 expected). `ffmpeg-transcode` to delivery: H.264 10-bit `yuv420p10le` for broad compat, AV1 for bandwidth-constrained.
+`ffmpeg-analyze` VMAF vs source (80–95 expected). `ffmpeg-encode` to delivery: H.264 10-bit `yuv420p10le` for broad compat, AV1 for bandwidth-constrained.
 
 ## Variants
 
@@ -165,4 +165,4 @@ LUT (`ffmpeg-lut-grade`), OCIO ACES (`ffmpeg-ocio-colorpro`), or SDR→HLG tone-
 
 ## Example — Upscale + interpolate old 720p30 → 4K60
 
-Probe source → denoise with `hqdn3d` → Real-ESRGAN x4plus to 2880×? tile=400 → RIFE v4.6 ×2 → LUT grade → ffmpeg-transcode to HEVC 10-bit HDR-ready `yuv420p10le`. VMAF check against source at 720p (upscale reference). Deliver.
+Probe source → denoise with `hqdn3d` → Real-ESRGAN x4plus to 2880×? tile=400 → RIFE v4.6 ×2 → LUT grade → ffmpeg-encode to HEVC 10-bit HDR-ready `yuv420p10le`. VMAF check against source at 720p (upscale reference). Deliver.

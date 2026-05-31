@@ -16,16 +16,16 @@
 
 ## Steps
 
-1. Read `${CLAUDE_PLUGIN_ROOT}/skills/otio-convert/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-probe/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/skills/media-mediainfo/SKILL.md`.
+1. Read `${CLAUDE_PLUGIN_ROOT}/skills/otio/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/skills/ffmpeg-analyze/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/skills/media-inspect/SKILL.md`.
 2. Identify source format from file extension + magic bytes (`file <source>`). Don't trust extension alone — `.xml` could be FCPXML, Premiere XML, or Resolve XML, each with different schemas.
-3. Run `otio-convert --inspect <source>` to enumerate clips, transitions, audio/video tracks, gaps, effects, color metadata.
+3. Run `otio --inspect <source>` to enumerate clips, transitions, audio/video tracks, gaps, effects, color metadata.
 4. **STOP** if source contains effects/transitions that don't translate to target (e.g. Resolve color correction nodes don't survive to Premiere XML; flag and ask whether to drop or render).
 5. For each referenced media clip, verify file exists at the path the timeline references. If not, apply `relink_strategy`:
    - `exact-path` → fail with list of missing files.
    - `filename-match` → search `media_root` recursively for matching filenames.
    - `metadata-match` → use ExifTool/MediaInfo timecode + duration matching.
 6. If `frame_rate` differs from source: insert pull-down or speed-ramp per OTIO transforms (NOT trivial; flag if motion-effect interpretation differs across target NLEs).
-7. Run `otio-convert -i <source> -o <target>` for the conversion. For multi-target export, run once per target.
+7. Run `otio -i <source> -o <target>` for the conversion. For multi-target export, run once per target.
 8. Validate target file: for FCPXML, schema-validate against Apple's DTD; for AAF, run `aaf-info` to confirm clip/track count matches source; for EDL, verify cut count matches.
 9. Generate a translation report: clips that perfectly converted, clips that lost data (which effects/markers/colors didn't translate), unresolved media references.
 10. Write `summary.md` with translation report + path to each target file.
@@ -93,19 +93,19 @@ FCP7 XML and FCPXML are DIFFERENT schemas (use `fcp_xml` vs `fcpx_xml` OTIO adap
 
 #### Step 2 — Convert through OTIO pivot
 
-Use `otio-convert`. OTIO is the lossless-enough pivot format. `otio-docs` has the adapter matrix.
+Use `otio`. OTIO is the lossless-enough pivot format. `otio` has the adapter matrix.
 
 #### Step 3 — Extract media dependencies
 
-Use OTIO's `list-media` to get the source-clip manifest with in/out points. Cross-check with `ffmpeg-probe` for actual stream specs per source.
+Use OTIO's `list-media` to get the source-clip manifest with in/out points. Cross-check with `ffmpeg-analyze` for actual stream specs per source.
 
 #### Step 4 — Verify + conform rates
 
-Mixed-rate timelines are the #1 interchange break. Use `media-mediainfo` for deep diagnostics. If conform is needed, batch-transcode with `ffmpeg-transcode` + `ffmpeg-hwaccel` to a single mezzanine codec (ProRes 422 HQ or DNxHR HQ).
+Mixed-rate timelines are the #1 interchange break. Use `media-inspect` for deep diagnostics. If conform is needed, batch-transcode with `ffmpeg-encode` + `ffmpeg-encode` to a single mezzanine codec (ProRes 422 HQ or DNxHR HQ).
 
 #### Step 5 — Remap media paths in OTIO
 
-If conformed media moves, use `otio-convert`'s remap-media operation so the target NLE resolves the new paths.
+If conformed media moves, use `otio`'s remap-media operation so the target NLE resolves the new paths.
 
 #### Step 6 — Generate proxies (optional, for offline edit)
 
@@ -126,19 +126,19 @@ Import, verify: clip count, total duration, transitions, audio track count, leve
 
 - **EDL-only (CMX3600)** — legacy/archival. Cuts + basic transitions only. No effects, no subclip data.
 - **Round-trip sanity check** — A → B → A, diff to reveal lossy steps.
-- **Mixed-rate conform** — 29.97 → 23.976 via `ffmpeg-ivtc` or frame-rate conversion.
+- **Mixed-rate conform** — 29.97 → 23.976 via `ffmpeg-restore` or frame-rate conversion.
 - **Preserve timecode through conform** — `ffprobe` extract start timecode, pass to encode via `-timecode`.
-- **MKV chaptered master** — `media-mkvtoolnix` for chapter split, `ffmpeg-captions` extract, package per NLE.
-- **Fragmented MP4 for CMAF** — `media-gpac` with 4000 ms fragments for ABR downstream.
+- **MKV chaptered master** — `media-package` for chapter split, `ffmpeg-subtitle` extract, package per NLE.
+- **Fragmented MP4 for CMAF** — `media-package` with 4000 ms fragments for ABR downstream.
 
 ### Gotchas
 
 - **FCP7 XML ≠ FCPXML.** Legacy vs X/10.x schema. Different OTIO adapters (`fcp_xml` vs `fcpx_xml`). Mixing loses structure.
-- **AAF is a container, not a codec.** It may wrap MXF essence. Always inspect with `media-mediainfo` to see what's actually inside.
+- **AAF is a container, not a codec.** It may wrap MXF essence. Always inspect with `media-inspect` to see what's actually inside.
 - **Avid MXF is OP-Atom, not OP1a.** Each essence track is a separate file. Use `-f mxf_opatom`.
 - **OTIO preserves timeline structure, not media.** If media moves, `remap-media` or every clip goes offline.
 - **Effects don't round-trip.** Vendor-specific effects collapse to "unknown". Budget manual re-creation.
-- **Frame rate determines timecode.** 23.976p with 29.97 DF reel numbering is ambiguous — verify via `media-mediainfo`.
+- **Frame rate determines timecode.** 23.976p with 29.97 DF reel numbering is ambiguous — verify via `media-inspect`.
 - **Drop-frame vs non-drop-frame** — 29.97 DF drops 2 frames every minute (except every 10th). 23.976 is non-drop. Conforming across these = offset drift.
 - **Proxies must be frame-accurate to masters.** Wrong proxy rate = editorial cuts land at wrong source timecode. `-r <exact-num>/<exact-den>` not a rounded decimal.
 - **Channel layout variations** — 2-ch stereo, dual-mono, 5.1 — NLEs merge-down on import inconsistently. Verify with `ffprobe`.
@@ -155,4 +155,4 @@ Import, verify: clip count, total duration, transitions, audio track count, leve
 
 ### Example — Premiere cut → Resolve for finishing
 
-`otio-convert --input premiere.xml --output-format fcpx_xml > resolve.fcpxml`. Verify media resolves, batch-transcode mixed-rate clips to ProRes 422 HQ proxies with `ffmpeg-transcode` + `ffmpeg-hwaccel`. Re-open in Resolve; spot-check timecode-critical cuts.
+`otio --input premiere.xml --output-format fcpx_xml > resolve.fcpxml`. Verify media resolves, batch-transcode mixed-rate clips to ProRes 422 HQ proxies with `ffmpeg-encode` + `ffmpeg-encode`. Re-open in Resolve; spot-check timecode-critical cuts.

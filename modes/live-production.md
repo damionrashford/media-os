@@ -17,8 +17,8 @@
 
 ## Steps
 
-1. Read tool skills `obs-websocket`, `ndi-tools`, `decklink-tools`, `ffmpeg-whip`, `ffmpeg-rist-zmq`, `mediamtx-server`, `ptz-onvif`/`ptz-visca` as needed.
-2. Run `moprobe --json <source>` if source is a file or URL. For OBS scenes, query `obs-websocket` for the current scene's video/audio settings. For NDI, run `ndi-tools` discovery first.
+1. Read tool skills `obs`, `broadcast-io`, `broadcast-io`, `ffmpeg-stream`, `ffmpeg-stream`, `mediamtx`, `ptz`/`ptz` as needed.
+2. Run `moprobe --json <source>` if source is a file or URL. For OBS scenes, query `obs` for the current scene's video/audio settings. For NDI, run `broadcast-io` discovery first.
 3. **STOP** if the source isn't reachable (NDI source not advertising, DeckLink device unplugged, OBS WebSocket auth fail). Surface the failure with the exact diagnostic command (`ndi-record-cli -list`, `BMDStreamingServer -list`, etc.).
 4. Validate `target` URLs: RTMP must include stream key; SRT must include `?streamid=` if using stream-ID auth; WHIP target must be HTTPS.
 5. Compose the ffmpeg invocation (or OBS WebSocket call) per the chosen `latency_mode`:
@@ -78,51 +78,51 @@
 
 ### Step 1 — Build the scene collection
 
-Author the scene tree as JSON under the active OBS profile via the `obs-config` skill. Lock scene names early — downstream skills reference them by exact spelling (case-sensitive in the websocket protocol).
+Author the scene tree as JSON under the active OBS profile via the `obs` skill. Lock scene names early — downstream skills reference them by exact spelling (case-sensitive in the websocket protocol).
 
 ### Step 2 — Route system audio BEFORE launching OBS
 
 OBS caches audio devices at startup. Create virtual sinks first so OBS sees them as inputs.
 
-- **macOS:** create an aggregate device combining BlackHole + mic (`audio-coreaudio` skill).
-- **Linux (PipeWire):** create a sink and link source apps into it (`audio-pipewire` skill).
-- **Windows:** install VB-Cable / VoiceMeeter, enumerate devices (`audio-wasapi` skill).
+- **macOS:** create an aggregate device combining BlackHole + mic (`audio-routing` skill).
+- **Linux (PipeWire):** create a sink and link source apps into it (`audio-routing` skill).
+- **Windows:** install VB-Cable / VoiceMeeter, enumerate devices (`audio-routing` skill).
 
-### Step 3 — Start OBS and verify obs-websocket
+### Step 3 — Start OBS and verify obs
 
-OBS 28+ bundles obs-websocket v5. Use the `obs-websocket` skill's `wsctl.py check` + `ping` — it auto-discovers the password from the local OBS config. For remote OBS, export `OBS_WEBSOCKET_URL` and `OBS_WEBSOCKET_PASSWORD`.
+OBS 28+ bundles obs v5. Use the `obs` skill's `wsctl.py check` + `ping` — it auto-discovers the password from the local OBS config. For remote OBS, export `OBS_WEBSOCKET_URL` and `OBS_WEBSOCKET_PASSWORD`.
 
 ### Step 4 — Wire MIDI / OSC triggers to scene switches
 
-Use `media-midi` (`midictl.py monitor --json`) piped to `obs-websocket` (`wsctl.py scene-switch`). For TouchOSC / Reaper, use `media-osc` (`oscctl.py listen --port 8000 --json`) with the same fan-out pattern.
+Use `media-control` (`midictl.py monitor --json`) piped to `obs` (`wsctl.py scene-switch`). For TouchOSC / Reaper, use `media-control` (`oscctl.py listen --port 8000 --json`) with the same fan-out pattern.
 
 ### Step 5 — Lighting cue on scene change (DMX)
 
-Subscribe to OBS's `CurrentProgramSceneChanged` event via `wsctl.py events --subscribe scenes`, then drive DMX through `media-dmx` (`dmxctl.py send/fade --universe N --channel M`).
+Subscribe to OBS's `CurrentProgramSceneChanged` event via `wsctl.py events --subscribe scenes`, then drive DMX through `media-control` (`dmxctl.py send/fade --universe N --channel M`).
 
 ### Step 6 — PTZ preset recall on scene change
 
-Same subscription stream. For VISCA cameras (UDP port 52381), use `ptz-visca` (`viscactl.py preset-recall --host <ip> --preset N`). For ONVIF, use `ptz-onvif` after discovery (`onvifctl.py discover`).
+Same subscription stream. For VISCA cameras (UDP port 52381), use `ptz` (`viscactl.py preset-recall --host <ip> --preset N`). For ONVIF, use `ptz` after discovery (`onvifctl.py discover`).
 
 ### Step 7 — Multi-protocol egress via MediaMTX
 
-Configure the `mediamtx-server` skill once: RTMP ingest from OBS, auto-republish to HLS (8888), RTSP (8554), SRT (8890), WebRTC/WHEP (8889). Optional `runOnReady` spawns an ffmpeg forwarder to YouTube/Twitch/Facebook.
+Configure the `mediamtx` skill once: RTMP ingest from OBS, auto-republish to HLS (8888), RTSP (8554), SRT (8890), WebRTC/WHEP (8889). Optional `runOnReady` spawns an ffmpeg forwarder to YouTube/Twitch/Facebook.
 
 ### Step 8 — WebRTC low-latency path (alternative to RTMP)
 
-Skip OBS's RTMP output and go straight to WHIP via `ffmpeg-whip` — sub-second latency for contribution.
+Skip OBS's RTMP output and go straight to WHIP via `ffmpeg-stream` — sub-second latency for contribution.
 
 ## Variants
 
 - **Pure-software** — skip DMX/PTZ/DeckLink; software MIDI (Keyboard Maestro) + virtual audio + OBS only.
-- **Broadcast SDI** — swap screen capture for DeckLink input via `decklink-tools`; playout back to SDI with ffmpeg's `-f decklink` output.
+- **Broadcast SDI** — swap screen capture for DeckLink input via `broadcast-io`; playout back to SDI with ffmpeg's `-f decklink` output.
 - **NDI-first facility** — replace RTMP ingest with NDI via `obs-ndi` plugin; MediaMTX still bridges to external delivery.
-- **Remote producer + FOH operator** — both run OBS; operator drives producer's OBS over obs-websocket by setting `OBS_WEBSOCKET_URL` to the producer's LAN address.
+- **Remote producer + FOH operator** — both run OBS; operator drives producer's OBS over obs by setting `OBS_WEBSOCKET_URL` to the producer's LAN address.
 
 ## Gotchas
 
-- **obs-websocket auto-discovery is local-only.** For a remote OBS, export `OBS_WEBSOCKET_URL` + `OBS_WEBSOCKET_PASSWORD`.
-- **obs-websocket v5 only.** v4 is EOL. Close code `4010` = client/server version mismatch.
+- **obs auto-discovery is local-only.** For a remote OBS, export `OBS_WEBSOCKET_URL` + `OBS_WEBSOCKET_PASSWORD`.
+- **obs v5 only.** v4 is EOL. Close code `4010` = client/server version mismatch.
 - **OBS caches audio devices at launch.** Create virtual sinks before starting OBS.
 - **HighVolume events (bits 16–19) are deliberately excluded from `All` (=4095).** `InputVolumeMeters` fires every 50 ms. Only subscribe if you're rendering a meter UI.
 - **PTZ presets are camera-stored.** `preset-set` once, `preset-recall` forever.
@@ -140,4 +140,4 @@ Skip OBS's RTMP output and go straight to WHIP via `ffmpeg-whip` — sub-second 
 
 ## Example — MIDI note 36 triggers full-stack cue
 
-On MIDI note 36: switch OBS to scene "Main", fade DMX channel 1 up to full, recall PTZ preset 3. Use `media-midi` monitor piped through `jq` to fan out three parallel actions (obs-websocket scene-switch, media-dmx fade, ptz-visca preset-recall). Core live-production value: one event → coordinated multi-device response.
+On MIDI note 36: switch OBS to scene "Main", fade DMX channel 1 up to full, recall PTZ preset 3. Use `media-control` monitor piped through `jq` to fan out three parallel actions (obs scene-switch, media-control fade, ptz preset-recall). Core live-production value: one event → coordinated multi-device response.

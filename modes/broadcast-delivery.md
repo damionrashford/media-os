@@ -18,7 +18,7 @@
 
 ## Steps
 
-1. Read `ffmpeg-mxf-imf` and `media-mediainfo`. For loudness: `media-ffmpeg-normalize`.
+1. Read `ffmpeg-broadcast` and `media-inspect`. For loudness: `media-audio-cli`.
 2. `moprobe --color --json <source>` plus `mediainfo --Output=JSON <source>` for full metadata extraction.
 3. **STOP** if source bit depth or chroma is below target spec (e.g. delivering Netflix IMF requires 10-bit 4:2:2 minimum; 8-bit 4:2:0 source must be re-mastered, not just transcoded). Surface to operator.
 4. Look up target spec table (in mode reference below) for exact codec + container + flags:
@@ -32,7 +32,7 @@
 7. **`mosafe`-wrap** the command.
 8. Encode. Run `mediainfo` on the output to verify codec/profile/level matches target spec exactly.
 9. Run loudness measurement: `ffmpeg-normalize -nt <target> -o <normalized> --print-stats <output>`. Confirm within ±0.5 LU of target.
-10. Mux captions if provided (`ffmpeg-captions` or MXF-aware tools).
+10. Mux captions if provided (`ffmpeg-subtitle` or MXF-aware tools).
 11. Run `moqc` against the source for VMAF baseline (not gate — broadcast specs are about conformance, not perceptual quality).
 12. Write `summary.md` with delivery checklist matrix (every spec field: pass/fail).
 
@@ -85,42 +85,42 @@
 
 ### Step 1 — SDI ingest (if tape source)
 
-Use `decklink-tools` with `-f decklink`, explicit format code (`Hp50`, `Hi59`, `2k24`), `-pixel_format uyvy422` (or `yuv422p10le` on 10-bit-capable devices). Encode to ProRes 422 HQ + PCM 24-bit 48 kHz working master.
+Use `broadcast-io` with `-f decklink`, explicit format code (`Hp50`, `Hi59`, `2k24`), `-pixel_format uyvy422` (or `yuv422p10le` on 10-bit-capable devices). Encode to ProRes 422 HQ + PCM 24-bit 48 kHz working master.
 
 ### Step 2 — Probe the source
 
-Use `ffmpeg-probe` and `media-mediainfo`. Capture: exact frame rate (numerator/denominator), interlace/progressive, pix_fmt, bit depth, chroma subsampling, color primaries/transfer/matrix/range, audio channel layout, caption track(s), starting timecode, drop-frame flag.
+Use `ffmpeg-analyze` and `media-inspect`. Capture: exact frame rate (numerator/denominator), interlace/progressive, pix_fmt, bit depth, chroma subsampling, color primaries/transfer/matrix/range, audio channel layout, caption track(s), starting timecode, drop-frame flag.
 
 ### Step 3 — Inverse telecine if needed
 
-If 29.97i is telecined film, use `ffmpeg-ivtc` — `fieldmatch → decimate` in that exact order — to recover 23.976p.
+If 29.97i is telecined film, use `ffmpeg-restore` — `fieldmatch → decimate` in that exact order — to recover 23.976p.
 
 ### Step 4 — HDR dynamic metadata
 
-- **Dolby Vision** — `hdr-dovi-tool`. Extract RPU (`extract-rpu`), convert profile 7 → 8.1 for OTT (`convert --mode 2`), re-inject into the final encode (`inject-rpu`).
-- **HDR10+** — `hdr-hdr10plus-tool`. Extract JSON (`extract`), optionally edit scene metadata, inject back (`inject`).
+- **Dolby Vision** — `hdr-meta`. Extract RPU (`extract-rpu`), convert profile 7 → 8.1 for OTT (`convert --mode 2`), re-inject into the final encode (`inject-rpu`).
+- **HDR10+** — `hdr-meta`. Extract JSON (`extract`), optionally edit scene metadata, inject back (`inject`).
 
 Never transcode while trying to preserve DoVi/HDR10+ inline — the SEI NAL units get stripped. Extract → encode fresh → re-inject.
 
 ### Step 5 — Color-managed ACES pass (optional)
 
-Use `ffmpeg-ocio-colorpro` for OCIO-config-driven ACES transforms. For EXR sources, conform through `vfx-oiio` → `vfx-openexr` first.
+Use `ffmpeg-color` for OCIO-config-driven ACES transforms. For EXR sources, conform through `vfx` → `vfx` first.
 
 ### Step 6 — Preserve CEA-608/708 captions
 
-Use `ffmpeg-captions`. Extract with `-c:s copy` or `copy-cc`. Re-inject through the transcode. Naive `-c copy` often drops captions.
+Use `ffmpeg-subtitle`. Extract with `-c:s copy` or `copy-cc`. Re-inject through the transcode. Naive `-c copy` often drops captions.
 
 ### Step 7 — Author MXF OP1a (broadcast)
 
-Use `ffmpeg-mxf-imf`. Spec: `mpeg2video` or XAVC / DNxHR / ProRes depending on house spec, `yuv422p`, 50 M bitrate typical, PCM audio, starting timecode `01:00:00:00` (broadcast convention).
+Use `ffmpeg-broadcast`. Spec: `mpeg2video` or XAVC / DNxHR / ProRes depending on house spec, `yuv422p`, 50 M bitrate typical, PCM audio, starting timecode `01:00:00:00` (broadcast convention).
 
 ### Step 8 — Author Netflix IMF (OTT master)
 
-Use `ffmpeg-mxf-imf` with J2K encoding, PCM 24-bit 48 kHz 8-ch, emit CPL XML + PKL + ASSETMAP. Validate with Photon (Netflix's open-source IMF validator).
+Use `ffmpeg-broadcast` with J2K encoding, PCM 24-bit 48 kHz 8-ch, emit CPL XML + PKL + ASSETMAP. Validate with Photon (Netflix's open-source IMF validator).
 
 ### Step 9 — QC
 
-Run `ffmpeg-quality` (VMAF vs source) and a deep `media-mediainfo` report. Compare to the delivery spec sheet.
+Run `ffmpeg-analyze` (VMAF vs source) and a deep `media-inspect` report. Compare to the delivery spec sheet.
 
 ### Step 10 — Deliver
 
@@ -128,10 +128,10 @@ Aspera for Netflix, S3 / rclone for general broadcast, both via `media-cloud-upl
 
 ## Variants
 
-- **Dolby Vision single-layer (profile 8.1)** — OTT streaming. Convert profile 7 → 8.1 via `hdr-dovi-tool`.
+- **Dolby Vision single-layer (profile 8.1)** — OTT streaming. Convert profile 7 → 8.1 via `hdr-meta`.
 - **HDR10+ parallel DoVi** — some delivery specs want both tracks. Extract + inject independently.
 - **Archival MXF OP-Atom** — some Avid workflows; each essence track is a separate file (`-f mxf_opatom`).
-- **EXR → IMF conform** — VFX-origin sources go through `vfx-openexr` → OIIO → J2K encode.
+- **EXR → IMF conform** — VFX-origin sources go through `vfx` → OIIO → J2K encode.
 
 ## Gotchas
 
@@ -157,4 +157,4 @@ Aspera for Netflix, S3 / rclone for general broadcast, both via `media-cloud-upl
 
 ## Example — SDI ingest → Dolby Vision profile 8.1 IMF
 
-`decklink-tools` captures the tape to ProRes 422 HQ master. `ffmpeg-probe` confirms Rec.2020 PQ. `hdr-dovi-tool` extracts RPU profile 7 and converts to 8.1. `ffmpeg-mxf-imf` encodes J2K IMF with captions and PCM audio. `hdr-dovi-tool inject-rpu` adds the 8.1 track. Photon validates. `media-cloud-upload` Asperas to Netflix.
+`broadcast-io` captures the tape to ProRes 422 HQ master. `ffmpeg-analyze` confirms Rec.2020 PQ. `hdr-meta` extracts RPU profile 7 and converts to 8.1. `ffmpeg-broadcast` encodes J2K IMF with captions and PCM audio. `hdr-meta inject-rpu` adds the 8.1 track. Photon validates. `media-cloud-upload` Asperas to Netflix.

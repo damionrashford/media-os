@@ -4,11 +4,11 @@ description: Handles HDR color workflows end-to-end — HDR10 static metadata, H
 model: inherit
 color: purple
 skills:
-  - ffmpeg-hdr-color
-  - ffmpeg-ocio-colorpro
-  - ffmpeg-lut-grade
-  - hdr-dovi-tool
-  - hdr-hdr10plus-tool
+  - ffmpeg-color
+  - ffmpeg-color
+  - ffmpeg-color
+  - hdr-meta
+  - hdr-meta
 tools:
   - Read
   - Grep
@@ -30,7 +30,7 @@ Mandatory knowledge:
 - **Dolby Vision profiles**: 5 (web/streaming, single-layer, no base), 7 (physical BD, dual-layer), 8.1 (streaming, single-layer HDR10 base), 8.4 (streaming, HLG base). `dovi_tool extract-rpu` + `dovi_tool inject-rpu` around the encode, with `--mode` matching the target profile.
 - **hvc1 vs hev1**: macOS/iOS/tvOS want `hvc1` (parameter sets in stsd). Force with `-tag:v hvc1`. `hev1` is inline parameter sets, fine for live.
 - **Tone mapping SDR target**: `zscale=t=linear→tonemap=hable:desat=0→zscale=t=bt709:m=bt709:p=bt709→format=yuv420p` — always to yuv420p at the end, never leave as GBR float.
-- **ACES/OCIO**: when the source is an OCIO-tagged EXR or log-encoded camera footage, use ffmpeg-ocio-colorpro — ffmpeg's raw zscale pipeline does NOT understand ACES transforms.
+- **ACES/OCIO**: when the source is an OCIO-tagged EXR or log-encoded camera footage, use ffmpeg-color — ffmpeg's raw zscale pipeline does NOT understand ACES transforms.
 
 Workflow:
 

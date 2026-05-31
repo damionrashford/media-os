@@ -16,7 +16,7 @@
 
 ## Steps
 
-1. Read tool skills: `ffmpeg-hdr-color`, `hdr-dovi-tool`, `hdr-hdr10plus-tool`, `ffmpeg-ocio-colorpro`.
+1. Read tool skills: `ffmpeg-color`, `hdr-meta`, `hdr-meta`, `ffmpeg-color`.
 2. `moprobe --color --json <source>` to capture color primaries, transfer, matrix, MaxCLL / MaxFALL (if present), HDR side-data (DV RPU, HDR10+ JSON), bit depth.
 3. **STOP** if source is 8-bit and target is HDR (HDR requires 10-bit minimum). Surface that the source must be re-mastered, not just transcoded.
 4. Branch by `target_format`:
@@ -85,15 +85,15 @@
 
 #### Step 1 — Probe
 
-`ffmpeg-probe` (`moprobe --color`) captures: color primaries (bt709 / bt2020), transfer (bt709 / smpte2084 / arib-std-b67), matrix, range, MaxCLL / MaxFALL, DoVi RPU SEI, HDR10+ SEI.
+`ffmpeg-analyze` (`moprobe --color`) captures: color primaries (bt709 / bt2020), transfer (bt709 / smpte2084 / arib-std-b67), matrix, range, MaxCLL / MaxFALL, DoVi RPU SEI, HDR10+ SEI.
 
 #### Step 2 — SDR → HDR (up)
 
-`ffmpeg-hdr-color sdr-to-hdr --target hlg|hdr10` with a synthetic MDC. Inverse tone-mapping is creative — use sparingly; real HDR grading is preferable.
+`ffmpeg-color sdr-to-hdr --target hlg|hdr10` with a synthetic MDC. Inverse tone-mapping is creative — use sparingly; real HDR grading is preferable.
 
 #### Step 3 — HDR → SDR (down)
 
-`ffmpeg-hdr-color hdr-to-sdr --algo <hable|mobius|reinhard|bt2390|bt2446a|bt2446c|aces>`. Try `bt2446a` first — ITU-standard, predictable.
+`ffmpeg-color hdr-to-sdr --algo <hable|mobius|reinhard|bt2390|bt2446a|bt2446c|aces>`. Try `bt2446a` first — ITU-standard, predictable.
 
 #### Step 4 — Cross-format HDR conversion
 
@@ -105,7 +105,7 @@ Missing the float32 step silently clips highlights.
 
 #### Step 5 — Dolby Vision RPU ops
 
-`hdr-dovi-tool`:
+`hdr-meta`:
 - `extract-rpu` from HEVC
 - `convert --mode 2` (profile 7 → 8.1 for streaming)
 - `editor` for L1/L2/L8 metadata edits
@@ -115,7 +115,7 @@ For HDR10 → DoVi uplift, `dovi_tool` generates a synthetic RPU.
 
 #### Step 6 — HDR10+ metadata ops
 
-`hdr-hdr10plus-tool`:
+`hdr-meta`:
 - `extract` JSON from HEVC
 - author / edit per-scene brightness JSON
 - `inject` into HEVC
@@ -138,7 +138,7 @@ Or inline at encode: `-x265-params "dhdr10-info=metadata.json"`.
 
 #### Step 9 — Deliver / wrap
 
-MP4 (`hvc1` tag), MKV, or J2K IMF via `ffmpeg-mxf-imf`. DASH/HLS packaging via `media-shaka`.
+MP4 (`hvc1` tag), MKV, or J2K IMF via `ffmpeg-broadcast`. DASH/HLS packaging via `media-package`.
 
 ### Variants
 
@@ -174,4 +174,4 @@ MP4 (`hvc1` tag), MKV, or J2K IMF via `ffmpeg-mxf-imf`. DASH/HLS packaging via `
 
 ### Example — HDR10+ with DoVi P8.1 dual delivery
 
-Source HEVC HDR10 base → `hdr-dovi-tool` generate synthetic RPU P8.1 → `hdr-hdr10plus-tool` author per-scene JSON → encode fresh HEVC 10-bit with `hdr-opt=1 repeat-headers=1 master-display=... max-cll=1000,400` → `dovi_tool inject-rpu` → `hdr10plus_tool inject` → MP4 `-tag:v hvc1`.
+Source HEVC HDR10 base → `hdr-meta` generate synthetic RPU P8.1 → `hdr-meta` author per-scene JSON → encode fresh HEVC 10-bit with `hdr-opt=1 repeat-headers=1 master-display=... max-cll=1000,400` → `dovi_tool inject-rpu` → `hdr10plus_tool inject` → MP4 `-tag:v hvc1`.

@@ -18,19 +18,19 @@
 ## Steps
 
 1. Read tool skills per `task`:
-   - `route` → `audio-pipewire` (Linux primary), `audio-jack` (Linux/macOS), `audio-coreaudio` (macOS), `audio-wasapi` (Windows).
-   - `mix` → `ffmpeg-audio-filter`, `ffmpeg-audio-fx`, `media-ffmpeg-normalize`, `media-sox`.
-   - `repair` → `media-demucs` (source-separation), `media-sox` (de-click), `media-denoise-ai` (DeepFilterNet for voice).
-   - `control-bridge` → `media-midi`, `media-osc`.
+   - `route` → `audio-routing` (Linux primary), `audio-routing` (Linux/macOS), `audio-routing` (macOS), `audio-routing` (Windows).
+   - `mix` → `ffmpeg-filter`, `ffmpeg-filter`, `media-audio-cli`, `media-audio-cli`.
+   - `repair` → `media-demucs` (source-separation), `media-audio-cli` (de-click), `ai-enhance` (DeepFilterNet for voice).
+   - `control-bridge` → `media-control`, `media-control`.
 2. **Platform detection**: detect host OS via `uname -s` and route to the right audio skill (don't suggest PipeWire on macOS).
 3. Branch by `task`:
    - **`route`**: Compose the routing graph (PipeWire `pw-link`, JACK `jack_connect`, Core Audio aggregate device, WASAPI exclusive-mode device). Apply via the underlying tool's API. Verify with `pw-dump`/`jack_lsp`/`SystemAudioConfig` query.
    - **`mix`**: For multitrack stems, compose `ffmpeg -filter_complex amix=inputs=N:weights=...` OR for parametric mix, build the filter graph (HPF + EQ + compression + bus group + master limiter). For Atmos: invoke ADM BWF tooling (out-of-scope for ffmpeg alone; surface).
    - **`repair`**: De-noise via DeepFilterNet (MIT). De-click via SoX `noisered`. Source-separate via Demucs (`htdemucs` model, MIT). Apply in order: de-click → de-noise → source-separate.
-   - **`control-bridge`**: Map MIDI CC or OSC messages to audio params (ffmpeg filter parameters, OBS source filters, etc.). Use `media-midi` for CC parsing, `media-osc` for OSC parsing.
+   - **`control-bridge`**: Map MIDI CC or OSC messages to audio params (ffmpeg filter parameters, OBS source filters, etc.). Use `media-control` for CC parsing, `media-control` for OSC parsing.
 4. For `mix` and `repair`: **`mosafe`-wrap** every ffmpeg invocation.
 5. Output to the chosen sample rate / bit depth / channel layout. Verify with `soxi` or `ffprobe`.
-6. Run loudness check via `media-ffmpeg-normalize --print-stats` even on non-broadcast targets (catches clipping / extreme LRA).
+6. Run loudness check via `media-audio-cli --print-stats` even on non-broadcast targets (catches clipping / extreme LRA).
 7. Write `summary.md` with routing diagram (for `route`), mix matrix (for `mix`), source-separation stems list (for `repair`), or MIDI/OSC mapping table (for `control-bridge`).
 
 ## Output schema
@@ -89,15 +89,15 @@
 
 | OS | Skill | What to do |
 |---|---|---|
-| Linux | `audio-pipewire` | `pw-cli list`, create virtual sink, `pw-link` source → target |
-| macOS | `audio-coreaudio` | aggregate devices (multi-mic sum), BlackHole / Loopback virtual cables |
-| Windows | `audio-wasapi` | VB-Cable / VoiceMeeter virtual routing |
-| Cross-platform | `audio-jack` | `jackd` start, `jack_lsp` list-ports, `jack_connect` DAW → destination |
+| Linux | `audio-routing` | `pw-cli list`, create virtual sink, `pw-link` source → target |
+| macOS | `audio-routing` | aggregate devices (multi-mic sum), BlackHole / Loopback virtual cables |
+| Windows | `audio-routing` | VB-Cable / VoiceMeeter virtual routing |
+| Cross-platform | `audio-routing` | `jackd` start, `jack_lsp` list-ports, `jack_connect` DAW → destination |
 
 ### Step 2 — Control surfaces
 
-- **MIDI** — `media-midi`: list-ports, monitor JSON, send-note, map to OBS/OSC/anything.
-- **OSC** — `media-osc`: send/listen.
+- **MIDI** — `media-control`: list-ports, monitor JSON, send-note, map to OBS/OSC/anything.
+- **OSC** — `media-control`: send/listen.
 
 ### Step 3 — DSP chain
 
@@ -106,17 +106,17 @@
 
 ### Step 4 — Spatial audio
 
-`ffmpeg-audio-spatial`:
+`ffmpeg-filter`:
 - **Binaural HRTF** — `sofalizer` with a SOFA file, per-track azimuth / elevation.
 - **Surround 5.1 upmix / downmix** — `pan` filter with channel matrix.
 
 ### Step 5 — AI processing
 
-`media-denoise-ai` (DeepFilterNet / RNNoise / Resemble Enhance), `media-demucs` (stem separation), `media-tts-ai` (Kokoro / OpenVoice / Piper), `media-musicgen` (Riffusion / YuE), `media-whisper` (transcription).
+`ai-enhance` (DeepFilterNet / RNNoise / Resemble Enhance), `media-demucs` (stem separation), `ai-generate` (Kokoro / OpenVoice / Piper), `ai-generate` (Riffusion / YuE), `media-whisper` (transcription).
 
 ### Step 6 — Loudness certification
 
-`media-ffmpeg-normalize` two-pass EBU R128:
+`media-audio-cli` two-pass EBU R128:
 
 | Target | Integrated | True peak |
 |---|---|---|
@@ -159,10 +159,10 @@
 - **Whisper: 16 kHz mono best.** Resamples internally; explicit is cleaner.
 - **Voice cloning needs a CLEAN reference.** DeepFilterNet the reference sample first.
 - **Kokoro TTS outputs 24 kHz.** Resample to 48 kHz before mixing.
-- **Single-pass `loudnorm` uses guardrails (±1 LUFS).** Two-pass measures then applies exactly. Use `media-ffmpeg-normalize` for certification.
+- **Single-pass `loudnorm` uses guardrails (±1 LUFS).** Two-pass measures then applies exactly. Use `media-audio-cli` for certification.
 - **True peak measures inter-sample peaks, 4× oversampled.** Standard sample peak misses these.
 - **LUFS = LKFS = same thing (different standards' names for integrated loudness).**
 
 ## Example — Podcast-style live monitor with MIDI transport
 
-`jackd` start → connect DAW ↔ system audio → `media-midi monitor` Stream Deck → MIDI CC maps to DAW transport (play/stop/record) AND to OBS scene switch in parallel.
+`jackd` start → connect DAW ↔ system audio → `media-control monitor` Stream Deck → MIDI CC maps to DAW transport (play/stop/record) AND to OBS scene switch in parallel.

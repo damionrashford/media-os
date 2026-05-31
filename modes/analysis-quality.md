@@ -18,7 +18,7 @@
 
 ## Steps
 
-1. Read tool skills: `ffmpeg-quality`, `ffmpeg-detect`, `media-ffmpeg-normalize`, `ffmpeg-probe`, `media-mediainfo`.
+1. Read tool skills: `ffmpeg-analyze`, `ffmpeg-analyze`, `media-audio-cli`, `ffmpeg-analyze`, `media-inspect`.
 2. `moprobe --color --json` on each input file.
 3. **STOP** if `pair` provided but files differ in resolution AND `--scale-source` not flagged — VMAF requires matching dimensions or explicit scaling.
 4. Run analysis battery in parallel where possible:
@@ -95,15 +95,15 @@
 
 #### Step 1 — Probe everything
 
-`moprobe` + `ffmpeg-probe` — full format + streams + specific stream detail + packet-level bitstream dump when needed. `moprobe --color` for HDR side data.
+`moprobe` + `ffmpeg-analyze` — full format + streams + specific stream detail + packet-level bitstream dump when needed. `moprobe --color` for HDR side data.
 
 #### Step 2 — MediaInfo deep diagnostics
 
-`media-mediainfo` (`--Output=JSON|XML|HTML`). Shows encoded-library, CABAC/trellis/B-pyramid, source framerate variance, recording-device metadata, re-encode history. Use when ffprobe alone is insufficient.
+`media-inspect` (`--Output=JSON|XML|HTML`). Shows encoded-library, CABAC/trellis/B-pyramid, source framerate variance, recording-device metadata, re-encode history. Use when ffprobe alone is insufficient.
 
 #### Step 3 — Quality metrics (VMAF / PSNR / SSIM)
 
-`ffmpeg-quality` or `moqc`:
+`ffmpeg-analyze` or `moqc`:
 
 | Model | Use for |
 |---|---|
@@ -116,37 +116,37 @@ Interpretation: ≥ 95 transparent, ≥ 80 excellent, ≥ 70 good, ≥ 60 accept
 
 #### Step 4 — Scene detection
 
-`media-scenedetect` (content method, default threshold 27). Lower (15–20) for gradual transitions; higher (35–40) for abrupt cuts only. Inline `scdet` filter in ffmpeg if you don't need PySceneDetect's graph output.
+`ffmpeg-analyze` (content method, default threshold 27). Lower (15–20) for gradual transitions; higher (35–40) for abrupt cuts only. Inline `scdet` filter in ffmpeg if you don't need PySceneDetect's graph output.
 
 #### Step 5 — Crop / silence / black / interlacing
 
-`ffmpeg-detect`:
+`ffmpeg-analyze`:
 - `cropdetect` — auto-detect letterbox/pillarbox, emits `crop` filter args.
 - `silencedetect` — `-35 dB` default for dialogue, `-50 dB` for music.
 - `blackdetect` — `pic_th` 0–1 luma threshold (0.98 = near-pure-black).
-- `idet` — counts fields: high TFF/BFF = interlaced, high Progressive = progressive, mixed ~60/40 = telecined (use the ai-enhancement mode or `ffmpeg-ivtc` to recover).
+- `idet` — counts fields: high TFF/BFF = interlaced, high Progressive = progressive, mixed ~60/40 = telecined (use the ai-enhancement mode or `ffmpeg-restore` to recover).
 
 #### Step 6 — ffplay scopes
 
-`ffmpeg-playback` — waveform, vectorscope, histogram live.
+`ffmpeg-encode` — waveform, vectorscope, histogram live.
 
 #### Step 7 — Bitstream forensics
 
-`ffmpeg-bitstream`:
+`ffmpeg-encode`:
 - NAL dump (HEVC SPS=33, H.264 SPS=7).
 - SEI dump for HDR metadata / captions / DoVi / HDR10+.
 
 #### Step 8 — Metadata audit
 
-`media-exiftool` (image / video EXIF, XMP, IPTC). `ffmpeg-metadata` for chapter + MKV tags.
+`media-inspect` (image / video EXIF, XMP, IPTC). `ffmpeg-analyze` for chapter + MKV tags.
 
 #### Step 9 — Content verification with CV/AI
 
-`media-ocr-ai` for burned text; `cv-mediapipe` for face presence; `media-tag` CLIP/SigLIP for zero-shot content tags.
+`ai-understand` for burned text; `cv` for face presence; `ai-understand` CLIP/SigLIP for zero-shot content tags.
 
 #### Step 10 — Loudness compliance
 
-`media-ffmpeg-normalize --measure-only` (non-destructive). Compare to spec:
+`media-audio-cli --measure-only` (non-destructive). Compare to spec:
 
 | Spec | Integrated | True peak |
 |---|---|---|
@@ -197,4 +197,4 @@ Interpretation: ≥ 95 transparent, ≥ 80 excellent, ≥ 70 good, ≥ 60 accept
 
 ### Example — CI gate on an encoded asset
 
-`moprobe --color source.mov` → sanity-check tags. `moqc --ref source.mov --out encoded.mp4 --vmaf-min 93 --format json` → fail build non-zero. `ffmpeg-detect silencedetect` confirms no > 2 s dead air. `media-ffmpeg-normalize --measure-only` confirms −16 LUFS ± 1.
+`moprobe --color source.mov` → sanity-check tags. `moqc --ref source.mov --out encoded.mp4 --vmaf-min 93 --format json` → fail build non-zero. `ffmpeg-analyze silencedetect` confirms no > 2 s dead air. `media-audio-cli --measure-only` confirms −16 LUFS ± 1.
