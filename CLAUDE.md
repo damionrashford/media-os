@@ -6,36 +6,51 @@ This is NOT documentation for end users of the plugin. End users install via `/p
 
 ## Repository role
 
-This repo IS a Claude Code plugin + marketplace. Users install the `media-os` plugin from the `media-os` marketplace. The plugin surface is the `skills/` directory at repo root (96 skills). The `.claude-plugin/` directory holds the plugin manifest and marketplace catalog.
+This repo IS a Claude Code plugin + marketplace. Users install the `media-os` plugin from the `media-os` marketplace. The plugin surface is the `skills/` directory at repo root (**40 skills**). The `.claude-plugin/` directory holds the plugin manifest and marketplace catalog.
 
 There is no service, no app, no build step. The deliverable is the directory tree itself.
+
+v3 is a **breaking** change (skill names changed wholesale): the previous 110-skill suite was consolidated to 40 lean router-over-techniques skills, the 13 `workflow-*` skills were deleted (their pipelines now live in `modes/`), and the 10 former dev-only `*-docs` skills were promoted into the plugin. Plugin version is `3.0.0`.
 
 ## Directory layout
 
 ```
 .claude-plugin/
-  plugin.json            # plugin manifest (userConfig fields live here, keep versions in sync)
+  plugin.json            # plugin manifest (userConfig fields live here) — REAL auto-discovered primitive
   marketplace.json       # marketplace catalog (one entry: media-os → ./)
 .claude/
-  skills/                # dev-only skills (docs + skill-creator) — NOT distributed
+  skills/                # dev-only: skill-creator (authoring harness) + studio symlink — NOT distributed
   agents/                # dev-only agents (repo maintenance) — NOT distributed
   settings.json          # contributor-friendly permission defaults
-skills/                  # 96 tool-and-technique skills + 13 workflow-* orchestration skills — distributed
-agents/                  # 7 orchestrator agents (architect/probe/qc/hdr/encoder/live/delivery)
+skills/                  # 40 consolidated router-over-techniques skills — distributed (auto-discovered)
+agents/                  # 7 orchestrator agents (architect/probe/qc/hdr/encoder/live/delivery) — auto-discovered
+modes/                   # CONVENTION dir — routed playbooks; the SINGLE pipeline source, read by the router
+  _shared.md             #   cross-cutting prefix: Iron Laws + rationalization table
+  <mode>.md              #   one playbook per pipeline (vod-post-production, live-production, ...)
 hooks/
-  hooks.json             # 4 lifecycle hooks (SessionStart, UserPromptSubmit, Pre/PostToolUse)
+  hooks.json             # 5 lifecycle hooks (SessionStart, UserPromptSubmit, Pre/PostToolUse, Stop) — auto-discovered
   scripts/               # hook executables (stdlib Python 3, PEP 723)
-bin/                     # PATH-level CLIs auto-installed on plugin activation (moprobe, moqc, mosafe)
+bin/                     # CONVENTION dir — moprobe/moqc/mosafe CLIs. NOT auto-added to PATH (see below)
 monitors/
-  monitors.json          # background monitors (incoming-watch)
+  monitors.json          # CONVENTION dir — aspirational config, NO automatic runner (see below)
   scripts/
+docs/                    # GitHub Pages site (index.html, llms.txt, sitemap.xml, _config.yml)
 CLAUDE.md                # this file (dev instructions)
 README.md                # user-facing overview + install flow
+CONTRIBUTING.md          # contributor guide
 LICENSE                  # MIT
 CHANGELOG.md             # release history
 ```
 
 Invariant: the `skills/` directory is the plugin's entire user-facing surface. Everything else supports authoring, docs, or distribution.
+
+### Real primitives vs. convention directories
+
+Only these are **auto-discovered Claude Code plugin primitives**: `skills/`, `agents/`, `commands/`, `hooks/hooks.json`, `.mcp.json`, and `.claude-plugin/plugin.json`. The rest are project conventions this repo wires up by hand:
+
+- **`modes/` is a convention.** Claude Code does not load it. The `media-pipeline-router` skill reads `modes/_shared.md` + the matched `modes/<mode>.md` itself when composing a dispatch.
+- **`bin/` is NOT auto-added to PATH.** There is no manifest `bin` field and Claude Code does not install these CLIs. Invoke them as `${CLAUDE_PLUGIN_ROOT}/bin/<tool>`, or the user adds `bin/` to their own PATH. Do not write SKILL.md/mode text that assumes a bare `moprobe` resolves.
+- **`monitors/monitors.json` has NO automatic runner.** No `monitors` hook event exists. It is aspirational config, not wired — nothing executes it.
 
 ## Hard rules — do not violate
 
@@ -59,7 +74,7 @@ Invariant: the `skills/` directory is the plugin's entire user-facing surface. E
 - No absolute local paths anywhere (`/Users/...`, `/home/...`).
 
 ### Authoring harness (`.claude/skills/skill-creator/`)
-Dev-only. Not part of the distributed plugin. Use it to scaffold + validate new skills.
+Dev-only. Not part of the distributed plugin. Use it to scaffold + validate new skills. `.claude/skills/` now holds only `skill-creator` (the dev authoring harness) and a `studio` symlink — the 10 former dev-only `*-docs` skills were promoted into the plugin (see "Skill suite" below).
 
 ## Authoring workflow
 
@@ -74,7 +89,7 @@ uv run .claude/skills/skill-creator/scripts/scaffold.py \
   --description "What it does. Use when the user asks to X, Y, or Z."
 ```
 
-The scaffolder emits `skills/<name>/SKILL.md` with correct frontmatter, plus `scripts/process.py` and `references/guide.md` as placeholders. **Delete both placeholders** after replacing with real files named after the skill's function (e.g. `scripts/transcode.py`, `references/codecs.md`).
+The scaffolder emits `skills/<name>/SKILL.md` with correct frontmatter, plus `scripts/process.py` and `references/guide.md` as placeholders. **Delete both placeholders** after replacing with real files named after the skill's function (e.g. `scripts/encode.py`, `references/codecs.md`). The validator **errors** (exit 1) on leftover scaffold placeholder content — stubs cannot ship.
 
 ### Validate one skill
 ```bash
@@ -136,54 +151,51 @@ Helper scripts use argparse subcommands (not mode flags) when there are 3+ disti
 
 Reference docs are option catalogs (tables of encoder flags, protocol options, channel layouts, NAL unit types, expression grammars), not tutorials.
 
-## Skill categories (96 in plugin + 11 dev-only in `.claude/skills/`)
+## Skill suite (40 skills in plugin + skill-creator dev-only in `.claude/skills/`)
 
-Layer 1 — FFmpeg core editing + conversion (12): `ffmpeg-transcode`, `ffmpeg-cut-concat`, `ffmpeg-video-filter`, `ffmpeg-audio-filter`, `ffmpeg-subtitles`, `ffmpeg-frames-images`, `ffmpeg-streaming`, `ffmpeg-capture`, `ffmpeg-hwaccel`, `ffmpeg-probe`, `ffmpeg-bitstream`, `ffmpeg-playback`.
+Each skill is a **lean router-over-techniques** SKILL.md: the CSO `description` is trigger phrases only (under 1024 chars), the body is a thin technique map, and each absorbed technique's full depth lives in `references/<technique>.md` (loaded only when SKILL.md points there). The pre-v3 110-skill suite collapsed into these 40.
 
-Layer 1 — Visual + color (10): `ffmpeg-hdr-color`, `ffmpeg-lut-grade`, `ffmpeg-ocio-colorpro`, `ffmpeg-chromakey`, `ffmpeg-compose-mask`, `ffmpeg-lens-perspective`, `ffmpeg-stabilize`, `ffmpeg-denoise-restore`, `ffmpeg-ivtc`, `ffmpeg-speed-time`.
+Routing (2): `media-pipeline-router` (the router — reads `modes/`), `using-media-os` (behavioral gateway injected at SessionStart).
 
-Layer 1 — Audio specialized (3): `ffmpeg-audio-fx`, `ffmpeg-audio-spatial`, `ffmpeg-captions`.
+FFmpeg (11): `ffmpeg-encode`, `ffmpeg-edit`, `ffmpeg-filter`, `ffmpeg-color`, `ffmpeg-restore`, `ffmpeg-composite`, `ffmpeg-analyze`, `ffmpeg-subtitle`, `ffmpeg-stream`, `ffmpeg-broadcast`, `ffmpeg-docs`.
 
-Layer 1 — Streaming specialized (2): `ffmpeg-whip`, `ffmpeg-rist-zmq`.
+Companion CLIs (11): `media-download`, `media-whisper`, `media-demucs`, `media-package`, `media-handbrake`, `media-moviepy`, `media-audio-cli`, `media-inspect`, `media-imagemagick`, `media-batch`, `media-cloud-upload`.
 
-Layer 1 — Analysis + authoring (6): `ffmpeg-detect`, `ffmpeg-quality`, `ffmpeg-metadata`, `ffmpeg-synth`, `ffmpeg-geq-expr`, `ffmpeg-ocr-logo`.
+Frameworks + broadcast IP (6): `obs`, `gstreamer`, `mediamtx`, `broadcast-io`, `otio`, `hdr-meta`.
 
-Layer 1 — Immersive + broadcast (3): `ffmpeg-360-3d`, `ffmpeg-mxf-imf`, `ffmpeg-drm`.
+Control + system audio (3): `media-control`, `ptz`, `audio-routing`.
 
-Layer 1 — Infrastructure (2): `ffmpeg-docs`, `ffmpeg-vapoursynth`.
+VFX + CV + WebRTC (3): `vfx`, `cv`, `webrtc`.
 
-Layer 2 — Companion tools (15): `media-ytdlp`, `media-whisper`, `media-demucs`, `media-mkvtoolnix`, `media-gpac`, `media-shaka`, `media-handbrake`, `media-moviepy`, `media-ffmpeg-normalize`, `media-mediainfo`, `media-scenedetect`, `media-subtitle-sync`, `media-imagemagick`, `media-exiftool`, `media-sox`, `media-batch`, `media-cloud-upload`.
+AI media (4): `real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`.
 
-Layer 3 — OBS Studio (5): `obs-docs`, `obs-websocket`, `obs-config`, `obs-plugins`, `obs-scripting`.
+### Docs-search anti-hallucination guardrail
 
-Layer 4 — Frameworks (4): `gstreamer-docs`, `gstreamer-pipeline`, `mediamtx-docs`, `mediamtx-server`.
+The 10 former dev-only `*-docs` skills were **promoted into the plugin**. `ffmpeg-docs` is a standalone skill; the rest folded into their domain skill's `references/docs-search.md` (e.g. `obs/references/docs-search.md`, `mediamtx/references/docs-search.md`, `broadcast-io/references/docs-search-ndi.md` + `docs-search-decklink.md`, `otio/`, `ptz/`, `gstreamer/`, `hdr-meta/`, `audio-routing/`).
 
-Layer 5 — Broadcast IP + editorial (10): `ndi-docs`, `ndi-tools`, `otio-docs`, `otio-convert`, `hdr-dynmeta-docs`, `hdr-dovi-tool`, `hdr-hdr10plus-tool`, `decklink-docs`, `decklink-tools`, `gphoto2-tether`.
+When recommending an FFmpeg flag / filter, **always invoke `ffmpeg-docs` first** — it's the anti-hallucination guardrail. For the other domains, read the skill's `references/docs-search.md` before quoting a non-obvious flag, protocol option, or API call.
 
-Layer 6 — Control protocols (6): `media-midi`, `media-osc`, `media-dmx`, `ptz-docs`, `ptz-visca`, `ptz-onvif`.
+### Rigor layer (Superpowers-style)
 
-Layer 6 — System audio (5): `audio-routing-docs`, `audio-pipewire`, `audio-jack`, `audio-coreaudio`, `audio-wasapi`.
+v3 adds a behavioral-rigor layer that makes the dispatch contract non-optional:
 
-Layer 7 — VFX (3): `vfx-usd`, `vfx-openexr`, `vfx-oiio`.
+- **`skills/using-media-os`** is injected at SessionStart by `hooks/scripts/session-start-capabilities.py`. It establishes that any media-production intent routes through `media-pipeline-router` and that every op is probe-first, `mosafe`-wrapped, and quality-gated — Claude does not hand-roll ffmpeg in the main thread.
+- **`modes/_shared.md`** is the cross-cutting prefix prepended to every dispatch. It carries the **Iron Laws** (fresh `moprobe` first; `mosafe`-wrap every ffmpeg call; `moqc` gate before any "done" claim; never use an NC/research/commercial-restricted AI model) plus a **rationalization table** that names the excuses ("it's a simple transcode, I don't need to probe") and rebuts each one.
 
-Layer 8 — CV + WebRTC (6): `cv-opencv`, `cv-mediapipe`, `webrtc-spec`, `webrtc-pion`, `webrtc-mediasoup`, `webrtc-livekit`.
+When editing modes or these two skills, keep the Iron Laws and the rationalization table intact — they are the spine of the system.
 
-Layer 9 — 2026 AI media (12): `media-upscale`, `media-interpolate`, `media-matte`, `media-depth`, `media-denoise-ai`, `media-tts-ai`, `media-sd`, `media-svd`, `media-musicgen`, `media-lipsync`, `media-ocr-ai`, `media-tag`.
+## AI skill license discipline
 
-When recommending an FFmpeg flag / filter, **always invoke `ffmpeg-docs` first**. It's the anti-hallucination guardrail. Same for OBS (`obs-docs`), GStreamer (`gstreamer-docs`), MediaMTX (`mediamtx-docs`), NDI (`ndi-docs`), OTIO (`otio-docs`), PTZ (`ptz-docs`), DeckLink (`decklink-docs`), HDR dynamic metadata (`hdr-dynmeta-docs`), system audio (`audio-routing-docs`).
-
-## AI skill license discipline (Layer 9)
-
-Every AI skill passes a strict OSI-open + commercial-safe filter. Allowed licenses: Apache-2, MIT, BSD, GPL.
+Every AI skill (`real-esrgan`, `ai-generate`, `ai-understand`, `ai-lipsync`) passes a strict OSI-open + commercial-safe filter. Allowed licenses: Apache-2, MIT, BSD, GPL.
 
 Always-dropped — NEVER recommend even if the user asks by name:
 - XTTS-v2 (Coqui CPML NC), F5-TTS (research), FLUX-dev (NC), SDXL / SD3 base (restrictive), Stable Video Diffusion (NC research), Wav2Lip (research), SadTalker (NC), Meta MusicGen (CC-BY-NC), Surya OCR (commercial restriction), CodeFormer (NC research), DAIN (research-only).
 
-Each Layer 9 skill's `references/LICENSES.md` enumerates the dropped models with explicit reasoning. When authoring or modifying an AI skill, update that file.
+Each AI skill enumerates its dropped models with explicit reasoning in per-technique license files under `references/` — e.g. `real-esrgan/references/licenses.md`, `ai-generate/references/sd-LICENSES.md`, `ai-understand/references/matte-LICENSES.md`, `ai-lipsync/references/LICENSES.md`. When authoring or modifying an AI technique, update the matching `*-LICENSES.md`.
 
 ## Version management
 
-- Plugin version lives in `.claude-plugin/plugin.json`. Bump on every release (semver).
+- Plugin version lives in `.claude-plugin/plugin.json`. Bump on every release (semver). Current version is `3.0.0` (v3 renamed skills — a breaking major).
 - Marketplace version lives in `.claude-plugin/marketplace.json` metadata. Keep in sync with plugin version.
 - Do NOT duplicate the version in both the plugin.json and marketplace entry — plugin.json wins silently if both are set. Set it in plugin.json only (except for relative-path plugins where the marketplace entry must carry it).
 - Tag git releases as `v<MAJOR>.<MINOR>.<PATCH>`.
@@ -192,13 +204,13 @@ Each Layer 9 skill's `references/LICENSES.md` enumerates the dropped models with
 
 - `main` is the source-of-truth branch.
 - The `.claude/settings.json` in this repo denies `--amend`, `--no-verify`, force-push, hard-reset, clean. Do not try them; fix underlying issues instead.
-- Commits reference specific skill(s) touched when possible: `skills/ffmpeg-hdr-color: fix zscale sandwich for HLG→PQ`.
+- Commits reference specific skill(s) touched when possible: `skills/ffmpeg-color: fix zscale sandwich for HLG→PQ`.
 - Before committing a new/changed skill, run `validate.py` on that skill.
 - Before pushing, validate the whole suite.
 
 ## Common pitfalls
 
-- **Leaving `scripts/process.py` and `references/guide.md` placeholders** after scaffolding — delete them once the real files are in place. The validator warns.
+- **Leaving `scripts/process.py` and `references/guide.md` placeholders** after scaffolding — delete them once the real files are in place. The validator **errors** (exit 1) on leftover placeholder content.
 - **Absolute paths** (`/Users/...`) leaking into SKILL.md or reference docs. Use `${CLAUDE_PLUGIN_ROOT}` when referencing files inside the plugin, relative paths when referencing skill-local files.
 - **Hardcoding examples to a specific user's environment** — use placeholders like `/tmp/input.mp4`, `~/Videos/`, `$HOME/work/`.
 - **Over-expanding SKILL.md body** — if a skill needs > 500 lines, split reference material into `references/<topic>.md` files and load on demand.

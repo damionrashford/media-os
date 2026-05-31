@@ -295,6 +295,38 @@ def check_skill(skill_path: Path) -> list[Result]:
         if not ref_files:
             warn("references-not-empty", "references/ exists but contains no .md files")
 
+    # ── Placeholder / scaffold leftovers ─────────────────────────────────────
+    # The scaffolder emits stub SKILL.md sections, references/guide.md, and
+    # scripts/process.py that MUST be replaced. CLAUDE.md promises the validator
+    # catches these — this is that check. Errors so stubs can't ship.
+    scaffold_markers = (
+        "# [Reference Title]",
+        "[Brief description of what this reference covers",
+        "# TODO: implement processing logic here",
+        "[FILL IN:",
+        "[Non-obvious fact]",
+    )
+    scan_targets = [skill_md]
+    if refs_dir.exists():
+        scan_targets += sorted(refs_dir.glob('*.md'))
+    if scripts_dir.exists():
+        scan_targets += [p for p in scripts_dir.iterdir() if p.is_file()]
+    placeholder_hits: list[str] = []
+    for tgt in scan_targets:
+        try:
+            content = tgt.read_text(encoding='utf-8', errors='replace')
+        except OSError:
+            continue
+        for marker in scaffold_markers:
+            if marker in content:
+                placeholder_hits.append(f"{tgt.name}: '{marker}'")
+    if placeholder_hits:
+        err("no-placeholder-content",
+            "unfilled scaffold placeholders found — " + "; ".join(placeholder_hits),
+            fix="Replace scaffolder stubs with real content, or delete the stub file")
+    else:
+        ok("no-placeholder-content", "no scaffold placeholders left behind")
+
     return results
 
 

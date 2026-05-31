@@ -48,7 +48,7 @@ Keep README.md accurate and current without bloating it. The README is the user'
    - `grep -c "^|" README.md` → rough row count in tables
 2. **Compare to README claims.** Find mismatches (skill count, missing entries, broken links).
 3. **Make minimal edits.** Targeted, surgical. Don't rewrite; patch.
-4. **Verify.** Re-run the audit. Check `grep -c "96 " README.md` etc. against expected.
+4. **Verify.** Re-run the audit. Check `grep -c "40 skills" README.md` etc. against expected.
 
 ## Skill Table Format (per-section)
 
@@ -96,7 +96,7 @@ Specific line-by-line changes, diff-style.
 ## Gotchas
 
 - **Banner layer counts must sum to total.** If Layer 1 claims 38 but banner total claims 96, and Layer 5 claims 9 but 10 actual skills, fix both.
-- **TOC anchor (`#the-96-skills`)** must match the heading (`## The 96 skills`). Hyphens + lowercase.
+- **TOC anchor (`#skills-catalog`)** must match the heading (`## Skills catalog`). Hyphens + lowercase.
 - **Install command** — always the full form `/plugin marketplace add damionrashford/media-os` followed by `/plugin install media-os@media-os`. Never shortened.
 - **Skill links use lowercase** kebab-case matching the directory name exactly.
 - **Don't reorganize sections** — layer numbering is part of the brand. Add to existing sections; don't reshuffle.

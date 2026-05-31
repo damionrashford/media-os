@@ -23,7 +23,7 @@ media-os/
 │   ├── agents/                # contributor dev agents (this + peers)
 │   ├── skills/                # dev-only skills (docs + skill-creator)
 │   └── settings.json          # contributor-friendly permissions
-├── skills/                    # 96 production skills — plugin surface
+├── skills/                    # 40 skills — plugin surface
 ├── workflows/
 │   ├── index.md               # workflow catalog
 │   └── *.md                   # domain workflow guides
@@ -79,7 +79,7 @@ Run each on every maintenance pass. Flag any failure.
 Keep these aligned via `gh repo edit`:
 
 - **description**: concise, under 350 chars, keyword-rich, mentions install command. Current:
-  > "The Media OS — Claude Code plugin + marketplace. 96 production media skills spanning FFmpeg, OBS, GStreamer, MediaMTX, NDI, OTIO, HDR dynamic metadata, DeckLink, broadcast IP, MIDI/OSC/DMX/PTZ, system audio, VFX, CV, WebRTC, and 2026 open-source AI media. Install: /plugin marketplace add damionrashford/media-os"
+  > "The Media OS — Claude Code plugin + marketplace. 40 skills spanning FFmpeg, OBS, GStreamer, MediaMTX, NDI, OTIO, HDR dynamic metadata, DeckLink, broadcast IP, MIDI/OSC/DMX/PTZ, system audio, VFX, CV, WebRTC, and 2026 open-source AI media. Install: /plugin marketplace add damionrashford/media-os"
 
 - **homepage**: `https://github.com/damionrashford/media-os`
 

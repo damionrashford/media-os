@@ -116,10 +116,27 @@ def main() -> int:
                 cache_path.write_text(json.dumps(data, indent=2))
             except Exception:
                 pass
+    # Inject the behavioral gateway (using-media-os) ahead of the capability
+    # inventory — the Superpowers pattern: one SessionStart hook makes the
+    # routing contract non-optional before any media work happens.
+    plugin_root = Path(__file__).resolve().parents[2]
+    gateway = plugin_root / "skills" / "using-media-os" / "SKILL.md"
+    blocks = []
+    try:
+        body = gateway.read_text(encoding="utf-8")
+        blocks.append(
+            "<EXTREMELY_IMPORTANT>\nYou are operating inside Media OS. The full "
+            "'using-media-os' gateway skill below governs how you handle media "
+            "requests — route media intent through media-pipeline-router; never "
+            "hand-roll ffmpeg in the main thread.\n\n" + body + "\n</EXTREMELY_IMPORTANT>"
+        )
+    except OSError:
+        pass
+    blocks.append(format_context(data))
     out = {
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",
-            "additionalContext": format_context(data),
+            "additionalContext": "\n\n".join(blocks),
         }
     }
     print(json.dumps(out))

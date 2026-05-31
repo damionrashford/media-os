@@ -1,4 +1,4 @@
-# Show HN: Media OS — a 96-skill media production plugin for Claude Code
+# Show HN: Media OS — a 40-skill media production plugin for Claude Code
 
 <!--
 Submission packet for Hacker News "Show HN".
@@ -20,7 +20,7 @@ Use the draft below verbatim (or close to it).
 **Title (80 char max):**
 
 ```
-Show HN: Media OS – 96-skill media production plugin for Claude Code
+Show HN: Media OS – 40-skill media production plugin for Claude Code
 ```
 
 **URL:**
@@ -41,7 +41,7 @@ GStreamer, MediaMTX, NDI, WebRTC, Whisper, Demucs, MoviePy, ExifTool, OTIO,
 and a bunch of the 2026 open AI media models (RIFE, Real-ESRGAN, RobustVideoMatting,
 Stable Diffusion, Piper, Coqui TTS with proper license filtering).
 
-It's 96 skills, 7 orchestrator agents (probe / qc / hdr / encoder / live / delivery / architect),
+It's 40 skills, 7 orchestrator agents (probe / qc / hdr / encoder / live / delivery / architect),
 13 end-to-end workflow guides, 4 lifecycle hooks, a background monitor for the
 incoming folder, and three PATH-level CLIs (`moprobe`, `moqc`, `mosafe`) that
 get auto-installed on plugin activation.
@@ -121,7 +121,7 @@ That's it. Skills become available namespaced as `/media-os:<skill>`.
 
 ### What I'd love feedback on
 
-- **Skill granularity.** 96 is a lot. Is this the right cut, or should some
+- **Skill granularity.** 40 is a lot. Is this the right cut, or should some
   layers collapse? The trade-off is Claude picks the right skill faster when
   they're narrow, but the menu gets long.
 - **Gotchas quality.** Each SKILL.md has a "Gotchas" section — the

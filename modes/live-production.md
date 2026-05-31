@@ -17,8 +17,8 @@
 
 ## Steps
 
-1. Read `${CLAUDE_PLUGIN_ROOT}/skills/workflow-live-production/SKILL.md` for the full chain; read tool skills `obs-websocket`, `ndi-tools`, `decklink-tools`, `ffmpeg-whip`, `ffmpeg-rist-zmq`, `mediamtx-server`, `ptz-onvif`/`ptz-visca` as needed.
-2. Run `moprobe --json <source>` if source is a file or URL. For OBS scenes, query `obs-websocket` for the current scene's video/audio settings. For NDI, run `ndi-tools` discovery first.
+1. Read tool skills `obs`, `broadcast-io`, `broadcast-io`, `ffmpeg-stream`, `ffmpeg-stream`, `mediamtx`, `ptz`/`ptz` as needed.
+2. Run `moprobe --json <source>` if source is a file or URL. For OBS scenes, query `obs` for the current scene's video/audio settings. For NDI, run `broadcast-io` discovery first.
 3. **STOP** if the source isn't reachable (NDI source not advertising, DeckLink device unplugged, OBS WebSocket auth fail). Surface the failure with the exact diagnostic command (`ndi-record-cli -list`, `BMDStreamingServer -list`, etc.).
 4. Validate `target` URLs: RTMP must include stream key; SRT must include `?streamid=` if using stream-ID auth; WHIP target must be HTTPS.
 5. Compose the ffmpeg invocation (or OBS WebSocket call) per the chosen `latency_mode`:
@@ -67,3 +67,77 @@
 - Dropped-frame rate < 1% over the session (flag in `## Issues observed` if exceeded).
 - PTZ preset recalls completed without ONVIF/VISCA error.
 - No silent stream death — surface a clear error if encoder process exited non-zero.
+
+## Playbook reference (folded from workflow-live-production)
+
+**What:** Run a live show end-to-end. OBS is the mixer; MIDI controllers trigger scenes; DMX lighting and PTZ cameras follow scene changes; system audio is correctly routed; MediaMTX fans the output to HLS + RTSP + SRT + WebRTC + RTMP.
+
+**Who:** Streamers, broadcasters, church/corporate AV, venue operators, esports shoutcasters.
+
+## Pipeline
+
+### Step 1 — Build the scene collection
+
+Author the scene tree as JSON under the active OBS profile via the `obs` skill. Lock scene names early — downstream skills reference them by exact spelling (case-sensitive in the websocket protocol).
+
+### Step 2 — Route system audio BEFORE launching OBS
+
+OBS caches audio devices at startup. Create virtual sinks first so OBS sees them as inputs.
+
+- **macOS:** create an aggregate device combining BlackHole + mic (`audio-routing` skill).
+- **Linux (PipeWire):** create a sink and link source apps into it (`audio-routing` skill).
+- **Windows:** install VB-Cable / VoiceMeeter, enumerate devices (`audio-routing` skill).
+
+### Step 3 — Start OBS and verify obs
+
+OBS 28+ bundles obs v5. Use the `obs` skill's `wsctl.py check` + `ping` — it auto-discovers the password from the local OBS config. For remote OBS, export `OBS_WEBSOCKET_URL` and `OBS_WEBSOCKET_PASSWORD`.
+
+### Step 4 — Wire MIDI / OSC triggers to scene switches
+
+Use `media-control` (`midictl.py monitor --json`) piped to `obs` (`wsctl.py scene-switch`). For TouchOSC / Reaper, use `media-control` (`oscctl.py listen --port 8000 --json`) with the same fan-out pattern.
+
+### Step 5 — Lighting cue on scene change (DMX)
+
+Subscribe to OBS's `CurrentProgramSceneChanged` event via `wsctl.py events --subscribe scenes`, then drive DMX through `media-control` (`dmxctl.py send/fade --universe N --channel M`).
+
+### Step 6 — PTZ preset recall on scene change
+
+Same subscription stream. For VISCA cameras (UDP port 52381), use `ptz` (`viscactl.py preset-recall --host <ip> --preset N`). For ONVIF, use `ptz` after discovery (`onvifctl.py discover`).
+
+### Step 7 — Multi-protocol egress via MediaMTX
+
+Configure the `mediamtx` skill once: RTMP ingest from OBS, auto-republish to HLS (8888), RTSP (8554), SRT (8890), WebRTC/WHEP (8889). Optional `runOnReady` spawns an ffmpeg forwarder to YouTube/Twitch/Facebook.
+
+### Step 8 — WebRTC low-latency path (alternative to RTMP)
+
+Skip OBS's RTMP output and go straight to WHIP via `ffmpeg-stream` — sub-second latency for contribution.
+
+## Variants
+
+- **Pure-software** — skip DMX/PTZ/DeckLink; software MIDI (Keyboard Maestro) + virtual audio + OBS only.
+- **Broadcast SDI** — swap screen capture for DeckLink input via `broadcast-io`; playout back to SDI with ffmpeg's `-f decklink` output.
+- **NDI-first facility** — replace RTMP ingest with NDI via `obs-ndi` plugin; MediaMTX still bridges to external delivery.
+- **Remote producer + FOH operator** — both run OBS; operator drives producer's OBS over obs by setting `OBS_WEBSOCKET_URL` to the producer's LAN address.
+
+## Gotchas
+
+- **obs auto-discovery is local-only.** For a remote OBS, export `OBS_WEBSOCKET_URL` + `OBS_WEBSOCKET_PASSWORD`.
+- **obs v5 only.** v4 is EOL. Close code `4010` = client/server version mismatch.
+- **OBS caches audio devices at launch.** Create virtual sinks before starting OBS.
+- **HighVolume events (bits 16–19) are deliberately excluded from `All` (=4095).** `InputVolumeMeters` fires every 50 ms. Only subscribe if you're rendering a meter UI.
+- **PTZ presets are camera-stored.** `preset-set` once, `preset-recall` forever.
+- **VISCA-over-IP is UDP:52381.** No handshake. Firewalls between camera and controller silently drop.
+- **ONVIF WS-Discovery is multicast on 239.255.255.250:3702.** Does NOT cross VLAN boundaries without an IGMP-aware switch.
+- **DMX via OLA requires `olad` running.** Art-Net controllers often want a dedicated 2.0.0.0/8 subnet per spec.
+- **Art-Net universe is 0-indexed; DMX channel is 1-indexed.** `--universe 0 --channel 1` = first channel of universe 0.
+- **MediaMTX ports: 8888 (HLS), 8889 (WebRTC), 8554 (RTSP), 8890 (SRT), 1935 (RTMP), 9997 (API).** Overlap with another service = silent boot failure.
+- **MediaMTX `runOnReady` inherits stdin from the daemon.** Always pass `-nostdin` to ffmpeg inside those commands or the encoder blocks.
+- **NDI runtime (NewTek/Vizrt) is a separate install** from the NDI SDK.
+- **BlackHole / Loopback on macOS appear as both input and output.** App routes to output side, OBS picks it up from input side. Wrong direction = silence.
+- **OBS scene names are case-sensitive** in the websocket protocol. Enumerate with `GetSceneList` for canonical spelling.
+- **MIDI 1.0 vs 2.0 UMP are different wire formats.** Most tools speak 1.0 by default.
+- **OSC bundles vs single messages.** TouchOSC sends bundles by default — parse `{"type":"bundle"}` before reaching into `.elements`.
+
+## Example — MIDI note 36 triggers full-stack cue
+
+On MIDI note 36: switch OBS to scene "Main", fade DMX channel 1 up to full, recall PTZ preset 3. Use `media-control` monitor piped through `jq` to fan out three parallel actions (obs scene-switch, media-control fade, ptz preset-recall). Core live-production value: one event → coordinated multi-device response.

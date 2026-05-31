@@ -4,6 +4,46 @@ All notable changes to the Media OS plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-05-31
+
+Breaking release. The plugin was consolidated from **110 fragmented skills to 40 cohesive ones** with no loss of functionality, the duplicate `workflow-*` layer was retired, and a Superpowers-style enforcement spine was added.
+
+### Changed — skill consolidation (BREAKING: skill names changed)
+
+- **110 → 40 skills.** Hyper-granular skills were merged into domain skills. Each consolidated skill is a lean SKILL.md (CSO description = trigger phrases only, < 1024 chars; "router over techniques" body) with every absorbed technique's full body — gotchas included, verbatim — relocated into `references/<technique>.md` and loaded on demand. Scripts moved into the merged skill's `scripts/`.
+- **The 10 former dev-only `*-docs` skills were promoted into the plugin.** `ffmpeg-docs` is a standalone skill; the rest fold into their domain skill's `references/docs-search.md`. The modes' "invoke X-docs first" anti-hallucination guardrail now ships to users.
+
+Migration — representative old → new skill names (full set in `git log`):
+
+| Old (removed) | New |
+|---|---|
+| `ffmpeg-transcode`, `ffmpeg-hwaccel`, `ffmpeg-bitstream`, `ffmpeg-playback` | `ffmpeg-encode` |
+| `ffmpeg-hdr-color`, `ffmpeg-lut-grade`, `ffmpeg-ocio-colorpro` | `ffmpeg-color` |
+| `ffmpeg-probe`, `ffmpeg-detect`, `ffmpeg-quality`, `ffmpeg-metadata`, `ffmpeg-ocr-logo`, `media-scenedetect` | `ffmpeg-analyze` |
+| `ffmpeg-streaming`, `ffmpeg-whip`, `ffmpeg-rist-zmq` | `ffmpeg-stream` |
+| `obs-websocket`, `obs-config`, `obs-scripting`, `obs-plugins` | `obs` |
+| `decklink-tools`, `ndi-tools`, `gphoto2-tether` | `broadcast-io` |
+| `media-midi`, `media-osc`, `media-dmx` | `media-control` |
+| `audio-coreaudio`, `audio-jack`, `audio-pipewire`, `audio-wasapi` | `audio-routing` |
+| `media-upscale`, `media-interpolate`, `media-denoise-ai` | `ai-enhance` |
+| `media-sd`, `media-svd`, `media-tts-ai`, `media-musicgen` | `ai-generate` |
+
+### Removed
+
+- **The 13 `workflow-*` skills.** They duplicated the 13 modes (with mismatched names). Their full pipeline playbooks — gotchas, variants, examples — were folded verbatim into `modes/<name>.md`, which are now the single source of truth for pipelines.
+
+### Added — enforced routing (Superpowers-style rigor)
+
+- **`skills/using-media-os`** — a behavioral gateway skill injected at `SessionStart` (wrapped in `<EXTREMELY_IMPORTANT>` by `hooks/scripts/session-start-capabilities.py`, alongside the capability inventory). The 1% rule, a red-flag rationalization table, and a dispatch flowchart make routing non-optional: any media intent is forced through `media-pipeline-router` instead of hand-rolled in the main thread.
+- **Iron Laws + rationalization table in `modes/_shared.md`** — probe-first (`moprobe`), `mosafe`-wrap every ffmpeg call, gate-before-done (`moqc` / the mode's quality bar), and an absolute OSI-open AI-license filter — inherited by every dispatch.
+
+### Fixed
+
+- **Validator now errors (was silent) on leftover scaffold placeholders** (`# [Reference Title]`, `[FILL IN:`, `process.py` TODO). Five `references/guide.md` stubs that had shipped were deleted.
+- **CI skill-count guard derives from disk** instead of a hardcoded `96`, and asserts README / CLAUDE.md / plugin.json / marketplace.json all state the same canonical total — so counts can never silently drift again.
+- **Router description trimmed 3001 → ~910 chars** (was over the 1024 hard limit and failing validation), CSO-style: trigger phrases only.
+- **Honest primitive docs** — `modes/`, `bin/`, and `monitors/` are documented as convention directories, not auto-discovered Claude Code primitives; `bin/` CLIs are invoked by full path (no manifest `bin`-on-PATH mechanism).
+
 ## [2.1.0] — 2026-05-17
 
 ### Added — routed modes dispatch (the modes pattern overlay)

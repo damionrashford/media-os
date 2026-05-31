@@ -23,9 +23,9 @@ Before doing anything, read [CLAUDE.md](CLAUDE.md) — it documents directory in
 6. For AI skills (Layer 9), every model must be Apache-2 / MIT / BSD / GPL. NC / research-only / commercial-restricted models go in `references/LICENSES.md` as documented-and-dropped.
 7. Run the validator: `gh workflow run validate.yml` (or push and watch CI).
 
-## Adding a workflow skill
+## Adding a mode (pipeline)
 
-Workflow skills (`skills/workflow-*`) are orchestrators with no scripts. They document a step-by-step chain across existing skills. Use one of the existing 13 (`skills/workflow-broadcast-delivery/SKILL.md`) as a template.
+Pipelines live as routed playbooks in `modes/<name>.md`, NOT as standalone skills — they are read by the `media-pipeline-router` skill, not auto-discovered. Each mode declares a `**Subagent**:` specialist (must exist in `agents/`), `**Trigger phrases**`, inputs, a step pipeline, an output schema, a quality bar, and a `## Playbook reference` detail section (gotchas + variants + examples). Use `modes/broadcast-delivery.md` as a template, and add the new trigger phrases to the router skill's description.
 
 ## Renaming or removing a skill
 
