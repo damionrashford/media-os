@@ -106,20 +106,28 @@ jobs:
             test -x "$f" || { echo "::error::$f is not executable"; exit 1; }
           done
 
-      - name: Counts in plugin.json match folder reality
+      - name: Skill counts consistent across disk and docs (derived, never hardcoded)
         run: |
           set -e
-          actual=$(ls -d skills/*/ | wc -l | tr -d ' ')
-          workflow=$(ls -d skills/workflow-*/ 2>/dev/null | wc -l | tr -d ' ')
+          total=$(ls -d skills/*/ | wc -l | tr -d ' ')
           router=$(ls -d skills/media-pipeline-router/ 2>/dev/null | wc -l | tr -d ' ')
-          tool=$((actual - workflow - router))
-          echo "tool skills:     $tool"
-          echo "workflow skills: $workflow"
-          echo "router skill:    $router"
-          echo "total:           $actual"
-          test "$tool" -eq 96 || { echo "::error::expected 96 tool skills, found $tool"; exit 1; }
-          test "$workflow" -eq 13 || { echo "::error::expected 13 workflow skills, found $workflow"; exit 1; }
-          test "$router" -eq 1 || { echo "::error::expected 1 router skill (media-pipeline-router), found $router"; exit 1; }
+          workflow=$(ls -d skills/workflow-*/ 2>/dev/null | wc -l | tr -d ' ')
+          echo "total skill dirs: $total"
+          echo "router:           $router"
+          echo "workflow:         $workflow"
+          # Structural invariant: the router skill must always exist.
+          test "$router" -eq 1 || { echo "::error::media-pipeline-router skill missing"; exit 1; }
+          # Single source of truth: the derived total is canonical. Every doc must
+          # state it verbatim as "<N> skills" so counts can never silently drift.
+          phrase="$total skills"
+          fail=0
+          for doc in README.md CLAUDE.md .claude-plugin/plugin.json .claude-plugin/marketplace.json; do
+            if ! grep -qF "$phrase" "$doc"; then
+              echo "::error::$doc does not state the canonical skill count '$phrase'"
+              fail=1
+            fi
+          done
+          exit $fail
 
       - name: Modes layer is intact
         run: |
