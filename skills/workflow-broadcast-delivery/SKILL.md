@@ -1,7 +1,7 @@
 ---
 name: workflow-broadcast-delivery
 description: Produce broadcast-grade MXF OP1a or Netflix IMF masters with HDR dynamic metadata (Dolby Vision / HDR10+), SDI capture/playout, ACES color management, CEA-608/708 captions, and timecode-accurate delivery. Use when the user says "deliver to broadcast", "make an IMF for Netflix", "MXF OP1a", "SDI ingest", "Dolby Vision profile 8.1", "convert DV profile 7 to 8.1", "broadcast master", or anything about professional broadcast/OTT mastering.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — Broadcast Delivery

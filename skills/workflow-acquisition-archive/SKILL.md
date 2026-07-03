@@ -1,7 +1,7 @@
 ---
 name: workflow-acquisition-archive
 description: Ingest from every source — web (yt-dlp), screen / webcam / mic capture, SDI (DeckLink), DSLR tether (gphoto2), NDI network sources, RTSP / IP cameras via MediaMTX, PTZ — then verify integrity (SHA-256 + full-decode pass), preserve metadata (EXIF / XMP / IPTC), normalize to MKV or FFV1 / J2K / ProRes archival containers, and push to cold-storage cloud (Glacier / B2 / Archive.org). Use when the user says "download YouTube playlist", "capture SDI for 24 hours", "archive IP cameras", "preserve VHS rips", "tether DSLR timelapse", "cold-storage upload", or any ingest-to-archive workflow.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — Acquisition + Archive

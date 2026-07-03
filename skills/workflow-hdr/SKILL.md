@@ -1,7 +1,7 @@
 ---
 name: workflow-hdr
 description: End-to-end HDR authoring — HDR10 (static MDC + MaxCLL/MaxFALL), HDR10+ dynamic metadata JSON, Dolby Vision profiles 5/7/8.1/8.4, HLG, PQ↔HLG conversion, SDR↔HDR tone-mapping (hable/mobius/reinhard/bt2390/aces), dovi_tool + hdr10plus_tool orchestration, and multi-format dual-delivery. Use when the user says "HDR10+", "Dolby Vision", "PQ to HLG", "tone-map to SDR", "ACES RRT", "HLG broadcast", "DV profile 7 to 8.1", "YouTube HDR", or anything HDR-color-pipeline.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — HDR

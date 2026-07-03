@@ -1,7 +1,7 @@
 ---
 name: workflow-vfx-pipeline
 description: VFX-grade I/O and handoff — read/write USD (Pixar Universal Scene Description), deep and multi-part OpenEXR, color-managed OpenImageIO with ACES/OCIO configs, dailies, cryptomatte extraction, plate generation for compositors, and delivery back to editorial or IMF. Use when the user says "ACES pipeline", "EXR sequence", "USD stage", "VFX plates", "cryptomatte", "ARRI LogC to ACEScg", "deep compositing", or anything VFX-I/O related.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — VFX Pipeline

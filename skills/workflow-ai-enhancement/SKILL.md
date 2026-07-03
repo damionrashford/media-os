@@ -1,7 +1,7 @@
 ---
 name: workflow-ai-enhancement
 description: Restore, upscale, and enhance existing footage using 2026 open-source AI models — Real-ESRGAN/SwinIR/HAT super-resolution, RIFE/FILM interpolation, DeepFilterNet/RNNoise audio denoise, rembg/BiRefNet/RVM matting, Depth-Anything v2 depth — with strict OSI-open commercial-safe license filter. Use when the user says "upscale old footage", "remaster", "enhance quality", "30 to 60fps", "AI denoise", "restore VHS", "remove background from video", or anything about AI-driven footage restoration.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — AI Enhancement
