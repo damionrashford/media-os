@@ -1,7 +1,7 @@
 ---
 name: workflow-vod-post-production
 description: Traditional VOD finishing — transcode to mezzanine + proxies, cut/trim/concat, color grade (LUT / OCIO / manual), stabilize handheld, denoise, retime (slow-mo / reverse / speed ramps), chromakey, lower thirds, burn subtitles, loudness normalize, thumbnails/sprite sheets, chapter metadata, and final delivery H.264/AV1 for YouTube/social/archive. Use when the user says "finish my YouTube video", "post-production", "color grade and stabilize", "convert to vertical TikTok", "batch wedding videos", "sprite sheet for scrubbing", or standard VOD finishing.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — VOD Post-Production

@@ -1,7 +1,7 @@
 ---
 name: workflow-streaming-distribution
 description: Deliver live or VOD content over HLS / DASH / RTMP / SRT / WHIP / RIST with adaptive bitrate ladders, DRM (Widevine / PlayReady / FairPlay cbcs), multi-protocol fanout via MediaMTX, and CDN upload (Cloudflare Stream / Mux / Bunny / S3). Use when the user says "stream to HLS", "build an ABR ladder", "add Widevine", "multi-bitrate DASH", "WHIP ingest", "low-latency HLS", "SRT contribution", "stream to multiple platforms", "SFU for WebRTC", or anything involving large-scale distribution.
-argument-hint: [source]
+argument-hint: "[source]"
 ---
 
 # Workflow — Streaming Distribution

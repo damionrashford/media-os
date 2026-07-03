@@ -1,7 +1,7 @@
 ---
 name: workflow-live-production
 description: End-to-end live production — OBS as the mixer with obs-websocket control, MIDI/OSC cue triggers, DMX lighting sync, PTZ camera moves, system audio routing, NDI/SDI I/O, and multi-protocol egress via MediaMTX. Use when the user says "go live", "run a live show", "live stream", "wire up OBS", "scene switch on MIDI", "OBS + lighting + PTZ", "broadcast webinar", or anything involving real-time production with multiple control surfaces firing together.
-argument-hint: [show-name]
+argument-hint: "[show-name]"
 ---
 
 # Workflow — Live Production

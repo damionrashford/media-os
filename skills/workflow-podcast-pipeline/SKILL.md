@@ -1,7 +1,7 @@
 ---
 name: workflow-podcast-pipeline
 description: Raw podcast recordings → polished, loudness-compliant (EBU R128 / Spotify / Apple Podcasts / ACX), caption-accurate (Whisper), chapter-tagged deliverables across MP3 / M4A / video-podcast. Covers multi-mic capture, AI denoise, sidechain ducking, auto-chaptering, multi-language subtitles, ID3/MP4 metadata, and batch release. Use when the user says "publish a podcast episode", "normalize loudness to −16 LUFS", "auto-chapter", "podcast subtitles", "batch process episodes", "interview diarization", or anything podcast-production-related.
-argument-hint: [episode]
+argument-hint: "[episode]"
 ---
 
 # Workflow — Podcast Pipeline

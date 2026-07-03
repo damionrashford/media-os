@@ -1,7 +1,7 @@
 ---
 name: workflow-editorial-interchange
 description: Move timelines between NLEs (Premiere, Final Cut Pro X, DaVinci Resolve, Avid, Lightworks) using OTIO as the pivot format, with cuts, transitions, media links, and timecode preserved. Use when the user says "move my Premiere timeline to Resolve", "export from FCP to Avid", "round-trip AAF", "conform multi-rate edit", "generate proxies and relink", "FCPXML to AAF", or anything about editorial round-trip between pro NLEs.
-argument-hint: [source-timeline]
+argument-hint: "[source-timeline]"
 ---
 
 # Workflow — Editorial Interchange

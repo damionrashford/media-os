@@ -1,7 +1,7 @@
 ---
 name: workflow-ai-generation
 description: Generate media from scratch with 2026 open-source AI — TTS voiceover (Kokoro / OpenVoice / Piper), image gen (FLUX-schnell / Kolors / Sana / ComfyUI), video gen (LTX-Video / CogVideoX / Mochi / Wan), music (Riffusion / YuE), lipsync talking heads (LivePortrait / LatentSync), OCR (PaddleOCR / Tesseract 5 / TrOCR), zero-shot tagging (CLIP / SigLIP / BLIP-2 / LLaVA). Strict commercial-safe license filter. Use when the user says "generate a video", "TTS voiceover", "AI explainer video", "clone my voice", "generate music", "AI image", "digital human", or anything about from-scratch AI media.
-argument-hint: [prompt]
+argument-hint: "[prompt]"
 ---
 
 # Workflow — AI Generation
